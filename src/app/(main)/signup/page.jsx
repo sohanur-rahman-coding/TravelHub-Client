@@ -194,11 +194,11 @@ const RegisterPage = () => {
             </Select.Trigger>
             <Select.Popover>
               <ListBox>
-                <ListBox.Item id="buyer" textValue="buyer">
+                <ListBox.Item id="user" textValue="user">
                   User
                   <ListBox.ItemIndicator />
                 </ListBox.Item>
-                <ListBox.Item id="seller" textValue="seller">
+                <ListBox.Item id="vendor" textValue="vendor">
                   Vendor 
                   <ListBox.ItemIndicator />
                 </ListBox.Item>
