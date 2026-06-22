@@ -66,7 +66,7 @@ export default function AddTicketPage({ onTicketAdded }) {
         verificationStatus: "pending",
       };
 
-      console.log("Submitting Ticket Data to DB:", ticketData);
+      // console.log("Submitting Ticket Data to DB:", ticketData);
 
       // ব্যাকএন্ডServer Action কল:
       await addTicketAction(ticketData);
@@ -78,7 +78,7 @@ export default function AddTicketPage({ onTicketAdded }) {
 
       if (onTicketAdded) onTicketAdded();
     } catch (error) {
-      console.error("Submission failed:", error);
+      // console.error("Submission failed:", error);
       alert("Failed to upload image or submit ticket. Please try again.");
     } finally {
       setLoading(false);

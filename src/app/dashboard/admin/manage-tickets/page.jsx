@@ -5,7 +5,7 @@ import TicketTable from "@/components/Dashboard/TicketTable";
 
 const ManageTicketsByAdmin = async () => {
   const tickets = await getAllTicketsForAdmin();
-  console.log("Fetched Tickets for Admin:", tickets);
+  // console.log("Fetched Tickets for Admin:", tickets);
 
   return (
     <div className="p-6">

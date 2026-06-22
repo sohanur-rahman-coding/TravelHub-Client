@@ -122,7 +122,7 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
       router.refresh(); 
       
     } catch (error) {
-      console.error("Failed to delete ticket:", error);
+      // console.error("Failed to delete ticket:", error);
       alert("Failed to delete the ticket. Please try again.");
     } finally {
       setIsDeleting(false);

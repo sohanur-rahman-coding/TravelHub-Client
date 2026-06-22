@@ -60,7 +60,7 @@ export function Navbar() {
 
           <div className="hidden md:flex gap-6 items-center">
             <Link href="/" className={`font-semibold text-sm ${isActive("/") ? "text-cyan-500" : "text-foreground/80 hover:text-foreground"}`}>Home</Link>
-            <Link href="/tickets" className={`font-semibold text-sm ${isActive("/tickets") ? "text-cyan-500" : "text-foreground/80 hover:text-foreground"}`}>All Tickets</Link>
+            <Link href="/allTickets" className={`font-semibold text-sm ${isActive("/allTickets") ? "text-cyan-500" : "text-foreground/80 hover:text-foreground"}`}>All Tickets</Link>
             {user && (
               <Link href="/dashboard" className={`font-semibold text-sm ${isActive("/dashboard") ? "text-cyan-500" : "text-foreground/80 hover:text-foreground"}`}>Dashboard</Link>
             )}

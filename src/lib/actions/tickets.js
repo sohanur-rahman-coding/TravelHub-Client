@@ -1,17 +1,18 @@
 "use server";
+
+import { revalidatePath } from "next/cache";
+
 const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
+
 export async function addTicketAction(ticketData) {
   try {
-    const response = await fetch(
-      `${BASE_URL}/api/tickets`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(ticketData),
+    const response = await fetch(`${BASE_URL}/api/tickets`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(ticketData),
+    });
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || "Failed to add ticket");
@@ -23,7 +24,6 @@ export async function addTicketAction(ticketData) {
   }
 }
 
-//  update
 export const updateTicket = async (ticketData) => {
   try {
     const { _id, ...bodyData } = ticketData;
@@ -53,7 +53,6 @@ export const updateTicket = async (ticketData) => {
   }
 };
 
-// delete
 export const deleteTicket = async (ticketId) => {
   try {
     const response = await fetch(`${BASE_URL}/api/tickets/${ticketId}`, {
@@ -73,3 +72,22 @@ export const deleteTicket = async (ticketId) => {
   }
 };
 
+export const toggleAdvertiseTicket = async (ticketId, currentState) => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/tickets/${ticketId}/advertise`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ advertise: !currentState }),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Failed to update advertisement");
+    }
+
+    revalidatePath("/dashboard/admin/advertise-tickets");
+    return { success: true };
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+};

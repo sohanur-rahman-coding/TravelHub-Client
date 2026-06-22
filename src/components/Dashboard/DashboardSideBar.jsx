@@ -7,7 +7,7 @@ import { ClipboardListIcon, Users2, Layers, History, Bus } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardSidebar({ user }) {
-  console.log("DashboardSidebar received user:", user);
+  // console.log("DashboardSidebar received user:", user);
   const pathname = usePathname();
   const role = user?.role || "user";
 
