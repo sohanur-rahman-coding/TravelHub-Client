@@ -17,14 +17,14 @@ export default function DashboardSidebar({ user }) {
       { icon: History, label: "Transaction History", link: "/dashboard/user/transaction-history" },
     ],
     vendor: [
-      { icon: Person, label: "Vendor Profile", link: "/dashboard/vendor/vendor-profile" },
+      { icon: Person, label: "Vendor Profile", link: "/dashboard" },
       { icon: Plus, label: "Add Ticket", link: "/dashboard/vendor/add-ticket" },
       { icon: Ticket, label: "My Added Tickets", link: "/dashboard/vendor/my-tickets" },
       { icon: ClipboardListIcon, label: "Requested Bookings", link: "/dashboard/vendor/requested-bookings" },
       { icon: ChartColumn, label: "Revenue Overview", link: "/dashboard/vendor/revenue-overview" },
     ],
     admin: [
-      { icon: Person, label: "Admin Profile", link: "/dashboard/admin/admin-profile" },
+      { icon: Person, label: "Admin Profile", link: "/dashboard" },
       { icon: Layers, label: "Manage Tickets", link: "/dashboard/admin/manage-tickets" },
       { icon: Users2, label: "Manage Users", link: "/dashboard/admin/manage-users" },
       { icon: ChartColumn, label: "Advertise Tickets", link: "/dashboard/admin/advertise-tickets" },
