@@ -15,10 +15,8 @@ import {
   Bus,
   Ticket,
 } from "lucide-react";
-
 import { authClient } from "@/lib/auth-client";
-// মডালটি ইমপোর্ট করুন (পাথ আপনার প্রজেক্ট অনুযায়ী ঠিক করে নিবেন)
-import BookingModal from "@/components/BookingModal"; 
+import BookingModal from "@/components/BookingModal";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
@@ -106,7 +104,6 @@ export default function TicketDetailPage({ params }) {
         const data = await res.json();
         setTicket(data);
       } catch (error) {
-        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -161,12 +158,6 @@ export default function TicketDetailPage({ params }) {
         return <Bus className="w-3.5 h-3.5" />;
       default:
         return <Ticket className="w-3.5 h-3.5" />;
-    }
-  };
-
-  const handleBookClick = () => {
-    if (canBook) {
-      setModalOpen(true);
     }
   };
 
@@ -302,84 +293,84 @@ export default function TicketDetailPage({ params }) {
             </div>
           </div>
 
-          <div className="lg:col-span-1 flex flex-col gap-6">
-            <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col items-center">
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-4 block w-full text-left">
-                Departure Countdown
-              </span>
-              <CountdownBlocks targetDate={ticket.date} />
-            </div>
+          <div className="lg:col-span-1">
+            <div className="flex flex-col gap-6 sticky top-24 pb-8">
+              <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col items-center">
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-4 block w-full text-left">
+                  Departure Countdown
+                </span>
+                <CountdownBlocks targetDate={ticket.date} />
+              </div>
 
-            <div className="bg-white border border-gray-100 rounded-3xl p-6 flex flex-col gap-5 shadow-sm sticky top-8">
-              <h2 className="font-black text-xl text-gray-900">Book Your Seats</h2>
+              <div className="bg-white border border-gray-100 rounded-3xl p-6 flex flex-col gap-5 shadow-sm">
+                <h2 className="font-black text-xl text-gray-900">Book Your Seats</h2>
 
-              {isExpired && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                  <p className="text-sm text-red-600 font-bold">This journey has already departed.</p>
-                </div>
-              )}
-
-              {isSoldOut && !isExpired && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                  <p className="text-sm text-red-600 font-bold">This journey is fully booked.</p>
-                </div>
-              )}
-
-              {!user && !isExpired && !isSoldOut && (
-                <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
-                  <p className="text-sm text-orange-800 font-medium">
-                    Please{" "}
-                    <button
-                      onClick={() => router.push("/login")}
-                      className="font-bold underline cursor-pointer hover:text-orange-900"
-                    >
-                      log in
-                    </button>{" "}
-                    to book this journey.
-                  </p>
-                </div>
-              )}
-
-              {booked ? (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-                  <CheckCircle size={20} className="text-green-600 shrink-0" />
-                  <p className="text-sm text-green-700 font-bold">Booking confirmed!</p>
-                </div>
-              ) : (
-                <button
-                  onClick={handleBookClick}
-                  disabled={!canBook}
-                  className="w-full bg-[#fde6b3] text-orange-900 rounded-xl py-4 text-sm font-bold hover:bg-[#fcdca0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  <CreditCard size={18} /> Book Now
-                </button>
-              )}
-
-              <div className="space-y-3 pt-2">
-                {[
-                  "Secure Stripe payment",
-                  "Instant booking confirmation",
-                  "Cancel before vendor accepts",
-                ].map((txt) => (
-                  <div key={txt} className="flex items-center gap-2 text-[11px] text-gray-500 font-medium">
-                    <Check size={14} className="text-green-500 shrink-0" />
-                    {txt}
+                {isExpired && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <p className="text-sm text-red-600 font-bold">This journey has already departed.</p>
                   </div>
-                ))}
+                )}
+
+                {isSoldOut && !isExpired && (
+                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                    <p className="text-sm text-red-600 font-bold">This journey is fully booked.</p>
+                  </div>
+                )}
+
+                {!user && !isExpired && !isSoldOut && (
+                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+                    <p className="text-sm text-orange-800 font-medium">
+                      Please{" "}
+                      <button
+                        onClick={() => router.push("/login")}
+                        className="font-bold underline cursor-pointer hover:text-orange-900"
+                      >
+                        log in
+                      </button>{" "}
+                      to book this journey.
+                    </p>
+                  </div>
+                )}
+
+                {booked ? (
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+                    <CheckCircle size={20} className="text-green-600 shrink-0" />
+                    <p className="text-sm text-green-700 font-bold">Booking confirmed!</p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setModalOpen(true)}
+                    disabled={!canBook}
+                    className="w-full bg-[#fde6b3] text-orange-900 rounded-xl py-4 text-sm font-bold hover:bg-[#fcdca0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <CreditCard size={18} /> Book Now
+                  </button>
+                )}
+
+                <div className="space-y-3 pt-2">
+                  {[
+                    "Secure Stripe payment",
+                    "Instant booking confirmation",
+                    "Cancel before vendor accepts",
+                  ].map((txt) => (
+                    <div key={txt} className="flex items-center gap-2 text-[11px] text-gray-500 font-medium">
+                      <Check size={14} className="text-green-500 shrink-0" />
+                      {txt}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* নতুন মডাল কম্পোনেন্ট */}
-        <BookingModal 
-          isOpen={modalOpen} 
-          onClose={() => setModalOpen(false)} 
-          ticket={ticket} 
+        <BookingModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          ticket={ticket}
           userEmail={user?.email}
-          onSuccess={() => setBooked(true)} 
+          onSuccess={() => setBooked(true)}
         />
-        
       </div>
     </div>
   );

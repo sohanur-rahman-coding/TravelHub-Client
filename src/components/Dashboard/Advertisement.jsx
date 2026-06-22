@@ -4,8 +4,8 @@ import Card from "../Card";
 
 const Advertisement = async () => {
   const data = await getAdvertisementData();
+  console.log(data,'dataaa');
 
-  
   if (!data || data.length === 0) return null;
 
   return (
@@ -16,13 +16,14 @@ const Advertisement = async () => {
           Featured Tickets
         </h2>
         <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-          Handpicked premium tickets chosen just for you. Grab them before they sell out!
+          Handpicked premium tickets chosen just for you. Grab them before they
+          sell out!
         </p>
       </div>
 
       {/* 3-Column Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-        {data.map((ticket) => (
+        {data?.map((ticket) => (
           <Card key={ticket._id} ticket={ticket} />
         ))}
       </div>

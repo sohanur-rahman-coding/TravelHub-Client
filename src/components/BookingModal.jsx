@@ -29,7 +29,6 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
     setIsBooking(true);
 
     try {
-      // ডাটাবেসে পাঠানোর জন্য ডেটা তৈরি
       const bookingData = {
         ticketId: ticket._id,
         ticketTitle: ticket.title,
@@ -37,7 +36,7 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
         userEmail: userEmail,
         quantity: qty,
         totalPrice: ticket.price * qty,
-        status: "pending", 
+        status: "pending",
         bookingDate: new Date().toISOString(),
       };
 
@@ -47,14 +46,15 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
         body: JSON.stringify(bookingData),
       });
 
-      if (!res.ok) throw new Error("Failed to save booking");
+      const responseData = await res.json();
 
-      
+      if (!res.ok) throw new Error(responseData.message || "Failed to save booking");
+
+      alert("Booking Successful!");
       onSuccess();
       onClose();
     } catch (error) {
-      console.error("Booking Error:", error);
-      alert("Something went wrong while booking. Please try again.");
+      alert("Something went wrong while booking.");
     } finally {
       setIsBooking(false);
     }
@@ -78,7 +78,6 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
             <X size={18} className="text-gray-500" />
           </button>
         </div>
-        
         <div className="p-6 flex flex-col gap-5">
           <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
             <p className="font-black text-gray-900 text-sm mb-1">{ticket.title}</p>
@@ -131,14 +130,14 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
           <div className="flex gap-3 mt-2">
             <button
               onClick={onClose}
-              className="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors"
+              className="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={handleConfirmBooking}
               disabled={isBooking}
-              className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors flex justify-center items-center gap-2 disabled:opacity-50"
+              className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors flex justify-center items-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               {isBooking ? "Booking..." : <><Check size={16} /> Confirm</>}
             </button>
