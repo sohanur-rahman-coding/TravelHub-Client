@@ -3,11 +3,33 @@ import { auth } from "../auth";
 const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
 
 export const getUserSession = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
 
-  return session?.user || null;
+    if (!session?.user?.email) return null;
+
+    const res = await fetch(`${BASE_URL}/api/users`, { cache: "no-store" });
+
+    if (res.ok) {
+      const allUsers = await res.json();
+
+      const dbUser = allUsers.find((u) => u.email === session.user.email);
+
+      if (dbUser) {
+        return {
+          ...session.user,
+          isFraud: dbUser.isFraud || false,
+        };
+      }
+    }
+
+    return session.user;
+  } catch (error) {
+    console.error("Error fetching user session:", error);
+    return null;
+  }
 };
 
 export const getAllUsersForAdmin = async () => {
@@ -18,38 +40,5 @@ export const getAllUsersForAdmin = async () => {
   } catch (error) {
     console.error(error);
     return [];
-  }
-};
-
-export const updateUserRole = async (userId, role) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/users/${userId}/role`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ role }),
-    });
-
-    if (!res.ok) throw new Error("Update failed");
-
-    revalidatePath("/dashboard/admin/manage-users");
-    return await res.json();
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const markVendorAsFraud = async (userId) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/users/${userId}/fraud`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!res.ok) throw new Error("Marking fraud failed");
-
-    revalidatePath("/dashboard/admin/manage-users");
-    return await res.json();
-  } catch (error) {
-    throw error;
   }
 };

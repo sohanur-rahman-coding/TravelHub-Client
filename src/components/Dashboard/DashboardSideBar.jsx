@@ -7,27 +7,75 @@ import { ClipboardListIcon, Users2, Layers, History, Bus } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardSidebar({ user }) {
+  console.log("DashboardSidebar received user:", user);
   const pathname = usePathname();
   const role = user?.role || "user";
 
+  const isBanned = user?.isFraud;
+
   const dashboardItems = {
     user: [
-      { icon: Person, label: "User Profile", link: "/dashboard/user/userProfile" },
-      { icon: Ticket, label: "My Booked Tickets", link: "/dashboard/user/my-booked-tickets" },
-      { icon: History, label: "Transaction History", link: "/dashboard/user/transaction-history" },
+      {
+        icon: Person,
+        label: "User Profile",
+        link: "/dashboard/user/userProfile",
+      },
+      {
+        icon: Ticket,
+        label: "My Booked Tickets",
+        link: "/dashboard/user/my-booked-tickets",
+      },
+      {
+        icon: History,
+        label: "Transaction History",
+        link: "/dashboard/user/transaction-history",
+      },
     ],
     vendor: [
       { icon: Person, label: "Vendor Profile", link: "/dashboard" },
-      { icon: Plus, label: "Add Ticket", link: "/dashboard/vendor/add-ticket" },
-      { icon: Ticket, label: "My Added Tickets", link: "/dashboard/vendor/my-tickets" },
-      { icon: ClipboardListIcon, label: "Requested Bookings", link: "/dashboard/vendor/requested-bookings" },
-      { icon: ChartColumn, label: "Revenue Overview", link: "/dashboard/vendor/revenue-overview" },
+
+      ...(!isBanned
+        ? [
+            {
+              icon: Plus,
+              label: "Add Ticket",
+              link: "/dashboard/vendor/add-ticket",
+            },
+          ]
+        : []),
+      {
+        icon: Ticket,
+        label: "My Added Tickets",
+        link: "/dashboard/vendor/my-tickets",
+      },
+      {
+        icon: ClipboardListIcon,
+        label: "Requested Bookings",
+        link: "/dashboard/vendor/requested-bookings",
+      },
+      {
+        icon: ChartColumn,
+        label: "Revenue Overview",
+        link: "/dashboard/vendor/revenue-overview",
+      },
     ],
     admin: [
       { icon: Person, label: "Admin Profile", link: "/dashboard" },
-      { icon: Layers, label: "Manage Tickets", link: "/dashboard/admin/manage-tickets" },
-      { icon: Users2, label: "Manage Users", link: "/dashboard/admin/manage-users" },
-      { icon: ChartColumn, label: "Advertise Tickets", link: "/dashboard/admin/advertise-tickets" },
+      {
+        icon: Layers,
+        label: "Manage Tickets",
+        link: "/dashboard/admin/manage-tickets",
+      },
+      {
+        icon: Users2,
+        label: "Manage Users",
+        link: "/dashboard/admin/manage-users",
+      },
+      {
+        icon: ChartColumn,
+        label: "Advertise Tickets",
+        link: "/dashboard/admin/advertise-tickets",
+      },
     ],
   };
 
@@ -35,7 +83,11 @@ export default function DashboardSidebar({ user }) {
 
   const isLinkActive = (itemLink, index) => {
     if (pathname === itemLink) return true;
-    if ((pathname === "/dashboard" || pathname === `/dashboard/${role}`) && index === 0) return true;
+    if (
+      (pathname === "/dashboard" || pathname === `/dashboard/${role}`) &&
+      index === 0
+    )
+      return true;
     return false;
   };
 
@@ -62,20 +114,31 @@ export default function DashboardSidebar({ user }) {
           {navItems.map((item, index) => {
             const isActive = isLinkActive(item.link, index);
             return (
-              <Link 
-                key={item.label} 
+              <Link
+                key={item.label}
                 href={item.link}
                 className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 w-full ${
-                  isActive 
-                    ? "bg-[#0B3977] text-white shadow-md shadow-blue-900/20" 
+                  isActive
+                    ? "bg-[#0B3977] text-white shadow-md shadow-blue-900/20"
                     : "text-foreground hover:bg-default"
                 }`}
               >
-                <item.icon className={`size-5 shrink-0 ${isActive ? "text-white" : "text-muted-foreground"}`} />
+                <item.icon
+                  className={`size-5 shrink-0 ${isActive ? "text-white" : "text-muted-foreground"}`}
+                />
                 {item.label}
               </Link>
             );
           })}
+
+          {isBanned && role === "vendor" && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-xl">
+              <p className="text-xs text-red-600 font-bold leading-relaxed">
+                Account restricted due to fraudulent activity. Ticket addition
+                is disabled.
+              </p>
+            </div>
+          )}
         </nav>
       </aside>
 
@@ -91,20 +154,31 @@ export default function DashboardSidebar({ user }) {
                 {navItems.map((item, index) => {
                   const isActive = isLinkActive(item.link, index);
                   return (
-                    <Link 
-                      key={item.label} 
+                    <Link
+                      key={item.label}
                       href={item.link}
                       className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 w-full ${
-                        isActive 
-                          ? "bg-[#0B3977] text-white shadow-md shadow-blue-900/20" 
+                        isActive
+                          ? "bg-[#0B3977] text-white shadow-md shadow-blue-900/20"
                           : "text-foreground hover:bg-default"
                       }`}
                     >
-                      <item.icon className={`size-5 shrink-0 ${isActive ? "text-white" : "text-muted-foreground"}`} />
+                      <item.icon
+                        className={`size-5 shrink-0 ${isActive ? "text-white" : "text-muted-foreground"}`}
+                      />
                       {item.label}
                     </Link>
                   );
                 })}
+
+                {isBanned && role === "vendor" && (
+                  <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-xl">
+                    <p className="text-xs text-red-600 font-bold leading-relaxed">
+                      Account restricted due to fraudulent activity. Ticket
+                      addition is disabled.
+                    </p>
+                  </div>
+                )}
               </nav>
             </Drawer.Body>
           </Drawer.Dialog>
@@ -112,4 +186,4 @@ export default function DashboardSidebar({ user }) {
       </Drawer.Backdrop>
     </Drawer>
   );
-} 
+}

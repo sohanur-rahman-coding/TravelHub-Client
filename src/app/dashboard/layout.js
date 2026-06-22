@@ -12,6 +12,7 @@ const inter = Inter({
 
 export default async function DashboardRootLayout({ children }) {
   const user = await getUserSession();
+  console.log("DashboardRootLayout fetched user session:", user);
 
   return (
     <html lang="en">
