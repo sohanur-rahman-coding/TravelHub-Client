@@ -18,7 +18,7 @@ export default function DashboardSidebar({ user }) {
       {
         icon: Person,
         label: "User Profile",
-        link: "/dashboard/user/userProfile",
+        link: "/dashboard",
       },
       {
         icon: Ticket,

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Plane, Train, Bus, MapPin, Calendar, Ticket, ArrowRight, Edit, Trash2, ShieldAlert, ShieldCheck, ClockFading } from 'lucide-react';
 import TicketUpdateModal from './TicketUpdateModal';
-import DeleteConfirmModal from './DeleteConfirmModal'; // নতুন মডাল ইম্পোর্ট করা হলো
+import DeleteConfirmModal from './DeleteConfirmModal';
 import { deleteTicket } from '@/lib/actions/tickets';
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
@@ -15,7 +15,6 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
   const [timeLeft, setTimeLeft] = useState('');
   const [imgSrc, setImgSrc] = useState(ticket?.image || FALLBACK_IMAGE);
   
-  // মডাল স্টেটসমূহ
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -122,7 +121,6 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
       router.refresh(); 
       
     } catch (error) {
-      // console.error("Failed to delete ticket:", error);
       alert("Failed to delete the ticket. Please try again.");
     } finally {
       setIsDeleting(false);
@@ -132,27 +130,29 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
   return (
     <div className="max-w-md w-full bg-white rounded-[2rem] border border-gray-100 shadow-md overflow-hidden flex flex-col justify-between font-sans mx-auto">
       
-      <div className="relative w-full h-60">
+      {/* ইমেজের অংশে পরিবর্তন আনা হয়েছে */}
+      <div className="relative w-full h-60 bg-gray-100">
         <Image
           src={imgSrc} 
           alt={title || "Ticket Image"}
           fill
+          unoptimized={true} // নেক্সট জেএস অপটিমাইজেশন বাইপাস করে দ্রুত রেন্ডার করার জন্য
+          priority={true} // পেজ লোড হওয়ার সাথে সাথে লোড হওয়ার জন্য
           sizes="(max-width: 768px) 100vw, 450px"
-          className="object-cover"
-          priority
+          className="object-cover transition-opacity duration-300"
           onError={() => setImgSrc(FALLBACK_IMAGE)}
         />
         
-        <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-blue-50/95 px-4 py-1 rounded-full shadow-sm">
+        <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-blue-50/95 px-4 py-1 rounded-full shadow-sm z-10">
           {getTransportIcon(type)}
           <span className="text-sm font-semibold text-blue-700 capitalize">{type}</span>
         </div>
 
-        <div className="absolute top-4 right-4 shadow-sm">
+        <div className="absolute top-4 right-4 shadow-sm z-10">
           {getStatusBadge(verificationStatus)}
         </div>
 
-        <div className="absolute bottom-4 right-4 bg-[#eef2ff] px-5 py-2 rounded-full shadow-sm border border-white">
+        <div className="absolute bottom-4 right-4 bg-[#eef2ff] px-5 py-2 rounded-full shadow-sm border border-white z-10">
           <span className="text-xl font-bold text-blue-600">${price}</span>
           <span className="text-xs font-medium text-gray-500">/seat</span>
         </div>
@@ -225,13 +225,12 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
         onTicketUpdated={onTicketUpdated}
       />
 
-      {/* নতুন রিইউজেবল ডিলিট মডাল কল করা হলো */}
       <DeleteConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
         isDeleting={isDeleting}
-        itemName={title} // ডাইনামিক নাম পাস করা হলো
+        itemName={title} 
         title="Delete Ticket"
       />
 

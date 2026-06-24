@@ -91,3 +91,34 @@ export const toggleAdvertiseTicket = async (ticketId, currentState) => {
     return { success: false, message: error.message };
   }
 };
+
+export async function updateBookingStatus(bookingId, status) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/bookings/${bookingId}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!res.ok) throw new Error("Failed to update booking status");
+    return await res.json();
+  } catch (error) {
+    console.error("Error in updateBookingStatus:", error);
+    throw error;
+  }
+}
+
+export async function updateBookingToPaid(bookingId) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/bookings/${bookingId}/pay`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) throw new Error("Failed to process payment update");
+    return await res.json();
+  } catch (error) {
+    console.error("Error in updateBookingToPaid:", error);
+    throw error;
+  }
+}

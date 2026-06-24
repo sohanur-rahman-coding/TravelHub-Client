@@ -35,3 +35,36 @@ export async function getAllApprovedTickets() {
     throw new Error(error.message || "Failed to fetch approved tickets");
   }
 }
+
+//  ভেন্ডরের রিকোয়েস্টেড বুকিংগুলো আনার ফাংশন
+export async function getVendorBookings(email) {
+  try {
+    if (!email) return [];
+    
+    const res = await fetch(`${BASE_URL}/api/bookings/vendor/${email}`, {
+      cache: "no-store", 
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch vendor bookings");
+    return await res.json();
+  } catch (error) {
+    console.error("Error in getVendorBookings:", error);
+    return [];
+  }
+}
+//  ইউজারের নিজের বুক করা টিকিটগুলো (Full Details সহ) আনার ফাংশন
+export async function getUserBookings(email) {
+  try {
+    if (!email) return [];
+
+    const res = await fetch(`${BASE_URL}/api/bookings/user/${email}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch user bookings");
+    return await res.json();
+  } catch (error) {
+    console.error("Error in getUserBookings:", error);
+    return [];
+  }
+}
