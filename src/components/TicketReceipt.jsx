@@ -112,7 +112,7 @@ export default function TicketReceipt({ paymentIntentId, amountTotal, customerEm
             {isDownloading ? "Generating PDF..." : "Download E-Ticket"}
           </button>
           
-          <Link href="/dashboard/user" className="w-full bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-xl py-4 text-sm font-bold hover:bg-emerald-100 transition-all flex items-center justify-center gap-2">
+          <Link href="/dashboard/user/my-booked-tickets" className="w-full bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-xl py-4 text-sm font-bold hover:bg-emerald-100 transition-all flex items-center justify-center gap-2">
             Back to My Bookings <ArrowRight size={18} />
           </Link>
         </div>

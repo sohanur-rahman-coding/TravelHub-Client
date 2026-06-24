@@ -68,3 +68,19 @@ export async function getUserBookings(email) {
     return [];
   }
 }
+
+// transition 
+export async function getUserTransactions(email) {
+  try {
+    if (!email) return [];
+
+    const res = await fetch(`${BASE_URL}/api/transactions/${email}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch transactions");
+    return await res.json();
+  } catch (error) {
+    return [];
+  }
+}
