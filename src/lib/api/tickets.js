@@ -84,3 +84,19 @@ export async function getUserTransactions(email) {
     return [];
   }
 }
+
+// revenue
+export async function getVendorStats(email) {
+  try {
+    if (!email) return null;
+
+    const res = await fetch(`${BASE_URL}/api/vendor/${email}/stats`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch vendor stats");
+    return await res.json();
+  } catch (error) {
+    return null;
+  }
+}
