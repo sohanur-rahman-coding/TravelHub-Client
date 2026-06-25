@@ -1,9 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MapPin } from "lucide-react";
-import { FaFacebook } from "react-icons/fa";
-import { BsInstagram, BsTwitter } from "react-icons/bs";
-import { LiaLinkedin } from "react-icons/lia";
+import logo from "../../public/logo.for.nav.png";
 
 export default function Footer() {
   return (
@@ -11,28 +8,15 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
           <div className="flex items-center gap-2.5 mb-5">
-            <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="17"
-                height="17"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white"
-              >
-                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
-                <path d="M13 5v2" />
-                <path d="M13 17v2" />
-                <path d="M13 11v2" />
-              </svg>
+            <div>
+              <Image
+                src={logo}
+                alt={"logo"}
+                className="object-cover"
+                height={50}
+                width={50}
+              />
             </div>
-            <span className="text-xl font-black tracking-tight">
-              TicketBari
-            </span>
           </div>
           <p className="text-sm text-white/50 leading-relaxed mb-5">
             Book bus, train, launch &amp; flight tickets easily — all across
@@ -155,7 +139,7 @@ export default function Footer() {
                 <rect width="20" height="16" x="2" y="4" rx="2" />
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
               </svg>
-              support@ticketbari.com.bd
+              support@TravelHub.com.bd
             </div>
             <div className="flex items-center gap-2.5 text-sm text-white/55">
               <svg
@@ -189,7 +173,7 @@ export default function Footer() {
               >
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
               </svg>
-              fb.com/TicketBari
+              fb.com/TravelHub
             </div>
           </div>
         </div>
@@ -262,7 +246,7 @@ export default function Footer() {
       <div className="border-t border-white/8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-white/30">
-            &copy; 2025 TicketBari. All rights reserved.
+            &copy; 2025 TravelHub. All rights reserved.
           </p>
         </div>
       </div>

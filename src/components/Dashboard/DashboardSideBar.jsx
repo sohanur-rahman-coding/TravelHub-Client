@@ -105,7 +105,7 @@ export default function DashboardSidebar({ user }) {
               <Bus className="w-4 h-4" />
             </div>
             <span className="font-extrabold text-xl tracking-tight text-foreground">
-              TicketBari
+              TravelHub
             </span>
           </Link>
         </div>

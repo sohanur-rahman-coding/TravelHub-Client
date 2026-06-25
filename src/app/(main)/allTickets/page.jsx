@@ -117,7 +117,7 @@ const AllTickets = () => {
                 <option value="All">All Transports</option>
                 <option value="Bus">Bus</option>
                 <option value="Train">Train</option>
-                <option value="Air">Air</option>
+                <option value="Plane">Air</option>
                 <option value="Ship">Ship</option>
               </select>
             </div>

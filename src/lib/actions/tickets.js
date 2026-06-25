@@ -28,7 +28,7 @@ export async function addTicketAction(ticketData) {
     throw new Error("Failed to add ticket");
   }
 }
-
+// update ticket for vendor (done)
 export const updateTicket = async (ticketData) => {
   try {
     console.log("---- Server Action Started ----");
@@ -40,7 +40,6 @@ export const updateTicket = async (ticketData) => {
       throw new Error("Ticket ID missing");
     }
 
-    // টোকেন আনা হচ্ছে
     const token = await getTokenServer();
     console.log("2. Token retrieved successfully:", !!token);
 
@@ -51,7 +50,7 @@ export const updateTicket = async (ticketData) => {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${token?.token || token}`, 
+        authorization: `Bearer ${token?.token || token}`,
       },
       body: JSON.stringify(bodyData),
     });
@@ -61,17 +60,15 @@ export const updateTicket = async (ticketData) => {
     // 🟢 যদি ব্যাকএন্ড থেকে এরর আসে, তবে টেক্সট হিসেবে ক্যাচ করা
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("5. ❌ Backend Error Response:", errorText);
+      console.error("5. Backend Error Response:", errorText);
       throw new Error(`Backend Error: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
-    console.log("6. ✅ Success:", result);
+    console.log("6.Success:", result);
     return result;
-
   } catch (error) {
-    // 🟢 আসল এররটি VS Code এর টার্মিনালে দেখাবে
-    console.error("❌ Next.js Server Action Error:", error);
+    console.error(" Next.js Server Action Error:", error);
     throw new Error(error.message || "Failed to update ticket");
   }
 };
