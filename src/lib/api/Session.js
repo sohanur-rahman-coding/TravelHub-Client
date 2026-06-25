@@ -1,5 +1,7 @@
 import { headers } from "next/headers";
 import { auth } from "../auth";
+import { getTokenServer } from "../getTokenServer";
+import { authClient } from "../auth-client";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SERVER_URL ||
@@ -40,9 +42,17 @@ export const getUserSession = async () => {
   }
 };
 
+// get all user for admin (donee)
 export const getAllUsersForAdmin = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/api/users`, { cache: "no-store" });
+    const token = await getTokenServer();
+    console.log(token, "tok");
+    const res = await fetch(`${BASE_URL}/api/users`, {
+      cache: "no-store",
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
     if (!res.ok) throw new Error("Fetch failed");
     return await res.json();
   } catch (error) {

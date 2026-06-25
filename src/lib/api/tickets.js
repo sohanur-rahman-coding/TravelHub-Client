@@ -1,3 +1,5 @@
+import { authClient } from "../auth-client";
+
 const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
 
 export async function getAddedTicketsByVendor(vendorEmail) {
@@ -54,13 +56,18 @@ export async function getAllApprovedTickets(filters = {}) {
   }
 }
 
-//  ভেন্ডরের রিকোয়েস্টেড বুকিংগুলো আনার ফাংশন
+//   Vendor: Get all booking requests sent to this vendor (done)
 export async function getVendorBookings(email) {
   try {
     if (!email) return [];
+     const { data: token } = await authClient.token();
 
     const res = await fetch(`${BASE_URL}/api/bookings/vendor/${email}`, {
       cache: "no-store",
+      headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token?.token}`,
+        },
     });
 
     if (!res.ok) throw new Error("Failed to fetch vendor bookings");
@@ -70,13 +77,18 @@ export async function getVendorBookings(email) {
     return [];
   }
 }
-//  ইউজারের নিজের বুক করা টিকিটগুলো (Full Details সহ) আনার ফাংশন
+//  get  user booked ticket (done)
 export async function getUserBookings(email) {
   try {
     if (!email) return [];
+    const { data: token } = await authClient.token();
 
     const res = await fetch(`${BASE_URL}/api/bookings/user/${email}`, {
       cache: "no-store",
+       headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token?.token}`,
+        },
     });
 
     if (!res.ok) throw new Error("Failed to fetch user bookings");
@@ -87,13 +99,18 @@ export async function getUserBookings(email) {
   }
 }
 
-// transition
+// transition(done)
 export async function getUserTransactions(email) {
   try {
     if (!email) return [];
+     const { data: token } = await authClient.token();
 
     const res = await fetch(`${BASE_URL}/api/transactions/${email}`, {
       cache: "no-store",
+      headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token?.token}`,
+        },
     });
 
     if (!res.ok) throw new Error("Failed to fetch transactions");

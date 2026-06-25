@@ -1,15 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTokenServer } from "../getTokenServer";
+import { authClient } from "../auth-client";
 
 const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
-
+ 
+// add new ticket(done)
 export async function addTicketAction(ticketData) {
   try {
+    const token = await getTokenServer()
     const response = await fetch(`${BASE_URL}/api/tickets`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(ticketData),
     });
@@ -31,11 +36,12 @@ export const updateTicket = async (ticketData) => {
     if (!_id) {
       throw new Error("Ticket ID missing");
     }
-
+    const token = await getTokenServer()
     const response = await fetch(`${BASE_URL}/api/tickets/${_id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+         authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(bodyData),
     });
@@ -53,10 +59,15 @@ export const updateTicket = async (ticketData) => {
   }
 };
 
+// delete ticket(done)
 export const deleteTicket = async (ticketId) => {
   try {
+    const token = await getTokenServer()
     const response = await fetch(`${BASE_URL}/api/tickets/${ticketId}`, {
       method: "DELETE",
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
     });
 
     if (!response.ok) {
@@ -71,12 +82,13 @@ export const deleteTicket = async (ticketId) => {
     throw error;
   }
 };
-
+// advertisement data for admin (done)
 export const toggleAdvertiseTicket = async (ticketId, currentState) => {
   try {
+     const token = await getTokenServer()
     const res = await fetch(`${BASE_URL}/api/tickets/${ticketId}/advertise`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
       body: JSON.stringify({ advertise: !currentState }),
     });
 
@@ -92,11 +104,15 @@ export const toggleAdvertiseTicket = async (ticketId, currentState) => {
   }
 };
 
+// approve or reject by vendor (done)
 export async function updateBookingStatus(bookingId, status) {
   try {
+    const token = await getTokenServer();
+    console.log(token, "tok");
     const res = await fetch(`${BASE_URL}/api/bookings/${bookingId}/status`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+        authorization: `Bearer ${token}` },
       body: JSON.stringify({ status }),
     });
 
@@ -108,11 +124,17 @@ export async function updateBookingStatus(bookingId, status) {
   }
 }
 
+// pay to stripe ( done )
 export async function updateBookingToPaid(bookingId) {
   try {
+    const token = await getTokenServer();
+    console.log(token, "tok");
     const res = await fetch(`${BASE_URL}/api/bookings/${bookingId}/pay`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
     });
 
     if (!res.ok) throw new Error("Failed to process payment update");

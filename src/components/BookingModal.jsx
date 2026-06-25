@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { X, Minus, Plus, Check } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
-export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuccess }) {
+export default function BookingModal({
+  isOpen,
+  onClose,
+  ticket,
+  userEmail,
+  onSuccess,
+}) {
   const [qty, setQty] = useState(1);
   const [isBooking, setIsBooking] = useState(false);
 
@@ -40,15 +47,22 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
         bookingDate: new Date().toISOString(),
       };
 
+      const { data:token } = await authClient.token();
+      console.log(token, "token");
+
       const res = await fetch(`${BASE_URL}/api/bookings`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token?.token}`,
+        },
         body: JSON.stringify(bookingData),
       });
 
       const responseData = await res.json();
 
-      if (!res.ok) throw new Error(responseData.message || "Failed to save booking");
+      if (!res.ok)
+        throw new Error(responseData.message || "Failed to save booking");
 
       alert("Booking Successful!");
       onSuccess();
@@ -80,7 +94,9 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
         </div>
         <div className="p-6 flex flex-col gap-5">
           <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-            <p className="font-black text-gray-900 text-sm mb-1">{ticket.title}</p>
+            <p className="font-black text-gray-900 text-sm mb-1">
+              {ticket.title}
+            </p>
             <p className="text-xs text-gray-500 font-medium">
               {ticket.from} → {ticket.to} · {formatDepartureDate(ticket.date)}
             </p>
@@ -117,7 +133,9 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
               <span className="text-gray-500 font-medium">
                 {qty} seat{qty > 1 ? "s" : ""} × ${ticket.price}
               </span>
-              <span className="font-black text-gray-900">${ticket.price * qty}</span>
+              <span className="font-black text-gray-900">
+                ${ticket.price * qty}
+              </span>
             </div>
             <div className="flex justify-between items-center mt-2">
               <span className="font-black text-gray-900 text-lg">Total</span>
@@ -139,7 +157,13 @@ export default function BookingModal({ isOpen, onClose, ticket, userEmail, onSuc
               disabled={isBooking}
               className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors flex justify-center items-center gap-2 disabled:opacity-50 cursor-pointer"
             >
-              {isBooking ? "Booking..." : <><Check size={16} /> Confirm</>}
+              {isBooking ? (
+                "Booking..."
+              ) : (
+                <>
+                  <Check size={16} /> Confirm
+                </>
+              )}
             </button>
           </div>
         </div>

@@ -68,7 +68,6 @@ export default function AddTicketPage({ onTicketAdded }) {
 
       // console.log("Submitting Ticket Data to DB:", ticketData);
 
-      // ব্যাকএন্ডServer Action কল:
       await addTicketAction(ticketData);
 
       setSuccess(true);

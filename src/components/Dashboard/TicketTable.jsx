@@ -7,7 +7,7 @@ import { updateTicketStatus } from "@/lib/actions/manageUser";
 export default function TicketTable({ ticketsData }) {
   const [loadingId, setLoadingId] = useState(null);
 
-  // 🟢 সমাধান: API থেকে আসা অবজেক্ট থেকে tickets অ্যারে বের করে নেওয়া হচ্ছে
+  
   const ticketsArray = Array.isArray(ticketsData) ? ticketsData : (ticketsData?.tickets || []);
 
   const handleStatus = async (id, status) => {
@@ -39,7 +39,7 @@ export default function TicketTable({ ticketsData }) {
           </Table.Header>
 
           <Table.Body>
-            {/* 🟢 আপডেট: ticketsData.map এর বদলে ticketsArray.map ব্যবহার করা হয়েছে */}
+           
             {ticketsArray.map((ticket, index) => (
               <Table.Row key={ticket._id}>
                 <Table.Cell>{index + 1}</Table.Cell>

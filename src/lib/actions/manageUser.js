@@ -1,13 +1,20 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { authClient } from "../auth-client";
+import { getTokenServer } from "../getTokenServer";
 
 const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
 
+// approved or reject ,, admin (done)
 export const updateTicketStatus = async (ticketId, status) => {
   try {
+    const token = await getTokenServer();
     const res = await fetch(`${BASE_URL}/api/tickets/${ticketId}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ verificationStatus: status }),
     });
 
@@ -36,12 +43,13 @@ export async function getAllTicketsForAdmin() {
     throw new Error(error.message || "Failed to fetch tickets");
   }
 }
-
+// update role for admin (done)
 export const updateUserRole = async (userId, role) => {
   try {
+     const token = await getTokenServer()
     const res = await fetch(`${BASE_URL}/api/users/${userId}/role`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
       body: JSON.stringify({ role }),
     });
 
@@ -53,12 +61,16 @@ export const updateUserRole = async (userId, role) => {
     throw error;
   }
 };
-
+// mark as a fraud by admin (done)
 export const markVendorAsFraud = async (userId) => {
   try {
+     const token = await getTokenServer()
     const res = await fetch(`${BASE_URL}/api/users/${userId}/fraud`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
     });
 
     if (!res.ok) throw new Error("Marking fraud failed");
@@ -72,13 +84,16 @@ export const markVendorAsFraud = async (userId) => {
 
 export async function updateProfileAPI(email, updateData) {
   try {
-    const res = await fetch(`${BASE_URL}/api/user/${encodeURIComponent(email)}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
+    const res = await fetch(
+      `${BASE_URL}/api/user/${encodeURIComponent(email)}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData),
       },
-      body: JSON.stringify(updateData),
-    });
+    );
 
     if (!res.ok) throw new Error("Failed to update profile");
     return await res.json();

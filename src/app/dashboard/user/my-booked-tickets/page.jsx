@@ -81,7 +81,7 @@ export default function MyBookedTickets() {
   const handleDownloadPDF = async (bookingId) => {
     try {
       setDownloadingId(bookingId);
-      // এখানে আমরা ড্যাশবোর্ডের কার্ডের বদলে আমাদের লুকানো প্রফেশনাল টিকিটটি সিলেক্ট করছি
+      
       const element = document.getElementById(`real-ticket-${bookingId}`);
       
       if (!element) throw new Error("Ticket element not found");
