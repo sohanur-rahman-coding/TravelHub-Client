@@ -1,6 +1,10 @@
 import { headers } from "next/headers";
 import { auth } from "../auth";
-const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
+
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SERVER_URL ||
+  process.env.SERVER_URL ||
+  "http://localhost:5000";
 
 export const getUserSession = async () => {
   try {
@@ -10,16 +14,20 @@ export const getUserSession = async () => {
 
     if (!session?.user?.email) return null;
 
-    const res = await fetch(`${BASE_URL}/api/users`, { cache: "no-store" });
+    const res = await fetch(
+      `${BASE_URL}/api/user/${encodeURIComponent(session.user.email)}`,
+      {
+        cache: "no-store",
+      },
+    );
 
     if (res.ok) {
-      const allUsers = await res.json();
-
-      const dbUser = allUsers.find((u) => u.email === session.user.email);
+      const dbUser = await res.json();
 
       if (dbUser) {
         return {
           ...session.user,
+          ...dbUser,
           isFraud: dbUser.isFraud || false,
         };
       }

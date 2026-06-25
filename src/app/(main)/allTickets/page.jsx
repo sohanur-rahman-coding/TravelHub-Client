@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Card from "@/components/Card";
 import { getAllApprovedTickets } from "@/lib/api/tickets";
-import { Search, MapPin, Filter, ArrowUpDown, Loader2, Ticket } from "lucide-react";
+import { Search, MapPin, Filter, ArrowUpDown, Loader2, Ticket, ChevronLeft, ChevronRight } from "lucide-react";
 
 const AllTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -13,10 +13,14 @@ const AllTickets = () => {
   const [searchTo, setSearchTo] = useState("");
   const [filterType, setFilterType] = useState("All");
   const [sortPrice, setSortPrice] = useState("default");
+  
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const LIMIT = 6;
 
   useEffect(() => {
     fetchTickets();
-  }, [filterType, sortPrice]);
+  }, [filterType, sortPrice, page]);
 
   const fetchTickets = async () => {
     setLoading(true);
@@ -26,8 +30,11 @@ const AllTickets = () => {
         to: searchTo,
         type: filterType,
         sortPrice: sortPrice,
+        page: page,
+        limit: LIMIT
       });
-      setTickets(data);
+      setTickets(data.tickets || []);
+      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error(error);
     } finally {
@@ -37,7 +44,11 @@ const AllTickets = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    fetchTickets();
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      fetchTickets();
+    }
   };
 
   const handleReset = () => {
@@ -45,7 +56,13 @@ const AllTickets = () => {
     setSearchTo("");
     setFilterType("All");
     setSortPrice("default");
+    setPage(1);
     setTimeout(() => fetchTickets(), 0);
+  };
+
+  const handleFilterChange = (setter) => (e) => {
+    setter(e.target.value);
+    setPage(1);
   };
 
   return (
@@ -94,14 +111,14 @@ const AllTickets = () => {
               </div>
               <select
                 value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
+                onChange={handleFilterChange(setFilterType)}
                 className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
               >
                 <option value="All">All Transports</option>
                 <option value="Bus">Bus</option>
                 <option value="Train">Train</option>
-                <option value="Plane">Air</option>
-                
+                <option value="Air">Air</option>
+                <option value="Ship">Ship</option>
               </select>
             </div>
 
@@ -111,7 +128,7 @@ const AllTickets = () => {
               </div>
               <select
                 value={sortPrice}
-                onChange={(e) => setSortPrice(e.target.value)}
+                onChange={handleFilterChange(setSortPrice)}
                 className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
               >
                 <option value="default">Sort by Default</option>
@@ -154,11 +171,47 @@ const AllTickets = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-            {tickets.map((ticket) => (
-              <Card key={ticket._id} ticket={ticket} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-12">
+              {tickets.map((ticket) => (
+                <Card key={ticket._id} ticket={ticket} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2">
+                <button
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 1}
+                  className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                
+                {[...Array(totalPages)].map((_, idx) => (
+                  <button
+                    key={idx + 1}
+                    onClick={() => setPage(idx + 1)}
+                    className={`w-10 h-10 rounded-lg font-bold text-sm transition-colors ${
+                      page === idx + 1
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setPage(page + 1)}
+                  disabled={page === totalPages}
+                  className="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

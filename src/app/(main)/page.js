@@ -1,5 +1,6 @@
 import { PremiumTravelBanner } from "@/components/Banner";
 import Advertisement from "@/components/Dashboard/Advertisement";
+import LatestTickets from "@/components/LatestTickets";
 import { PopularRoutes } from "@/components/PopularRoutes";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
 
@@ -9,6 +10,7 @@ export default function Home() {
     <div>
       <PremiumTravelBanner/>
       <Advertisement></Advertisement>
+      <LatestTickets></LatestTickets>
       <WhyChooseUs></WhyChooseUs>
       <PopularRoutes></PopularRoutes>
     </div>

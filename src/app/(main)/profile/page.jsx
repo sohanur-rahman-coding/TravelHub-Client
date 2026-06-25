@@ -1,7 +1,6 @@
-// import { getUserSession } from '@/lib/api/Session';
-import { getUserSession } from '@/lib/api/Session';
-import ProfileClientUI from './user/page';
-// import ProfileClientUI from './ProfileClientUI';
+import ProfileClientUI from "@/app/dashboard/user/page";
+import { getUserSession } from "@/lib/api/Session";
+
 
 export default async function UserProfilePage() {
     const user = await getUserSession();

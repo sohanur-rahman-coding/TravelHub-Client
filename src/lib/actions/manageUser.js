@@ -10,9 +10,9 @@ export const updateTicketStatus = async (ticketId, status) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ verificationStatus: status }),
     });
-    
+
     if (!res.ok) throw new Error("Update failed");
-    
+
     revalidatePath("/dashboard/admin/manage-tickets");
     return await res.json();
   } catch (error) {
@@ -20,15 +20,22 @@ export const updateTicketStatus = async (ticketId, status) => {
   }
 };
 
-export const getAllTicketsForAdmin = async () => {
+export async function getAllTicketsForAdmin() {
   try {
-    const res = await fetch(`${BASE_URL}/api/tickets`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Fetch failed");
-    return await res.json();
+    const BASE_URL =
+      process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+
+    const response = await fetch(`${BASE_URL}/api/tickets?limit=1000`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch tickets for admin");
+
+    return await response.json();
   } catch (error) {
-    return [];
+    throw new Error(error.message || "Failed to fetch tickets");
   }
-};
+}
 
 export const updateUserRole = async (userId, role) => {
   try {
@@ -62,3 +69,20 @@ export const markVendorAsFraud = async (userId) => {
     throw error;
   }
 };
+
+export async function updateProfileAPI(email, updateData) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/user/${encodeURIComponent(email)}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    if (!res.ok) throw new Error("Failed to update profile");
+    return await res.json();
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+}

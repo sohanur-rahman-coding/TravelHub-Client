@@ -3,7 +3,8 @@ const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
 export async function getAddedTicketsByVendor(vendorEmail) {
   try {
     const response = await fetch(
-      `${BASE_URL}/api/tickets?email=${encodeURIComponent(vendorEmail)}`,
+      `${BASE_URL}/api/tickets?email=${encodeURIComponent(vendorEmail)}&limit=1000`,
+      { cache: "no-store" },
     );
 
     if (!response.ok) throw new Error("Failed to fetch tickets");
@@ -28,14 +29,22 @@ export async function getAllApprovedTickets(filters = {}) {
 
     if (filters.from) params.append("from", filters.from);
     if (filters.to) params.append("to", filters.to);
-    if (filters.type && filters.type !== "All") params.append("type", filters.type);
-    if (filters.sortPrice && filters.sortPrice !== "default") params.append("sortPrice", filters.sortPrice);
+    if (filters.type && filters.type !== "All")
+      params.append("type", filters.type);
+    if (filters.sortPrice && filters.sortPrice !== "default")
+      params.append("sortPrice", filters.sortPrice);
+    if (filters.page) params.append("page", filters.page);
+    if (filters.limit) params.append("limit", filters.limit);
 
-    const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
-    
-    const response = await fetch(`${BASE_URL}/api/tickets?${params.toString()}`, {
-      cache: "no-store",
-    });
+    const BASE_URL =
+      process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+
+    const response = await fetch(
+      `${BASE_URL}/api/tickets?${params.toString()}`,
+      {
+        cache: "no-store",
+      },
+    );
 
     if (!response.ok) throw new Error("Failed to fetch approved tickets");
 
@@ -49,9 +58,9 @@ export async function getAllApprovedTickets(filters = {}) {
 export async function getVendorBookings(email) {
   try {
     if (!email) return [];
-    
+
     const res = await fetch(`${BASE_URL}/api/bookings/vendor/${email}`, {
-      cache: "no-store", 
+      cache: "no-store",
     });
 
     if (!res.ok) throw new Error("Failed to fetch vendor bookings");
@@ -78,7 +87,7 @@ export async function getUserBookings(email) {
   }
 }
 
-// transition 
+// transition
 export async function getUserTransactions(email) {
   try {
     if (!email) return [];
