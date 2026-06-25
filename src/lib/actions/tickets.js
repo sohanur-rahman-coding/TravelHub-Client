@@ -5,11 +5,11 @@ import { getTokenServer } from "../getTokenServer";
 import { authClient } from "../auth-client";
 
 const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
- 
+
 // add new ticket(done)
 export async function addTicketAction(ticketData) {
   try {
-    const token = await getTokenServer()
+    const token = await getTokenServer();
     const response = await fetch(`${BASE_URL}/api/tickets`, {
       method: "POST",
       headers: {
@@ -31,38 +31,54 @@ export async function addTicketAction(ticketData) {
 
 export const updateTicket = async (ticketData) => {
   try {
+    console.log("---- Server Action Started ----");
+    console.log("1. Received Data:", ticketData);
+
     const { _id, ...bodyData } = ticketData;
 
     if (!_id) {
       throw new Error("Ticket ID missing");
     }
-    const token = await getTokenServer()
-    const response = await fetch(`${BASE_URL}/api/tickets/${_id}`, {
+
+    // টোকেন আনা হচ্ছে
+    const token = await getTokenServer();
+    console.log("2. Token retrieved successfully:", !!token);
+
+    const fetchUrl = `${BASE_URL}/api/tickets/${_id}`;
+    console.log("3. Calling Backend API:", fetchUrl);
+
+    const response = await fetch(fetchUrl, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-         authorization: `Bearer ${token}`,
+        authorization: `Bearer ${token?.token || token}`, 
       },
       body: JSON.stringify(bodyData),
     });
 
+    console.log("4. Backend Response Status:", response.status);
+
+    // 🟢 যদি ব্যাকএন্ড থেকে এরর আসে, তবে টেক্সট হিসেবে ক্যাচ করা
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to update ticket");
+      const errorText = await response.text();
+      console.error("5. ❌ Backend Error Response:", errorText);
+      throw new Error(`Backend Error: ${response.status} - ${errorText}`);
     }
 
     const result = await response.json();
+    console.log("6. ✅ Success:", result);
     return result;
+
   } catch (error) {
-    console.error("Error in updateTicketAction:", error);
-    throw error;
+    // 🟢 আসল এররটি VS Code এর টার্মিনালে দেখাবে
+    console.error("❌ Next.js Server Action Error:", error);
+    throw new Error(error.message || "Failed to update ticket");
   }
 };
-
 // delete ticket(done)
 export const deleteTicket = async (ticketId) => {
   try {
-    const token = await getTokenServer()
+    const token = await getTokenServer();
     const response = await fetch(`${BASE_URL}/api/tickets/${ticketId}`, {
       method: "DELETE",
       headers: {
@@ -85,10 +101,13 @@ export const deleteTicket = async (ticketId) => {
 // advertisement data for admin (done)
 export const toggleAdvertiseTicket = async (ticketId, currentState) => {
   try {
-     const token = await getTokenServer()
+    const token = await getTokenServer();
     const res = await fetch(`${BASE_URL}/api/tickets/${ticketId}/advertise`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json", authorization: `Bearer ${token}` },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ advertise: !currentState }),
     });
 
@@ -111,8 +130,10 @@ export async function updateBookingStatus(bookingId, status) {
     console.log(token, "tok");
     const res = await fetch(`${BASE_URL}/api/bookings/${bookingId}/status`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json",
-        authorization: `Bearer ${token}` },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ status }),
     });
 

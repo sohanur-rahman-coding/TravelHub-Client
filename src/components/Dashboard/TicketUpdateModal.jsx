@@ -23,13 +23,13 @@ export default function TicketUpdateModal({
   onClose,
   onTicketUpdated,
 }) {
-  const router = useRouter(); // রাউটার ইনিশিয়ালাইজ করা হলো
+  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [perks, setPerks] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
 
-  // ইনপুটগুলোর ভ্যালু ঠিকভাবে পপুলেট করার জন্য ফর্ম স্টেট
+ 
   const [formData, setFormData] = useState({
     title: "",
     from: "",
@@ -40,7 +40,7 @@ export default function TicketUpdateModal({
     date: "",
   });
 
-  // ISO Date-কে datetime-local ইনপুটের উপযোগী (YYYY-MM-DDTHH:MM) ফরম্যাটে রূপান্তর
+  
   const formatIsoDateForInput = (isoString) => {
     if (!isoString) return "";
     if (isoString.length === 16) return isoString;
@@ -53,7 +53,7 @@ export default function TicketUpdateModal({
     }
   };
 
-  // টিকেট বা মোডাল ওপেন হলে ফর্ম স্টেট আপডেট হবে
+
   useEffect(() => {
     if (ticket && isOpen) {
       setFormData({
@@ -72,7 +72,7 @@ export default function TicketUpdateModal({
 
   if (!ticket || !isOpen) return null;
 
-  // ইনপুটের ভ্যালু পরিবর্তন হ্যান্ডেল করার ফাংশন
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -125,7 +125,7 @@ export default function TicketUpdateModal({
       if (onTicketUpdated) onTicketUpdated();
       onClose();
       
-      // ডাটা আপডেটের পর পেজটি ব্যাকগ্রাউন্ডে রিফ্রেশ হবে (সফট রিলোড)
+   
       router.refresh(); 
 
     } catch (error) {
