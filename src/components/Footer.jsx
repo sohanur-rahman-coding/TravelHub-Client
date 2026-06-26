@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="bg-slate-950 dark:bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
-          <div className="flex items-center gap-2.5 mb-5">
+          <div className="flex justify-center items-center gap-2">
             <div>
               <Image
                 src={logo}
@@ -17,8 +17,19 @@ export default function Footer() {
                 width={50}
               />
             </div>
+            <div className="flex flex-col">
+              <h2 className="text-2xl sm:text-[34px] font-extrabold tracking-tight leading-none font-sans">
+                <span className="text-[#0F2C41] dark:text-blue-100">
+                  Travel
+                </span>
+                <span className="text-[#247EBD] dark:text-blue-400">Hub</span>
+              </h2>
+              <p className="text-[9px] sm:text-[10px] font-semibold text-gray-500 tracking-[0.25em] uppercase mt-1">
+                Online Ticket Booking
+              </p>
+            </div>
           </div>
-          <p className="text-sm text-white/50 leading-relaxed mb-5">
+          <p className="text-sm text-white/50 leading-relaxed my-5">
             Book bus, train, launch &amp; flight tickets easily — all across
             Bangladesh in one seamless experience.
           </p>

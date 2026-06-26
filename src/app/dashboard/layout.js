@@ -4,6 +4,7 @@ import "../(main)/globals.css";
 import DashProfile from "@/components/Dashboard/DashProfile";
 import { getUserSession } from "@/lib/api/Session";
 import DashboardSidebar from "@/components/Dashboard/DashboardSideBar";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 
 const inter = Inter({
@@ -17,17 +18,36 @@ export default async function DashboardRootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} h-full antialiased`}>
-        <div className="flex h-screen bg-background">
-          <DashboardSidebar user={user} />
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <header className="flex items-center justify-end h-20 px-6 border-b border-zinc-300 dark:border-zinc-800 w-full shrink-0">
+        <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <div className="flex h-screen overflow-hidden w-full bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-500 antialiased animate__animated animate__fadeIn animate__faster">
+        
+        {/* Sidebar */}
+        <DashboardSidebar user={user} />
+        
+        {/* Content Area */}
+        <div className="flex-1 flex flex-col overflow-hidden relative">
+          
+          {/* Premium Glassmorphism Header */}
+          <header className="flex items-center justify-end h-20 px-6 sm:px-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl border-b border-gray-200 dark:border-gray-800 w-full shrink-0 z-20 shadow-sm animate__animated animate__fadeInDown">
+            <div className="animate__animated animate__zoomIn animate__delay-1s">
               <DashProfile />
-            </header>
-            <main className="flex-1 overflow-y-auto p-6">
+            </div>
+          </header>
+
+          {/* Scrollable Main Content */}
+          <main className="flex-1 overflow-y-auto p-4 sm:p-8 lg:p-10 relative scroll-smooth">
+            <div className="max-w-7xl mx-auto w-full animate__animated animate__fadeInUp animate__faster">
               {children}
-            </main>
-          </div>
+            </div>
+          </main>
         </div>
+      </div>
+    </ThemeProvider>
       </body>
     </html>
   );

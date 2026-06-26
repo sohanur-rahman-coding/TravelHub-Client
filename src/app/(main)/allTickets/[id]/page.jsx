@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import BookingModal from "@/components/BookingModal";
+import "animate.css";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
@@ -57,25 +58,25 @@ function CountdownBlocks({ targetDate }) {
 
   if (timeLeft.expired) {
     return (
-      <div className="bg-red-50 text-red-600 font-bold p-3 rounded-xl text-center">
+      <div className="bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 text-red-600 dark:text-red-400 font-bold p-4 rounded-2xl text-center w-full animate__animated animate__fadeIn">
         This journey has departed
       </div>
     );
   }
 
   const Block = ({ value, label }) => (
-    <div className="flex flex-col items-center bg-blue-600 text-white rounded-xl py-3 w-[72px] shadow-md">
-      <span className="text-3xl font-black tabular-nums leading-none">
+    <div className="flex flex-col items-center bg-blue-600 dark:bg-blue-500 text-white rounded-2xl py-3 w-[72px] shadow-lg shadow-blue-600/20 dark:shadow-blue-900/40 border border-blue-500 dark:border-blue-400 transform transition-transform hover:scale-105">
+      <span className="text-3xl font-black tabular-nums leading-none tracking-tight">
         {String(value).padStart(2, "0")}
       </span>
-      <span className="text-[10px] font-bold uppercase tracking-wider mt-1 opacity-80">
+      <span className="text-[10px] font-bold uppercase tracking-widest mt-1.5 opacity-80">
         {label}
       </span>
     </div>
   );
 
   return (
-    <div className="flex gap-3 justify-center">
+    <div className="flex gap-3 justify-center w-full">
       <Block value={timeLeft.days} label="Days" />
       <Block value={timeLeft.hours} label="Hours" />
       <Block value={timeLeft.minutes} label="Min" />
@@ -113,22 +114,28 @@ export default function TicketDetailPage({ params }) {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-20 text-center animate-pulse text-xl font-bold">
-        Loading details...
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center transition-colors duration-300">
+        <div className="p-5 bg-white dark:bg-gray-800 rounded-full shadow-xl animate-bounce">
+          <Ticket className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+        </div>
       </div>
     );
   }
 
   if (!ticket) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-20 text-center flex flex-col items-center">
-        <p className="text-2xl font-black text-gray-900 mb-4">Ticket not found</p>
-        <button
-          onClick={() => router.push("/")}
-          className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold"
-        >
-          Back to Home
-        </button>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center px-4 transition-colors duration-300">
+        <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] p-16 text-center shadow-2xl max-w-lg w-full animate__animated animate__zoomIn">
+          <Ticket size={56} className="mx-auto text-gray-300 dark:text-gray-600 mb-6" />
+          <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">Ticket Not Found</h2>
+          <p className="text-gray-500 dark:text-gray-400 mb-8">The ticket you are looking for might have been removed or is temporarily unavailable.</p>
+          <button
+            onClick={() => router.push("/")}
+            className="w-full px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-colors shadow-lg shadow-blue-600/20"
+          >
+            Back to Home
+          </button>
+        </div>
       </div>
     );
   }
@@ -150,102 +157,102 @@ export default function TicketDetailPage({ params }) {
 
   const getTransportIcon = (type) => {
     switch (type?.toLowerCase()) {
-      case "plane":
-        return <Plane className="w-3.5 h-3.5" />;
-      case "train":
-        return <Train className="w-3.5 h-3.5" />;
-      case "bus":
-        return <Bus className="w-3.5 h-3.5" />;
-      default:
-        return <Ticket className="w-3.5 h-3.5" />;
+      case "plane": return <Plane className="w-4 h-4" />;
+      case "train": return <Train className="w-4 h-4" />;
+      case "bus": return <Bus className="w-4 h-4" />;
+      default: return <Ticket className="w-4 h-4" />;
     }
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-16 pt-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pb-20 pt-10 transition-colors duration-300 font-sans overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-6 transition-colors font-semibold group w-fit"
+          className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mb-8 transition-colors font-bold group w-fit animate__animated animate__fadeInDown"
         >
-          <ChevronLeft
-            size={16}
-            className="group-hover:-translate-x-1 transition-transform"
-          />
-          Back to All Tickets
+          <div className="p-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 group-hover:-translate-x-1 transition-transform">
+            <ChevronLeft size={16} />
+          </div>
+          Back to Tickets
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 flex flex-col gap-6">
-            <div className="rounded-[32px] overflow-hidden h-[400px] w-full relative shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 flex flex-col gap-8 animate__animated animate__fadeInLeft">
+            
+            <div className="rounded-[2.5rem] overflow-hidden h-[450px] w-full relative shadow-2xl dark:shadow-none border border-gray-100 dark:border-gray-800 group">
               <Image
                 src={ticket.image || FALLBACK_IMAGE}
                 alt={ticket.title}
                 fill
                 unoptimized
-                className="object-cover"
+                className="object-cover transform transition-transform duration-700 group-hover:scale-105"
                 priority
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
             </div>
 
-            <div className="bg-white border border-gray-100 rounded-[32px] p-8 shadow-sm">
-              <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 w-fit px-3 py-1 rounded-md mb-4 border border-blue-100">
+            <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-[2.5rem] p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
+              
+              <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 w-fit px-4 py-1.5 rounded-full mb-5 border border-blue-100 dark:border-blue-500/20">
                 {getTransportIcon(ticket.type)}
-                <span className="text-xs font-bold capitalize">{ticket.type}</span>
+                <span className="text-xs font-black uppercase tracking-wider">{ticket.type}</span>
               </div>
 
-              <h1 className="text-3xl font-black text-gray-900 mb-1">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-3 tracking-tight leading-tight">
                 {ticket.title}
               </h1>
-              <p className="text-gray-500 text-sm mb-6">
-                Operated by <span className="font-bold text-gray-900">{ticket.vendorName}</span>
+              
+              <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base mb-8 font-medium">
+                Operated by <span className="font-black text-gray-900 dark:text-white">{ticket.vendorName}</span>
               </p>
 
-              <div className="flex items-end gap-1 mb-8">
-                <span className="text-4xl font-black text-blue-600 leading-none">
+              <div className="flex items-end gap-1.5 mb-10">
+                <span className="text-5xl font-black text-blue-600 dark:text-blue-400 leading-none">
                   ${ticket.price}
                 </span>
-                <span className="text-xs text-gray-500 font-medium mb-1">
-                  per seat
+                <span className="text-sm text-gray-500 dark:text-gray-400 font-bold mb-1.5 uppercase tracking-widest">
+                  / seat
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 border-y border-gray-100">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-8 border-y border-gray-100 dark:border-gray-700">
                 <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 block">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest mb-2 block">
                     From
                   </span>
-                  <div className="flex items-center gap-1.5 font-bold text-gray-900 text-sm">
-                    <MapPin size={14} className="text-blue-500" />
-                    {ticket.from}
+                  <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-base">
+                    <MapPin size={16} className="text-blue-500" />
+                    <span className="truncate">{ticket.from}</span>
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 block">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest mb-2 block">
                     To
                   </span>
-                  <div className="flex items-center gap-1.5 font-bold text-gray-900 text-sm">
-                    <MapPin size={14} className="text-blue-500" />
-                    {ticket.to}
+                  <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-base">
+                    <MapPin size={16} className="text-blue-500" />
+                    <span className="truncate">{ticket.to}</span>
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 block">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest mb-2 block">
                     Seats Left
                   </span>
-                  <div className="flex items-center gap-1.5 font-bold text-gray-900 text-sm">
-                    <div className="w-3.5 h-3.5 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                  <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-base">
+                    <div className="w-4 h-4 rounded-full border-[2px] border-blue-500 flex items-center justify-center">
                       <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                     </div>
                     {ticket.quantity}
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1 block">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest mb-2 block">
                     Transport
                   </span>
-                  <div className="flex items-center gap-1.5 font-bold text-gray-900 text-sm capitalize">
-                    <div className="w-3.5 h-3.5 rounded-full border-2 border-blue-500 flex items-center justify-center">
+                  <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-base capitalize">
+                    <div className="w-4 h-4 rounded-full border-[2px] border-blue-500 flex items-center justify-center">
                       <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                     </div>
                     {ticket.type}
@@ -253,38 +260,38 @@ export default function TicketDetailPage({ params }) {
                 </div>
               </div>
 
-              <div className="py-6">
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2 block">
-                  Departure
+              <div className="py-8">
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest mb-3 block">
+                  Departure Time
                 </span>
-                <div className="flex items-center gap-2 text-gray-900 font-bold">
-                  <Calendar size={16} className="text-blue-600" />
+                <div className="flex items-center gap-3 text-gray-900 dark:text-white font-bold text-lg bg-gray-50 dark:bg-gray-900 w-fit px-5 py-3 rounded-2xl border border-gray-100 dark:border-gray-800">
+                  <Calendar size={20} className="text-blue-600 dark:text-blue-400" />
                   {formatDepartureDate(ticket.date)}
                 </div>
               </div>
 
-              <div className="pb-6">
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-2 block">
+              <div className="pb-8">
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest mb-3 block">
                   About This Journey
                 </span>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  Enjoy a comfortable and safe journey from {ticket.from} to {ticket.to}.
-                  This {ticket.type.toLowerCase()} service is operated by {ticket.vendorName}, ensuring top-tier service and punctuality.
+                <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                  Enjoy a comfortable and safe journey from <strong className="text-gray-900 dark:text-white">{ticket.from}</strong> to <strong className="text-gray-900 dark:text-white">{ticket.to}</strong>.
+                  This {ticket.type.toLowerCase()} service is operated by <strong className="text-gray-900 dark:text-white">{ticket.vendorName}</strong>, ensuring top-tier service and punctuality.
                 </p>
               </div>
 
               {ticket.perks && ticket.perks.length > 0 && (
                 <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-3 block">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest mb-4 block">
                     Included Perks
                   </span>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {ticket.perks.map((p) => (
                       <div
                         key={p}
-                        className="flex items-center gap-1.5 bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full text-xs font-bold border border-orange-100"
+                        className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-xl text-sm font-bold border border-emerald-100 dark:border-emerald-500/20 shadow-sm"
                       >
-                        <Check size={12} className="text-orange-600" /> {p}
+                        <Check size={14} className="text-emerald-600 dark:text-emerald-500" /> {p}
                       </div>
                     ))}
                   </div>
@@ -293,68 +300,71 @@ export default function TicketDetailPage({ params }) {
             </div>
           </div>
 
-          <div className="lg:col-span-1">
-            <div className="flex flex-col gap-6 sticky top-24 pb-8">
-              <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col items-center">
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-4 block w-full text-left">
+          <div className="lg:col-span-4">
+            <div className="flex flex-col gap-6 sticky top-[100px] pb-8">
+              
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex flex-col items-center animate__animated animate__fadeInRight">
+                <span className="text-[11px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest mb-5 block w-full text-center sm:text-left">
                   Departure Countdown
                 </span>
                 <CountdownBlocks targetDate={ticket.date} />
               </div>
 
-              <div className="bg-white border border-gray-100 rounded-3xl p-6 flex flex-col gap-5 shadow-sm">
-                <h2 className="font-black text-xl text-gray-900">Book Your Seats</h2>
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-[2rem] p-8 flex flex-col gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] animate__animated animate__fadeInRight animate__delay-1s">
+                <h2 className="font-black text-2xl text-gray-900 dark:text-white">Secure Your Seat</h2>
 
                 {isExpired && (
-                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                    <p className="text-sm text-red-600 font-bold">This journey has already departed.</p>
+                  <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-2xl p-4">
+                    <p className="text-sm text-red-600 dark:text-red-400 font-bold">This journey has already departed.</p>
                   </div>
                 )}
 
                 {isSoldOut && !isExpired && (
-                  <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                    <p className="text-sm text-red-600 font-bold">This journey is fully booked.</p>
+                  <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-2xl p-4">
+                    <p className="text-sm text-red-600 dark:text-red-400 font-bold">This journey is fully booked.</p>
                   </div>
                 )}
 
                 {!user && !isExpired && !isSoldOut && (
-                  <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
-                    <p className="text-sm text-orange-800 font-medium">
+                  <div className="bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 rounded-2xl p-5">
+                    <p className="text-sm text-orange-800 dark:text-orange-300 font-medium leading-relaxed">
                       Please{" "}
                       <button
-                        onClick={() => router.push("/login")}
-                        className="font-bold underline cursor-pointer hover:text-orange-900"
+                        onClick={() => router.push("/signin")}
+                        className="font-black underline decoration-2 underline-offset-2 cursor-pointer hover:text-orange-900 dark:hover:text-orange-200 transition-colors"
                       >
                         log in
                       </button>{" "}
-                      to book this journey.
+                      to confirm your booking for this journey.
                     </p>
                   </div>
                 )}
 
                 {booked ? (
-                  <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-                    <CheckCircle size={20} className="text-green-600 shrink-0" />
-                    <p className="text-sm text-green-700 font-bold">Booking confirmed!</p>
+                  <div className="bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-2xl p-5 flex items-center gap-3">
+                    <CheckCircle size={24} className="text-green-600 dark:text-green-400 shrink-0" />
+                    <p className="text-base text-green-700 dark:text-green-300 font-black">Booking confirmed!</p>
                   </div>
                 ) : (
                   <button
                     onClick={() => setModalOpen(true)}
                     disabled={!canBook}
-                    className="w-full bg-[#fde6b3] text-orange-900 rounded-xl py-4 text-sm font-bold hover:bg-[#fcdca0] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:from-gray-300 disabled:to-gray-200 dark:disabled:from-gray-700 dark:disabled:to-gray-600 disabled:text-gray-500 dark:disabled:text-gray-400 text-white rounded-2xl py-4 text-base font-black active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-500/30 disabled:shadow-none cursor-pointer"
                   >
-                    <CreditCard size={18} /> Book Now
+                    <CreditCard size={20} /> Book Now
                   </button>
                 )}
 
-                <div className="space-y-3 pt-2">
+                <div className="space-y-3.5 pt-4 border-t border-gray-100 dark:border-gray-700">
                   {[
-                    "Secure Stripe payment",
-                    "Instant booking confirmation",
-                    "Cancel before vendor accepts",
+                    "Secure Stripe payment integrated",
+                    "Instant digital booking confirmation",
+                    "Cancel before vendor approval",
                   ].map((txt) => (
-                    <div key={txt} className="flex items-center gap-2 text-[11px] text-gray-500 font-medium">
-                      <Check size={14} className="text-green-500 shrink-0" />
+                    <div key={txt} className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 font-bold">
+                      <div className="p-1 bg-green-50 dark:bg-green-500/10 rounded-full">
+                        <Check size={12} className="text-green-600 dark:text-green-400 shrink-0" />
+                      </div>
                       {txt}
                     </div>
                   ))}

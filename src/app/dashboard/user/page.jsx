@@ -3,10 +3,10 @@
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Camera, Mail, ShieldCheck, User, Edit2, Check, X, Loader2, UploadCloud } from 'lucide-react';
+import { Camera, Mail, ShieldCheck, User, Edit2, Check, X, Loader2, UploadCloud, Lock } from 'lucide-react';
 import { authClient } from "@/lib/auth-client";
-import { updateProfileAPI } from '@/lib/actions/manageUser';
-// import { updateProfileAPI } from '@/lib/actions/user';
+import { updateProfileClientUI} from '@/lib/actions/manageUser';
+import "animate.css";
 
 export default function ProfileClientUI({ initialUser }) {
     const router = useRouter();
@@ -98,132 +98,141 @@ export default function ProfileClientUI({ initialUser }) {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[80vh] w-full px-4 py-8 font-sans">
-            <div className="w-full max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-2xl dark:shadow-none rounded-[2rem] overflow-hidden relative transition-all duration-300">
+        <div className="flex items-center justify-center min-h-[85vh] w-full px-4 py-12 font-sans overflow-hidden transition-colors duration-300">
+            <div className="w-full max-w-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border border-gray-200 dark:border-gray-800 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-[2.5rem] overflow-hidden relative transition-all duration-500 animate__animated animate__zoomIn animate__faster">
                 
-                <div className="h-40 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-                    <div className="absolute top-5 right-5">
-                        <span className={`text-[10px] uppercase tracking-widest font-black px-4 py-1.5 rounded-full border shadow-sm backdrop-blur-md ${currentRoleColor}`}>
+                <div className="h-48 bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 relative overflow-hidden animate__animated animate__fadeInDown">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay"></div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20"></div>
+                    <div className="absolute top-6 right-6 animate__animated animate__fadeInRight animate__delay-1s">
+                        <span className={`text-[10px] uppercase tracking-widest font-black px-5 py-2 rounded-full border shadow-lg backdrop-blur-md ${currentRoleColor}`}>
                             {user?.role || "User"}
                         </span>
                     </div>
                 </div>
 
-                <div className="px-8 pb-10 pt-2 relative flex flex-col items-center">
+                <div className="px-6 sm:px-10 pb-12 pt-2 relative flex flex-col items-center">
                     
-                    <div className="relative -mt-24 mb-6 group">
-                        <div className="w-32 h-32 rounded-full border-[6px] border-white dark:border-zinc-950 overflow-hidden shadow-xl bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center relative">
+                    <div className="relative -mt-24 mb-6 group animate__animated animate__zoomIn" style={{ animationDelay: '0.2s' }}>
+                        <div className="w-36 h-36 rounded-full border-[6px] border-white dark:border-gray-900 overflow-hidden shadow-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative transition-transform duration-500 group-hover:scale-[1.02]">
                             {previewImage ? (
-                                <Image src={previewImage} alt={user?.name || "User"} fill unoptimized className="object-cover" />
+                                <Image src={previewImage} alt={user?.name || "User"} fill unoptimized className="object-cover transition-transform duration-700 group-hover:scale-110" />
                             ) : (
-                                <span className="text-5xl font-black text-zinc-300 dark:text-zinc-700">
+                                <span className="text-6xl font-black text-gray-400 dark:text-gray-600">
                                     {user?.name?.[0]?.toUpperCase()}
                                 </span>
                             )}
 
                             {isEditing && (
-                                <label className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-10">
-                                    <UploadCloud className="w-8 h-8 text-white mb-1" />
-                                    <span className="text-white text-[10px] font-bold uppercase tracking-wider">Change</span>
+                                <label className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer z-10">
+                                    <UploadCloud className="w-10 h-10 text-white mb-2 animate__animated animate__bounceIn" />
+                                    <span className="text-white text-[11px] font-black uppercase tracking-widest">Upload</span>
                                     <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageChange} />
                                 </label>
                             )}
                         </div>
                         {isEditing && (
-                            <button onClick={() => fileInputRef.current?.click()} className="absolute bottom-1 right-1 bg-blue-600 text-white p-2.5 rounded-full shadow-lg hover:bg-blue-700 transition-colors border-2 border-white dark:border-zinc-950 z-20">
-                                <Camera className="w-4 h-4" />
+                            <button onClick={() => fileInputRef.current?.click()} className="absolute bottom-2 right-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white p-3 rounded-full shadow-xl hover:shadow-blue-500/40 border-[3px] border-white dark:border-gray-900 z-20 transition-all hover:scale-110 active:scale-95 group-hover:animate-bounce">
+                                <Camera className="w-5 h-5" />
                             </button>
                         )}
                     </div>
 
-                    <div className="w-full space-y-6">
-                        <div className="text-center">
+                    <div className="w-full space-y-7">
+                        <div className="text-center animate__animated animate__fadeInUp" style={{ animationDelay: '0.3s' }}>
                             {isEditing ? (
-                                <div className="space-y-1.5 max-w-xs mx-auto">
-                                    <label className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider text-left block">Display Name</label>
+                                <div className="space-y-2 max-w-sm mx-auto">
+                                    <label className="text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest text-left block pl-1">Display Name</label>
                                     <input 
                                         type="text" 
                                         value={formData.name}
                                         onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                        className="w-full text-center text-xl font-bold bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                                        className="w-full text-center text-xl font-black text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:bg-white dark:focus:bg-gray-800 transition-all shadow-inner placeholder:text-gray-400 dark:placeholder:text-gray-500"
                                         placeholder="Enter your name"
                                     />
                                 </div>
                             ) : (
                                 <>
-                                    <h1 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">{user?.name}</h1>
-                                    <p className="text-sm text-zinc-500 font-medium mt-1">Welcome back to your profile</p>
+                                    <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-2">{user?.name}</h1>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 font-bold">Manage your personal information</p>
                                 </>
                             )}
                         </div>
 
-                        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-200 dark:via-zinc-800 to-transparent my-4"></div>
+                        <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent my-6 animate__animated animate__fadeIn" style={{ animationDelay: '0.4s' }}></div>
 
                         <div className="space-y-4">
                             {!isEditing && (
-                                <div className="group flex items-center gap-4 px-5 py-4 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800/60 transition-colors">
-                                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center shrink-0">
+                                <div className="group flex items-center gap-5 px-6 py-4.5 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/40 dark:hover:bg-gray-800 rounded-2xl border border-gray-200/60 dark:border-gray-700/60 transition-all duration-300 shadow-sm hover:shadow-md animate__animated animate__fadeInUp" style={{ animationDelay: '0.5s' }}>
+                                    <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
                                         <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                     </div>
                                     <div className="flex-1 truncate">
-                                        <p className="text-[11px] uppercase font-bold tracking-widest text-zinc-400 mb-0.5">Full Name</p>
-                                        <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 truncate">{user?.name}</p>
+                                        <p className="text-[11px] uppercase font-black tracking-widest text-gray-500 dark:text-gray-400 mb-1">Full Name</p>
+                                        <p className="text-base font-black text-gray-900 dark:text-white truncate">{user?.name}</p>
                                     </div>
                                 </div>
                             )}
 
-                            <div className="group flex items-center gap-4 px-5 py-4 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800/60 transition-colors">
-                                <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-500/10 flex items-center justify-center shrink-0">
+                            <div className="group flex items-center gap-5 px-6 py-4.5 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/40 dark:hover:bg-gray-800 rounded-2xl border border-gray-200/60 dark:border-gray-700/60 transition-all duration-300 shadow-sm hover:shadow-md animate__animated animate__fadeInUp" style={{ animationDelay: '0.6s' }}>
+                                <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-500/10 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
                                     <Mail className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                                 </div>
                                 <div className="flex-1 truncate">
-                                    <p className="text-[11px] uppercase font-bold tracking-widest text-zinc-400 mb-0.5">Email Address</p>
-                                    <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 truncate">{user?.email}</p>
+                                    <p className="text-[11px] uppercase font-black tracking-widest text-gray-500 dark:text-gray-400 mb-1">Email Address</p>
+                                    <p className="text-base font-black text-gray-900 dark:text-white truncate">{user?.email}</p>
                                 </div>
-                                {isEditing && <LockIcon />}
+                                {isEditing && (
+                                    <div className="px-3 py-1.5 bg-gray-200/50 dark:bg-gray-700/50 rounded-lg animate__animated animate__fadeIn">
+                                        <Lock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                    </div>
+                                )}
                             </div>
 
-                            <div className="group flex items-center gap-4 px-5 py-4 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800/60 transition-colors">
-                                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
+                            <div className="group flex items-center gap-5 px-6 py-4.5 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/40 dark:hover:bg-gray-800 rounded-2xl border border-gray-200/60 dark:border-gray-700/60 transition-all duration-300 shadow-sm hover:shadow-md animate__animated animate__fadeInUp" style={{ animationDelay: '0.7s' }}>
+                                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
                                     <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                                 </div>
                                 <div className="flex-1 truncate">
-                                    <p className="text-[11px] uppercase font-bold tracking-widest text-zinc-400 mb-0.5">Account Role</p>
-                                    <p className="text-base font-bold text-zinc-900 dark:text-zinc-100 capitalize">{user?.role || "User"}</p>
+                                    <p className="text-[11px] uppercase font-black tracking-widest text-gray-500 dark:text-gray-400 mb-1">Account Role</p>
+                                    <p className="text-base font-black text-gray-900 dark:text-white capitalize">{user?.role || "User"}</p>
                                 </div>
-                                {isEditing && <LockIcon />}
+                                {isEditing && (
+                                    <div className="px-3 py-1.5 bg-gray-200/50 dark:bg-gray-700/50 rounded-lg animate__animated animate__fadeIn">
+                                        <Lock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        <div className="pt-4">
+                        <div className="pt-6 animate__animated animate__fadeInUp" style={{ animationDelay: '0.8s' }}>
                             {isEditing ? (
-                                <div className="flex gap-3">
+                                <div className="flex gap-4">
                                     <button 
                                         onClick={handleCancel}
                                         disabled={isSaving}
-                                        className="flex-1 flex items-center justify-center gap-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-bold py-3.5 px-4 rounded-xl transition-colors disabled:opacity-50"
+                                        className="flex-1 flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-black py-4 px-4 rounded-2xl transition-all disabled:opacity-50 group cursor-pointer border border-gray-200 dark:border-gray-700"
                                     >
-                                        <X className="w-4 h-4" /> Cancel
+                                        <X className="w-5 h-5 group-hover:scale-110 group-hover:text-red-500 transition-all" /> Cancel
                                     </button>
                                     <button 
                                         onClick={handleSave}
                                         disabled={isSaving || !formData.name?.trim()}
-                                        className="flex-[2] flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-blue-600/20 disabled:opacity-70 disabled:cursor-not-allowed"
+                                        className="flex-[2] flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-black py-4 px-4 rounded-2xl transition-all shadow-lg shadow-blue-500/30 disabled:opacity-70 disabled:cursor-not-allowed group cursor-pointer active:scale-[0.98] border-transparent"
                                     >
                                         {isSaving ? (
                                             <><Loader2 className="w-5 h-5 animate-spin" /> Saving...</>
                                         ) : (
-                                            <><Check className="w-5 h-5" /> Save Changes</>
+                                            <><Check className="w-5 h-5 group-hover:scale-125 group-hover:-translate-y-1 transition-transform" /> Save Changes</>
                                         )}
                                     </button>
                                 </div>
                             ) : (
                                 <button 
                                     onClick={() => setIsEditing(true)}
-                                    className="w-full flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold py-3.5 px-4 rounded-xl transition-all shadow-lg shadow-zinc-900/10 dark:shadow-white/10 active:scale-[0.98]"
+                                    className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-200 text-white dark:text-gray-900 font-black py-4.5 px-4 rounded-2xl transition-all shadow-xl shadow-gray-900/20 dark:shadow-white/10 active:scale-[0.98] group cursor-pointer border border-transparent"
                                 >
-                                    <Edit2 className="w-4 h-4" /> Edit Profile
+                                    <Edit2 className="w-5 h-5 group-hover:rotate-12 group-hover:scale-110 transition-transform" /> Edit Profile
                                 </button>
                             )}
                         </div>
@@ -234,9 +243,3 @@ export default function ProfileClientUI({ initialUser }) {
         </div>
     );
 }
-
-const LockIcon = () => (
-    <div className="px-2 py-1 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-md">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-    </div>
-);

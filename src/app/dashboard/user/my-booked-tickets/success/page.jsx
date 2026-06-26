@@ -1,10 +1,9 @@
 import { stripe } from '@/lib/stripe'; 
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-// import { updateBookingToPaid } from '@/lib/actions/bookings'; 
 import TicketReceipt from '@/components/TicketReceipt';
 import { updateBookingToPaid } from '@/lib/actions/tickets';
-// import TicketReceipt from './TicketReceipt'; 
+import "animate.css";
 
 export default async function SuccessPage({ searchParams }) {
   const { session_id } = await searchParams;
@@ -32,27 +31,28 @@ export default async function SuccessPage({ searchParams }) {
       }
     }
 
-    // শুধুমাত্র প্লেইন টেক্সট/নাম্বার ডেটাগুলো আলাদা করে নিচ্ছি
     const paymentIntentId = typeof payment_intent === 'string' ? payment_intent : payment_intent?.id || "UNKNOWN_ID";
     const ticketTitle = metadata?.title || 'Travel Ticket';
     const customerEmail = customer_details?.email || 'Guest';
 
     return (
-      <TicketReceipt 
-        paymentIntentId={paymentIntentId}
-        amountTotal={amount_total}
-        customerEmail={customerEmail}
-        ticketTitle={ticketTitle}
-      />
+      <div className="animate__animated animate__fadeIn animate__faster">
+        <TicketReceipt 
+          paymentIntentId={paymentIntentId}
+          amountTotal={amount_total}
+          customerEmail={customerEmail}
+          ticketTitle={ticketTitle}
+        />
+      </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <h1 className="text-2xl font-bold text-red-600 mb-2">Payment Status Unknown</h1>
-        <p className="text-gray-500 mb-6">Please check your dashboard to verify your booking.</p>
-        <Link href="/dashboard/user" className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300 px-4">
+      <div className="text-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-gray-700 max-w-md w-full animate__animated animate__zoomIn animate__faster">
+        <h1 className="text-2xl font-black text-red-600 dark:text-red-400 mb-3 tracking-tight">Payment Status Unknown</h1>
+        <p className="text-gray-500 dark:text-gray-400 font-medium mb-8 leading-relaxed">Please check your dashboard to verify your booking.</p>
+        <Link href="/dashboard/user" className="w-full inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-2xl font-black shadow-lg shadow-blue-600/20 transition-all active:scale-[0.98]">
           Return to Dashboard
         </Link>
       </div>
