@@ -1,7 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { FcGoogle } from "react-icons/fc";
+import { Eye, EyeOff, UserPlus, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import {
   Button,
   FieldError,
@@ -9,168 +14,284 @@ import {
   Input,
   InputGroup,
   Label,
+  Select,
+  ListBox,
   TextField,
 } from "@heroui/react";
+import "animate.css";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { FcGoogle } from "react-icons/fc";
-
-const Login = () => {
+const RegisterPage = () => {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const UserData = Object.fromEntries(formData.entries());
 
-    const { data, error } = await authClient.signIn.email({
+    const password = UserData.password;
+    if (
+      password.length < 6 ||
+      !/[A-Z]/.test(password) ||
+      !/[a-z]/.test(password)
+    ) {
+      toast.error("Invalid password criteria");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const { data, error } = await authClient.signUp.email({
       ...UserData,
-      callbackURL: "/",
+      plan: "free",
     });
 
+    setIsSubmitting(false);
+
     if (error) {
-      toast.error("Login failed: " + error.message);
+      toast.error("Registration failed: " + error.message);
     } else {
-      toast.success("Successfully signed in !");
+      toast.success("Successfully registered!");
       router.push("/");
     }
   };
 
   const signIn = async () => {
-    const data = await authClient.signIn.social({
+    await authClient.signIn.social({
       provider: "google",
     });
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8 antialiased">
-      <div className="w-full max-w-[440px] bg-content1 border border-default-200 dark:border-default-100 rounded-[2.5rem] shadow-xl p-6 sm:p-10 md:p-12 transition-all duration-300">
-        {/* Header */}
-        <div className="text-center mb-8 select-none">
-          <span className="text-[10px] uppercase tracking-[0.2em] font-extrabold text-cyan-500 bg-cyan-500/10 px-3 py-1 rounded-full">
-            Secure Portal
-          </span>
-          <h2 className="text-3xl font-black tracking-tight text-foreground mt-4 mb-1.5">
-            Welcome Back
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50! dark:bg-gray-900! px-4 sm:px-6 lg:px-8 antialiased overflow-hidden transition-colors duration-500 py-12">
+      <div className="w-full max-w-[460px] bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl border border-gray-100 dark:border-gray-700 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-8 sm:p-10 transition-all duration-300 animate__animated animate__zoomIn animate__faster">
+        
+        <div className="text-center mb-8 select-none animate__animated animate__fadeInDown" style={{ animationDelay: '0.1s' }}>
+          <div className="inline-flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 px-3 py-1.5 rounded-full mb-5 shadow-sm animate__animated animate__pulse animate__infinite">
+            <ShieldCheck size={14} />
+            Join Platform
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white mt-2 mb-2 leading-tight">
+            Create Account
           </h2>
-          <p className="text-xs sm:text-sm text-foreground/50 font-medium">
-            Enter your credentials to access your dashboard
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+            Sign up to get started with TravelHub
           </p>
         </div>
 
-        {/* Form */}
         <Form className="flex flex-col gap-5" onSubmit={onSubmit}>
-          {/* Email Field */}
-          <TextField
-            className="w-full group"
-            isRequired
-            name="email"
-            type="email"
-            validate={(value) => {
-              if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
-                return "Enter a valid email address";
-              }
-              return null;
-            }}
-          >
-            <Label className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-2 block transition-colors group-focus-within:text-cyan-500">
-              Email Address
-            </Label>
-            <Input
-              placeholder="name@example.com"
-              className="font-medium"
-              variant="flat"
-              radius="xl"
-              size="lg"
-            />
-            <FieldError className="text-xs font-semibold text-danger mt-1.5" />
-          </TextField>
-
-          {/* Password Field */}
-          <TextField name="password" isRequired className="w-full group">
-            <div className="flex justify-between items-center mb-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-foreground/60 transition-colors group-focus-within:text-cyan-500">
-                Password
+          <div className="w-full animate__animated animate__fadeInUp" style={{ animationDelay: '0.2s' }}>
+            <TextField
+              className="w-full group"
+              isRequired
+              name="name"
+              validate={(value) => {
+                if (value.length < 3) return "Name must be at least 3 characters";
+                return null;
+              }}
+            >
+              <Label className="text-[11px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">
+                Full Name
               </Label>
-              <Link
-                href="/forgot-password"
-                className="text-xs font-semibold text-foreground/40 hover:text-foreground transition-colors"
-              >
-                Forgot?
-              </Link>
-            </div>
-            <InputGroup>
-              <InputGroup.Input
-                type={isVisible ? "text" : "password"}
-                name="password"
-                placeholder="••••••••"
-                className="font-medium"
+              <Input
+                placeholder="Your Name"
+                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
                 variant="flat"
                 radius="xl"
                 size="lg"
+                classNames={{
+                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
+                }}
               />
-              <InputGroup.Suffix>
-                <Button
-                  isIconOnly
-                  variant="light"
-                  radius="full"
-                  size="sm"
-                  onPress={() => setIsVisible(!isVisible)}
-                  className="text-foreground/40 hover:text-foreground transition-colors mr-1"
-                >
-                  {isVisible ? (
-                    <Eye className="size-4" />
-                  ) : (
-                    <EyeSlash className="size-4" />
-                  )}
-                </Button>
-              </InputGroup.Suffix>
-            </InputGroup>
-          </TextField>
-
-          {/* Login Button */}
-          <Button
-            type="submit"
-            className="w-full bg-foreground text-background font-bold h-12 rounded-xl shadow-md hover:opacity-95 active:scale-[0.99] transition-all mt-2 tracking-wide text-sm"
-          >
-            <Check className="w-4 h-4 mr-1.5 stroke-[2.5]" />
-            Sign In
-          </Button>
-
-          {/* Divider */}
-          <div className="flex items-center my-1 select-none">
-            <div className="flex-grow border-t border-default-200/80 dark:border-default-100/30"></div>
-            <span className="flex-shrink mx-4 text-foreground/30 font-extrabold text-[10px] tracking-[0.2em]">
-              OR
-            </span>
-            <div className="flex-grow border-t border-default-200/80 dark:border-default-100/30"></div>
+              <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
+            </TextField>
           </div>
 
-          {/* Responsive Google Button */}
-          <div className="flex justify-center w-full">
-            <Button
-              variant="bordered"
-              className="w-full sm:w-2/3 h-11 border-default-200 dark:border-default-100/80 rounded-xl font-bold text-foreground bg-transparent hover:bg-default-100 dark:hover:bg-default-50 transition-all text-xs sm:text-sm"
-              onClick={signIn}
+          <div className="w-full animate__animated animate__fadeInUp" style={{ animationDelay: '0.3s' }}>
+            <TextField
+              className="w-full group"
+              isRequired
+              name="image"
+              validate={(value) => {
+                if (value.length < 3) return "Link must be a valid URL";
+                return null;
+              }}
             >
-              <FcGoogle className="text-lg" />
-              Continue with Google
+              <Label className="text-[11px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">
+                Profile Photo Link
+              </Label>
+              <Input
+                placeholder="https://example.com/dp.jpg"
+                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                variant="flat"
+                radius="xl"
+                size="lg"
+                classNames={{
+                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
+                }}
+              />
+              <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
+            </TextField>
+          </div>
+
+          <div className="w-full animate__animated animate__fadeInUp" style={{ animationDelay: '0.4s' }}>
+            <TextField
+              className="w-full group"
+              isRequired
+              name="email"
+              type="email"
+              validate={(value) => {
+                if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
+                  return "Enter a valid email address";
+                }
+                return null;
+              }}
+            >
+              <Label className="text-[11px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">
+                Email Address
+              </Label>
+              <Input
+                placeholder="name@example.com"
+                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                variant="flat"
+                radius="xl"
+                size="lg"
+                classNames={{
+                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
+                }}
+              />
+              <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
+            </TextField>
+          </div>
+
+          <div className="w-full animate__animated animate__fadeInUp" style={{ animationDelay: '0.5s' }}>
+            <TextField
+              name="password"
+              isRequired
+              className="w-full group"
+              validate={(value) => {
+                if (value.length < 6) return "Length must be at least 6 characters";
+                if (!/[A-Z]/.test(value)) return "Must have an Uppercase letter";
+                if (!/[a-z]/.test(value)) return "Must have a Lowercase letter";
+                return null;
+              }}
+            >
+              <Label className="text-[11px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">
+                Password
+              </Label>
+              <InputGroup>
+                <InputGroup.Input
+                  type={isVisible ? "text" : "password"}
+                  name="password"
+                  placeholder="••••••••"
+                  className="font-bold text-gray-900 dark:text-white tracking-widest placeholder:tracking-normal placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                  variant="flat"
+                  radius="xl"
+                  size="lg"
+                  classNames={{
+                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
+                  }}
+                />
+                <InputGroup.Suffix>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    radius="full"
+                    size="sm"
+                    onPress={() => setIsVisible(!isVisible)}
+                    className="text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all duration-300 mr-1 cursor-pointer"
+                  >
+                    {isVisible ? (
+                      <Eye className="w-4 h-4 animate__animated animate__fadeIn" />
+                    ) : (
+                      <EyeOff className="w-4 h-4 animate__animated animate__fadeIn" />
+                    )}
+                  </Button>
+                </InputGroup.Suffix>
+              </InputGroup>
+              <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
+            </TextField>
+          </div>
+
+          <div className="w-full animate__animated animate__fadeInUp group" style={{ animationDelay: '0.6s' }}>
+            <Select 
+              isRequired 
+              name="role" 
+              placeholder="Select your role"
+              classNames={{
+                trigger: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all shadow-inner h-12 sm:h-14 rounded-xl",
+                value: "font-bold text-gray-900 dark:text-white",
+                popoverContent: "bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-2xl"
+              }}
+            >
+              <Label className="text-[11px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">
+                Signup As
+              </Label>
+              <Select.Trigger>
+                <Select.Value />
+                <Select.Indicator />
+              </Select.Trigger>
+              <Select.Popover>
+                <ListBox itemClasses={{ base: "data-[hover=true]:bg-gray-100 dark:data-[hover=true]:bg-gray-700 transition-colors rounded-xl", title: "font-bold text-gray-900 dark:text-white" }}>
+                  <ListBox.Item id="user" textValue="user">
+                    User
+                    <ListBox.ItemIndicator />
+                  </ListBox.Item>
+                  <ListBox.Item id="vendor" textValue="vendor">
+                    Vendor 
+                    <ListBox.ItemIndicator />
+                  </ListBox.Item>
+                </ListBox>
+              </Select.Popover>
+            </Select>
+          </div>
+
+          <div className="animate__animated animate__fadeInUp w-full mt-2" style={{ animationDelay: '0.7s' }}>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-black h-14 rounded-2xl shadow-lg shadow-blue-500/30 disabled:opacity-70 disabled:shadow-none active:scale-[0.98] transition-all tracking-wide text-base group cursor-pointer flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <UserPlus className="w-5 h-5 group-hover:scale-110 group-hover:-translate-y-0.5 transition-transform duration-300" />
+                  Register Account
+                </>
+              )}
             </Button>
           </div>
 
-          {/* Footer Link */}
-          <p className="text-center text-sm text-foreground/40 font-medium mt-4">
-            Don't have an account?{" "}
-            <Link
-              href="/signup"
-              className="text-cyan-500 hover:text-cyan-600 dark:text-cyan-400 dark:hover:text-cyan-300 font-bold transition-colors underline-offset-4 hover:underline"
+          <div className="flex items-center my-1 select-none animate__animated animate__fadeIn" style={{ animationDelay: '0.8s' }}>
+            <div className="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+            <span className="flex-shrink mx-4 text-gray-400 dark:text-gray-500 font-black text-[10px] tracking-[0.2em]">
+              OR
+            </span>
+            <div className="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+          </div>
+
+          <div className="flex justify-center w-full animate__animated animate__fadeInUp" style={{ animationDelay: '0.9s' }}>
+            <Button
+              type="button"
+              variant="bordered"
+              className="w-full h-14 border border-gray-200 dark:border-gray-700 rounded-2xl font-black text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 transition-all text-sm group cursor-pointer shadow-sm flex items-center justify-center gap-3"
+              onClick={signIn}
             >
-              Create one
+              <FcGoogle className="text-xl group-hover:scale-110 transition-transform duration-300" />
+              Sign up with Google
+              <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+            </Button>
+          </div>
+
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 font-bold mt-1 animate__animated animate__fadeInUp" style={{ animationDelay: '1s' }}>
+            Already have an account?{" "}
+            <Link
+              href="/signin"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-black transition-colors underline-offset-4 hover:underline"
+            >
+              Login here
             </Link>
           </p>
         </Form>
@@ -179,4 +300,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default RegisterPage;

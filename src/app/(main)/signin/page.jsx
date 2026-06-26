@@ -52,7 +52,7 @@ const Login = () => {
 
   return (
     // 🟢 Soft Dark Background
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8 antialiased overflow-hidden transition-colors duration-500 py-12">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50! dark:bg-gray-900! px-4 sm:px-6 lg:px-8 antialiased overflow-hidden transition-colors duration-500 py-12">
       
       {/* 🟢 Premium Glassmorphism Card */}
       <div className="w-full max-w-[440px] bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl border border-gray-100 dark:border-gray-700 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-8 sm:p-10 md:p-12 transition-all duration-300 animate__animated animate__zoomIn animate__faster">

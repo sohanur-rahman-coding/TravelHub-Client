@@ -186,40 +186,40 @@ const AllTickets = () => {
             </div>
 
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-3 animate__animated animate__fadeInUp animate__delay-1s">
-                <button
-                  onClick={() => setPage(page - 1)}
-                  disabled={page === 1}
-                  className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                
-                <div className="flex gap-2 bg-white dark:bg-gray-900 p-1.5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-                  {[...Array(totalPages)].map((_, idx) => (
-                    <button
-                      key={idx + 1}
-                      onClick={() => setPage(idx + 1)}
-                      className={`w-11 h-11 rounded-lg font-bold text-sm transition-all ${
-                        page === idx + 1
-                          ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-                          : "bg-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-                      }`}
-                    >
-                      {idx + 1}
-                    </button>
-                  ))}
-                </div>
+  <div className="flex justify-center items-center gap-3 animate__animated animate__fadeInUp animate__delay-1s">
+    <button
+      onClick={() => setPage(page - 1)}
+      disabled={page === 1}
+      className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 !bg-white dark:!bg-gray-900 !text-gray-600 dark:!text-gray-400 hover:!bg-gray-50 dark:hover:!bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+    >
+      <ChevronLeft size={20} />
+    </button>
+    
+    <div className="flex gap-2 !bg-white dark:!bg-gray-900 p-1.5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+      {[...Array(totalPages)].map((_, idx) => (
+        <button
+          key={idx + 1}
+          onClick={() => setPage(idx + 1)}
+          className={`w-11 h-11 rounded-lg font-bold text-sm transition-all ${
+            page === idx + 1
+              ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+              : "bg-transparent !text-gray-600 dark:!text-gray-400 hover:!bg-gray-100 dark:hover:!bg-gray-800"
+          }`}
+        >
+          {idx + 1}
+        </button>
+      ))}
+    </div>
 
-                <button
-                  onClick={() => setPage(page + 1)}
-                  disabled={page === totalPages}
-                  className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-            )}
+    <button
+      onClick={() => setPage(page + 1)}
+      disabled={page === totalPages}
+      className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 !bg-white dark:!bg-gray-900 !text-gray-600 dark:!text-gray-400 hover:!bg-gray-50 dark:hover:!bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+    >
+      <ChevronRight size={20} />
+    </button>
+  </div>
+)}
           </div>
         )}
       </div>
