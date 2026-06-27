@@ -1,10 +1,11 @@
 import { Inter } from "next/font/google";
-import "../(main)/globals.css";
+import '../globals.css'
 
 import DashProfile from "@/components/Dashboard/DashProfile";
 import { getUserSession } from "@/lib/api/Session";
 import DashboardSidebar from "@/components/Dashboard/DashboardSideBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "react-hot-toast";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,7 @@ export default async function DashboardRootLayout({ children }) {
       <body className={`${inter.className} h-full antialiased`} suppressHydrationWarning>
         <ThemeProvider
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="dark"
       enableSystem
       disableTransitionOnChange
     >
@@ -47,6 +48,10 @@ export default async function DashboardRootLayout({ children }) {
               {children}
             </div>
           </main>
+          <Toaster 
+          position="top-center" 
+          reverseOrder={false} 
+        />
         </div>
       </div>
     </ThemeProvider>

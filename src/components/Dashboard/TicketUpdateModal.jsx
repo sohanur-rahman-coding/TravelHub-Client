@@ -6,6 +6,7 @@ import { Button, Input, Label, Modal, Surface, TextField } from "@heroui/react";
 import { Loader2, UploadCloud, Check, Save } from "lucide-react";
 import { uploadImageToImgBB } from "@/lib/UploadImage";
 import { updateTicket } from "@/lib/actions/tickets";
+import toast from "react-hot-toast";
 
 const ALL_PERKS = [
   "AC",
@@ -124,7 +125,7 @@ export default function TicketUpdateModal({
       router.refresh();
     } catch (error) {
       console.error("Update failed:", error);
-      alert("Failed to update ticket. Please try again.");
+      toast.error("Failed to update ticket. Please try again.");
     } finally {
       setLoading(false);
     }

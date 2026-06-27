@@ -6,6 +6,7 @@ import { Plane, Train, Bus, MapPin, Calendar, Ticket, ArrowRight, Edit, Trash2, 
 import TicketUpdateModal from './TicketUpdateModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 import { deleteTicket } from '@/lib/actions/tickets';
+import toast from 'react-hot-toast';
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 
@@ -121,7 +122,7 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
       router.refresh(); 
       
     } catch (error) {
-      alert("Failed to delete the ticket. Please try again.");
+      toast.error("Failed to delete the ticket. Please try again.");
     } finally {
       setIsDeleting(false);
     }

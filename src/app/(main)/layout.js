@@ -1,9 +1,10 @@
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 
 import Footer from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "react-hot-toast";
 
 
 const inter = Inter({
@@ -30,7 +31,7 @@ export default function RootLayout({ children }) {
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
         >
@@ -38,6 +39,10 @@ export default function RootLayout({ children }) {
           <main className="max-w-7xl mx-auto px-2 min-h-screen">
             {children}
           </main>
+          <Toaster 
+          position="top-center" 
+          reverseOrder={false} 
+        />
           <Footer />
         </ThemeProvider>
       </body>

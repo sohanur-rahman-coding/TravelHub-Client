@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckCircle, Download, ArrowRight, Receipt, CreditCard, Loader2 } from "lucide-react";
 import { toPng } from "html-to-image"; // নতুন ইমপোর্ট
 import jsPDF from "jspdf";
+import toast from "react-hot-toast";
 
 export default function TicketReceipt({ paymentIntentId, amountTotal, customerEmail, ticketTitle }) {
   const receiptRef = useRef(null);
@@ -38,7 +39,7 @@ export default function TicketReceipt({ paymentIntentId, amountTotal, customerEm
 
     } catch (error) {
       console.error("Failed to generate PDF", error);
-      alert("Failed to download PDF.");
+      toast.error("Failed to download PDF.");
       setIsDownloading(false);
     }
   };

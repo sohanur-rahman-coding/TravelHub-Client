@@ -6,6 +6,7 @@ import { CheckCircle, Loader2, UploadCloud, Check, Plus } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { uploadImageToImgBB } from "@/lib/UploadImage"; 
 import { addTicketAction } from "@/lib/actions/tickets";
+import toast from "react-hot-toast";
 const ALL_PERKS = ["AC", "Non-AC", "WiFi", "Breakfast", "Blanket", "Water Bottle", "Sleeper"];
 
 export default function AddTicketPage({ onTicketAdded }) {
@@ -45,7 +46,7 @@ export default function AddTicketPage({ onTicketAdded }) {
       if (imageFile && imageFile.size > 0) {
         uploadedImageUrl = await uploadImageToImgBB(imageFile);
       } else {
-        alert("Please select a ticket image.");
+        toast.warning("Please select a ticket image.");
         setLoading(false);
         return;
       }
@@ -78,7 +79,7 @@ export default function AddTicketPage({ onTicketAdded }) {
       if (onTicketAdded) onTicketAdded();
     } catch (error) {
       // console.error("Submission failed:", error);
-      alert("Failed to upload image or submit ticket. Please try again.");
+      toast.error("Failed to upload image or submit ticket. Please try again.");
     } finally {
       setLoading(false);
     }

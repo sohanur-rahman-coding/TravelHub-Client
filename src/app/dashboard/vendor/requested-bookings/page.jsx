@@ -5,6 +5,7 @@ import { CheckCircle, XCircle } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { getVendorBookings } from "@/lib/api/tickets";
 import { updateBookingStatus } from "@/lib/actions/tickets";
+import toast from "react-hot-toast";
 
 export default function RequestedBookings() {
   const { data: session } = authClient.useSession();
@@ -40,9 +41,9 @@ export default function RequestedBookings() {
           booking._id === id ? { ...booking, status } : booking,
         ),
       );
-      alert(`Booking ${status} successfully!`);
+      toast.success(`Booking ${status} successfully!`);
     } catch (error) {
-      alert("Failed to update status");
+      toast.error("Failed to update status");
     } finally {
       setProcessingId(null);
     }
@@ -161,7 +162,7 @@ export default function RequestedBookings() {
                           </button>
                         </>
                       ) : (
-                        <span className="text-xs font-bold text-black! dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-100 dark:border-gray-700">
+                        <span className="text-xs font-bold text-black! dark:text-gray-50! py-2 px-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-100 dark:border-gray-700">
                           Reviewed
                         </span>
                       )}

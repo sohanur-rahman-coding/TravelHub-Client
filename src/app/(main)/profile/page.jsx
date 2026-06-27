@@ -1,8 +1,9 @@
-import ProfileClientUI from "@/app/dashboard/user/page";
+
 import { getUserSession } from "@/lib/api/Session";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import "animate.css";
+import ProfileClientUI from "@/app/dashboard/user/page";
 
 export const dynamic = "force-dynamic";
 

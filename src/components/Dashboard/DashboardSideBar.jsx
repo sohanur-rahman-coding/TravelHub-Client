@@ -3,11 +3,10 @@
 import { usePathname } from "next/navigation";
 import { Bars, ChartColumn, Person, Ticket, Plus } from "@gravity-ui/icons";
 import { Button, Drawer } from "@heroui/react";
-import { ClipboardListIcon, Users2, Layers, History, Bus } from "lucide-react";
+import { ClipboardListIcon, Users2, Layers, History, Bus, Home } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardSidebar({ user }) {
-  // console.log("DashboardSidebar received user:", user);
   const pathname = usePathname();
   const role = user?.role || "user";
 
@@ -98,8 +97,8 @@ export default function DashboardSidebar({ user }) {
         Menu
       </Button>
 
-      <aside className="hidden lg:flex flex-col gap-1 w-[260px] h-screen sticky top-0 border-r border-zinc-300 dark:border-zinc-800 bg-background">
-        <div className="flex items-center h-20 px-6 border-b border-zinc-300 dark:border-zinc-300 w-full shrink-0">
+      <aside className="hidden lg:flex flex-col w-[260px] h-screen sticky top-0 border-r border-zinc-300 dark:border-zinc-800 bg-background">
+        <div className="flex items-center h-20 px-6 border-b border-zinc-300 dark:border-zinc-800 w-full shrink-0">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold">
               <Bus className="w-4 h-4" />
@@ -110,35 +109,47 @@ export default function DashboardSidebar({ user }) {
           </Link>
         </div>
 
-        <nav className="flex flex-col gap-2 p-4 mt-4">
-          {navItems.map((item, index) => {
-            const isActive = isLinkActive(item.link, index);
-            return (
-              <Link
-                key={item.label}
-                href={item.link}
-                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 w-full ${
-                  isActive
-                    ? "bg-[#0B3977] text-white shadow-md shadow-blue-900/20"
-                    : "text-foreground hover:bg-default"
-                }`}
-              >
-                <item.icon
-                  className={`size-5 shrink-0 ${isActive ? "text-white" : "text-muted-foreground"}`}
-                />
-                {item.label}
-              </Link>
-            );
-          })}
+        <nav className="flex flex-col justify-between flex-1 p-4 overflow-y-auto">
+          <div className="flex flex-col gap-2">
+            {navItems.map((item, index) => {
+              const isActive = isLinkActive(item.link, index);
+              return (
+                <Link
+                  key={item.label}
+                  href={item.link}
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 w-full ${
+                    isActive
+                      ? "bg-[#0B3977] text-white shadow-md shadow-blue-900/20"
+                      : "text-foreground hover:bg-default"
+                  }`}
+                >
+                  <item.icon
+                    className={`size-5 shrink-0 ${isActive ? "text-white" : "text-muted-foreground"}`}
+                  />
+                  {item.label}
+                </Link>
+              );
+            })}
 
-          {isBanned && role === "vendor" && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-xl">
-              <p className="text-xs text-red-600 font-bold leading-relaxed">
-                Account restricted due to fraudulent activity. Ticket addition
-                is disabled.
-              </p>
-            </div>
-          )}
+            {isBanned && role === "vendor" && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-xl">
+                <p className="text-xs text-red-600 font-bold leading-relaxed">
+                  Account restricted due to fraudulent activity. Ticket addition
+                  is disabled.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-8 mb-4">
+            <Link
+              href="/"
+              className="flex items-center justify-center gap-2 w-full py-3.5 px-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-xl shadow-lg shadow-orange-500/20 transition-all duration-300 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95"
+            >
+              <Home size={18} />
+              Back to Home
+            </Link>
+          </div>
         </nav>
       </aside>
 
@@ -149,36 +160,48 @@ export default function DashboardSidebar({ user }) {
             <Drawer.Header>
               <Drawer.Heading>Navigation</Drawer.Heading>
             </Drawer.Header>
-            <Drawer.Body>
-              <nav className="flex flex-col gap-2 pt-4">
-                {navItems.map((item, index) => {
-                  const isActive = isLinkActive(item.link, index);
-                  return (
-                    <Link
-                      key={item.label}
-                      href={item.link}
-                      className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 w-full ${
-                        isActive
-                          ? "bg-[#0B3977] text-white shadow-md shadow-blue-900/20"
-                          : "text-foreground hover:bg-default"
-                      }`}
-                    >
-                      <item.icon
-                        className={`size-5 shrink-0 ${isActive ? "text-white" : "text-muted-foreground"}`}
-                      />
-                      {item.label}
-                    </Link>
-                  );
-                })}
+            <Drawer.Body className="flex flex-col h-full">
+              <nav className="flex flex-col justify-between flex-1 pt-4 pb-8">
+                <div className="flex flex-col gap-2">
+                  {navItems.map((item, index) => {
+                    const isActive = isLinkActive(item.link, index);
+                    return (
+                      <Link
+                        key={item.label}
+                        href={item.link}
+                        className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 w-full ${
+                          isActive
+                            ? "bg-[#0B3977] text-white shadow-md shadow-blue-900/20"
+                            : "text-foreground hover:bg-default"
+                        }`}
+                      >
+                        <item.icon
+                          className={`size-5 shrink-0 ${isActive ? "text-white" : "text-muted-foreground"}`}
+                        />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
 
-                {isBanned && role === "vendor" && (
-                  <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-xl">
-                    <p className="text-xs text-red-600 font-bold leading-relaxed">
-                      Account restricted due to fraudulent activity. Ticket
-                      addition is disabled.
-                    </p>
-                  </div>
-                )}
+                  {isBanned && role === "vendor" && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-xl">
+                      <p className="text-xs text-red-600 font-bold leading-relaxed">
+                        Account restricted due to fraudulent activity. Ticket
+                        addition is disabled.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-8">
+                  <Link
+                    href="/"
+                    className="flex items-center justify-center gap-2 w-full py-3.5 px-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black rounded-xl shadow-lg shadow-orange-500/20 transition-all duration-300 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:scale-95"
+                  >
+                    <Home size={18} />
+                    Back to Home
+                  </Link>
+                </div>
               </nav>
             </Drawer.Body>
           </Drawer.Dialog>

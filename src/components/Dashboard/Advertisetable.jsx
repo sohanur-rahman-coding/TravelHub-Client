@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Table } from "@heroui/react";
 import { toggleAdvertiseTicket } from "@/lib/actions/tickets";
+import toast from "react-hot-toast";
 
 export default function Advertisetable({ ticketsData }) {
   const activeAds = ticketsData.filter((t) => t.isAdvertised).length;
@@ -11,7 +12,7 @@ export default function Advertisetable({ ticketsData }) {
 
   const handleAdvertise = async (id, currentState) => {
     if (!currentState && advertisedCount >= 6) {
-      alert("You cannot advertise more than 6 tickets at a time.");
+      toast.warning("You cannot advertise more than 6 tickets at a time.");
       return;
     }
 
@@ -21,7 +22,7 @@ export default function Advertisetable({ ticketsData }) {
     if (result?.success) {
       setAdvertisedCount((prev) => (!currentState ? prev + 1 : prev - 1));
     } else {
-      alert(result?.message || "Something went wrong!");
+      toast.error(result?.message || "Something went wrong!");
     }
     setLoadingId(null);
   };

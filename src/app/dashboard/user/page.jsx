@@ -5,8 +5,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Camera, Mail, ShieldCheck, User, Edit2, Check, X, Loader2, UploadCloud, Lock } from 'lucide-react';
 import { authClient } from "@/lib/auth-client";
-import { updateProfileClientUI} from '@/lib/actions/manageUser';
+import { updateProfileAPI, updateProfileClientUI} from '@/lib/actions/manageUser';
 import "animate.css";
+import toast from 'react-hot-toast';
+
 
 export default function ProfileClientUI({ initialUser }) {
     const router = useRouter();
@@ -46,7 +48,7 @@ export default function ProfileClientUI({ initialUser }) {
                 const imgbbKey = process.env.NEXT_PUBLIC_IMGBB_KEY;
                 
                 if (!imgbbKey) {
-                    alert("ImgBB API Key is missing in .env.local file!");
+                    toast.error("ImgBB API Key is missing in .env.local file!");
                     setIsSaving(false);
                     return;
                 }
@@ -60,7 +62,7 @@ export default function ProfileClientUI({ initialUser }) {
                 if (imgbbData.success) {
                     finalImageUrl = imgbbData.data.url;
                 } else {
-                    alert(`ImgBB Error: ${imgbbData?.error?.message || "Upload failed"}`);
+                    toast.error(`ImgBB Error: ${imgbbData?.error?.message || "Upload failed"}`);
                     throw new Error("Failed to upload image to ImgBB");
                 }
             }
@@ -81,7 +83,7 @@ export default function ProfileClientUI({ initialUser }) {
                 setSelectedFile(null);
                 router.refresh(); 
             } else {
-                alert(`Error: ${updateRes.message || "Failed to update profile in database!"}`);
+                toast.error(`Error: ${updateRes.message || "Failed to update profile in database!"}`);
             }
         } catch (error) {
             console.error(error);

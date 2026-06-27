@@ -22,6 +22,7 @@ import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
 import "animate.css";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 
@@ -108,7 +109,7 @@ export default function MyBookedTickets() {
       };
     } catch (error) {
       console.error(error);
-      alert("Failed to download PDF.");
+      toast.error("Failed to download PDF.");
       setDownloadingId(null);
     }
   };
