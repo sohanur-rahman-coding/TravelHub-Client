@@ -1,6 +1,8 @@
 import Advertisetable from "@/components/Dashboard/Advertisetable";
 import { getAllTicketsForAdmin } from "@/lib/actions/manageUser";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdvertiseTicketsPage() {
   const response = await getAllTicketsForAdmin();
 

@@ -4,7 +4,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,13 +34,11 @@ export default function RootLayout({ children }) {
           enableSystem={false}
           disableTransitionOnChange
         >
-          <SmoothScrollProvider>
-            <Navbar />
-            <main className="max-w-7xl mx-auto px-2 min-h-screen">
-              {children}
-            </main>
-            <Footer />
-          </SmoothScrollProvider>
+          <Navbar />
+          <main className="max-w-7xl mx-auto px-2 min-h-screen">
+            {children}
+          </main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

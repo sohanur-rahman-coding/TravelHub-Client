@@ -3,6 +3,8 @@ import { getUserSession } from '@/lib/api/Session';
 import ProfileClientUI from './user/page';
 // import ProfileClientUI from './ProfileClientUI';
 
+export const dynamic = "force-dynamic";
+
 export default async function UserProfilePage() {
     const user = await getUserSession();
 

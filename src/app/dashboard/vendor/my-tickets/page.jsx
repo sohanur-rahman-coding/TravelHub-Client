@@ -4,11 +4,21 @@ import { getUserSession } from "@/lib/api/Session";
 import { getAddedTicketsByVendor } from "@/lib/api/tickets";
 import React from "react";
 
+export const dynamic = "force-dynamic";
+
 const myTickets = async () => {
   const session = await getUserSession();
+
+  if (!session) {
+    return (
+      <div className="p-6 text-center text-gray-500 font-bold">
+        Please log in to view your added tickets.
+      </div>
+    );
+  }
+
   const response = await getAddedTicketsByVendor(session.email);
 
-  
   const ticketsArray = Array.isArray(response) ? response : (response?.tickets || []);
 
   return (

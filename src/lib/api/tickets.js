@@ -19,9 +19,15 @@ export async function getAddedTicketsByVendor(vendorEmail) {
 // get advertisement data
 
 export async function getAdvertisementData() {
-  const res = await fetch(`${BASE_URL}/api/tickets/advertised`);
-  const data = await res.json();
-  return data;
+  try {
+    const res = await fetch(`${BASE_URL}/api/tickets/advertised`);
+    if (!res.ok) throw new Error("Failed to fetch advertisement data");
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error in getAdvertisementData:", error);
+    return [];
+  }
 }
 
 export async function getAllApprovedTickets(filters = {}) {

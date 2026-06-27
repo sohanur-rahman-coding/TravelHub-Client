@@ -3,6 +3,8 @@ import { getAllTicketsForAdmin } from "@/lib/actions/manageUser";
 import TicketTable from "@/components/Dashboard/TicketTable";
 // import TicketTable from "./TicketTable";
 
+export const dynamic = "force-dynamic";
+
 const ManageTicketsByAdmin = async () => {
   const tickets = await getAllTicketsForAdmin();
   // console.log("Fetched Tickets for Admin:", tickets);

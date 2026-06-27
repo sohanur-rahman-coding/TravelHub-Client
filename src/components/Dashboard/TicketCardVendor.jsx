@@ -25,7 +25,7 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
 
   if (!ticket) {
     return (
-      <div className="max-w-md w-full h-[520px] bg-slate-100 animate-pulse rounded-[2rem]" />
+      <div className="max-w-md w-full h-[520px] bg-slate-100 dark:bg-slate-800 animate-pulse rounded-[2rem]" />
     );
   }
 
@@ -70,10 +70,10 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
 
   const getTransportIcon = (transportType) => {
     switch (transportType?.toLowerCase()) {
-      case 'plane': return <Plane className="w-4 h-4 text-blue-600" />;
-      case 'train': return <Train className="w-4 h-4 text-blue-600" />;
-      case 'bus': return <Bus className="w-4 h-4 text-blue-600" />;
-      default: return <Ticket className="w-4 h-4 text-blue-600" />;
+      case 'plane': return <Plane className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+      case 'train': return <Train className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+      case 'bus': return <Bus className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+      default: return <Ticket className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
     }
   };
 
@@ -81,22 +81,22 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
     switch (statusValue?.toLowerCase()) {
       case 'approved':
         return (
-          <div className="flex items-center gap-1 bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-200">
-            <ShieldCheck className="w-3.5 h-3.5 text-green-600" />
+          <div className="flex items-center gap-1 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-400 px-3 py-1 rounded-full text-xs font-black border border-green-200 dark:border-green-800">
+            <ShieldCheck className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
             <span>Approved</span>
           </div>
         );
       case 'rejected':
         return (
-          <div className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-bold border border-red-200">
-            <ShieldAlert className="w-3.5 h-3.5 text-red-600" />
+          <div className="flex items-center gap-1 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 px-3 py-1 rounded-full text-xs font-black border border-red-200 dark:border-red-800">
+            <ShieldAlert className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
             <span>Rejected</span>
           </div>
         );
       default:
         return (
-          <div className="flex items-center gap-1 bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-xs font-bold border border-amber-200">
-            <ClockFading className="w-3.5 h-3.5 text-amber-600" />
+          <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full text-xs font-black border border-amber-200 dark:border-amber-800">
+            <ClockFading className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
             <span>Pending</span>
           </div>
         );
@@ -128,92 +128,100 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
   };
 
   return (
-    <div className="max-w-md w-full bg-white rounded-[2rem] border border-gray-100 shadow-md overflow-hidden flex flex-col justify-between font-sans mx-auto">
+    <div className="max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto transition-all duration-300">
       
-      {/* ইমেজের অংশে পরিবর্তন আনা হয়েছে */}
-      <div className="relative w-full h-60 bg-gray-100">
+      <div className="relative w-full h-60 !bg-gray-100 dark:!bg-slate-800 overflow-hidden">
         <Image
           src={imgSrc} 
           alt={title || "Ticket Image"}
           fill
-          unoptimized={true} // নেক্সট জেএস অপটিমাইজেশন বাইপাস করে দ্রুত রেন্ডার করার জন্য
-          priority={true} // পেজ লোড হওয়ার সাথে সাথে লোড হওয়ার জন্য
+          unoptimized={true}
           sizes="(max-width: 768px) 100vw, 450px"
           className="object-cover transition-opacity duration-300"
           onError={() => setImgSrc(FALLBACK_IMAGE)}
         />
         
-        <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-blue-50/95 px-4 py-1 rounded-full shadow-sm z-10">
+        <div className="absolute top-4 left-4 flex items-center gap-1.5 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-slate-700 z-10 transition-colors">
           {getTransportIcon(type)}
-          <span className="text-sm font-semibold text-blue-700 capitalize">{type}</span>
+          <span className="text-sm font-black !text-slate-900 dark:!text-gray-100 capitalize tracking-wide">{type}</span>
         </div>
 
         <div className="absolute top-4 right-4 shadow-sm z-10">
           {getStatusBadge(verificationStatus)}
         </div>
 
-        <div className="absolute bottom-4 right-4 bg-[#eef2ff] px-5 py-2 rounded-full shadow-sm border border-white z-10">
-          <span className="text-xl font-bold text-blue-600">${price}</span>
-          <span className="text-xs font-medium text-gray-500">/seat</span>
+        <div className="absolute bottom-4 right-4 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-5 py-2 rounded-full shadow-lg border border-gray-200 dark:border-slate-700 z-10 transition-colors">
+          <span className="text-xl font-black text-blue-600 dark:text-blue-400">${price}</span>
+          <span className="text-xs font-black text-slate-500 dark:text-gray-400 ml-1">/seat</span>
         </div>
       </div>
 
-      <div className="p-6 flex-1 flex flex-col justify-between">
+      <div className="p-6 flex-1 flex flex-col justify-between !bg-white dark:!bg-slate-900 transition-colors duration-300">
         <div>
-          <h3 className="text-xl font-bold text-gray-900 tracking-tight mb-4 line-clamp-2">{title}</h3>
+          <h3 className="text-xl font-black !text-slate-900 dark:!text-white tracking-tight mb-4 line-clamp-2 leading-snug">{title}</h3>
 
-          <div className="flex items-center gap-2 text-gray-800 font-semibold text-sm mb-3">
-            <MapPin className="w-4 h-4 text-gray-400 shrink-0" />
+          <div className="flex items-center gap-3 !text-slate-800 dark:!text-gray-200 font-black text-sm mb-4 !bg-slate-50 dark:!bg-slate-800/80 p-3 rounded-xl border border-gray-200 dark:border-slate-700 transition-colors">
+            <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
             <span className="truncate">{from}</span>
-            <ArrowRight className="w-3.5 h-3.5 text-gray-400 shrink-0 mx-0.5" />
+            <ArrowRight className="w-3.5 h-3.5 !text-slate-400 shrink-0 mx-0.5" />
             <span className="truncate">{to}</span>
           </div>
 
-          <div className="flex items-center gap-2 text-gray-500 font-medium text-sm mb-3">
-            <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
-            <span>{formatDepartureDate(date)}</span>
+          <div className="flex items-center gap-2 !text-slate-600 dark:!text-slate-400 font-bold text-sm mb-3 transition-colors">
+            <Calendar className="w-4 h-4 !text-slate-400 shrink-0" />
+            <span className="font-semibold">{formatDepartureDate(date)}</span>
           </div>
 
-          <div className="flex items-center justify-between text-gray-500 font-medium text-sm mb-5">
+          <div className="flex items-center justify-between !text-slate-600 dark:!text-slate-400 font-bold text-sm mb-5 transition-colors">
             <div className="flex items-center gap-2">
-              <Ticket className="w-4 h-4 text-gray-400 shrink-0" />
-              <span>{quantity} seats</span>
+              <Ticket className="w-4 h-4 !text-slate-400 shrink-0" />
+              <span><strong className="!text-slate-900 dark:!text-white">{quantity}</strong> seats</span>
             </div>
             {timeLeft && (
-              <span className="bg-gray-200 text-gray-800 px-2 py-0.5 text-xs font-semibold rounded font-mono">{timeLeft}</span>
+              <span className="!bg-slate-200 dark:!bg-slate-700 !text-slate-800 dark:!text-slate-200 px-2.5 py-1 text-[11px] font-black rounded-lg font-mono tracking-wider border-transparent transition-colors">{timeLeft}</span>
             )}
           </div>
 
           {perks && perks.length > 0 && (
             <div className="flex flex-wrap items-center gap-2 mt-4">
               {perks.slice(0, 3).map((perk, index) => (
-                <div key={index} className="flex items-center gap-1 bg-[#fffbeb] text-[#b45309] px-3 py-1 rounded-full text-xs font-semibold border border-[#fef3c7]">
-                  <span className="text-[#d97706] text-xs font-bold">✓</span>
+                <div key={index} className="flex items-center gap-1.5 !bg-amber-50 dark:!bg-amber-500/10 !text-amber-700 dark:!text-amber-400 px-3 py-1.5 rounded-full text-[11px] font-black border !border-amber-200 dark:!border-amber-500/20 transition-colors">
+                  <span className="text-amber-500 text-[10px]">✓</span>
                   {perk}
                 </div>
               ))}
-              {perks.length > 3 && <span className="text-xs font-semibold text-gray-500 ml-0.5">+{perks.length - 3}</span>}
+              {perks.length > 3 && <span className="text-xs font-black !text-slate-500 ml-0.5">+{perks.length - 3}</span>}
             </div>
           )}
         </div>
 
         <div className="mt-6 flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              disabled={isRejected}
-              className={`py-2.5 px-4 rounded-xl font-bold text-sm border flex items-center justify-center gap-2 transition-all cursor-pointer ${isRejected ? 'bg-gray-100 text-gray-400 border-gray-200 opacity-50 pointer-events-none cursor-not-allowed' : 'bg-white border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700 hover:text-blue-600'}`}
-            >
-              <Edit className="w-4 h-4" /> Update
-            </button>
+<button
+  onClick={() => setIsModalOpen(true)}
+  disabled={isRejected}
+  className={`py-3 px-4 rounded-xl font-semibold text-sm border flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+    isRejected
+      ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed"
+      : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/40 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-700 dark:hover:text-blue-300 hover:shadow-md"
+  }`}
+>
+  <Edit className="w-4 h-4" />
+  Update
+</button>
 
-            <button
-              onClick={() => setIsDeleteModalOpen(true)}
-              disabled={isRejected}
-              className={`py-2.5 px-4 rounded-xl font-bold text-sm border flex items-center justify-center gap-2 transition-all cursor-pointer ${isRejected ? 'bg-gray-100 text-gray-400 border-gray-200 opacity-50 pointer-events-none cursor-not-allowed' : 'bg-white border-gray-200 hover:border-red-300 hover:bg-red-50 text-gray-700 hover:text-red-600'}`}
-            >
-              <Trash2 className="w-4 h-4" /> Delete
-            </button>
+<button
+  onClick={() => setIsDeleteModalOpen(true)}
+  disabled={isRejected}
+  className={`py-3 px-4 rounded-xl font-semibold text-sm border flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+    isRejected
+      ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed"
+      : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 shadow-sm hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-700 hover:text-rose-700 dark:hover:text-rose-300 hover:shadow-md"
+  }`}
+>
+  <Trash2 className="w-4 h-4" />
+  Delete
+</button>
           </div>
         </div>
       </div>

@@ -4,6 +4,8 @@ import { Lock } from "lucide-react";
 import Link from "next/link";
 import "animate.css";
 
+export const dynamic = "force-dynamic";
+
 export default async function UserProfilePage() {
     const user = await getUserSession();
 

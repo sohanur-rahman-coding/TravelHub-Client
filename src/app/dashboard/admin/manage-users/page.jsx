@@ -1,6 +1,7 @@
 import UserTable from "@/components/Dashboard/UserTable";
 import { getAllUsersForAdmin } from "@/lib/api/Session";
 
+export const dynamic = "force-dynamic";
 
 export default async function ManageUsersPage() {
   const data = await getAllUsersForAdmin();

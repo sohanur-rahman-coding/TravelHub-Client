@@ -6,6 +6,8 @@ import { getUserSession } from "@/lib/api/Session";
 import DashboardSidebar from "@/components/Dashboard/DashboardSideBar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
+export const dynamic = "force-dynamic";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,8 +18,8 @@ export default async function DashboardRootLayout({ children }) {
   // console.log("DashboardRootLayout fetched user session:", user);
 
   return (
-    <html lang="en">
-      <body className={`${inter.className} h-full antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} h-full antialiased`} suppressHydrationWarning>
         <ThemeProvider
       attribute="class"
       defaultTheme="system"

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // রাউটার ইম্পোর্ট করা হলো
+import { useRouter } from "next/navigation";
 import { Button, Input, Label, Modal, Surface, TextField } from "@heroui/react";
 import { Loader2, UploadCloud, Check, Save } from "lucide-react";
 import { uploadImageToImgBB } from "@/lib/UploadImage";
@@ -29,7 +29,6 @@ export default function TicketUpdateModal({
   const [perks, setPerks] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
 
- 
   const [formData, setFormData] = useState({
     title: "",
     from: "",
@@ -40,7 +39,6 @@ export default function TicketUpdateModal({
     date: "",
   });
 
-  
   const formatIsoDateForInput = (isoString) => {
     if (!isoString) return "";
     if (isoString.length === 16) return isoString;
@@ -52,7 +50,6 @@ export default function TicketUpdateModal({
       return isoString;
     }
   };
-
 
   useEffect(() => {
     if (ticket && isOpen) {
@@ -71,7 +68,6 @@ export default function TicketUpdateModal({
   }, [ticket, isOpen]);
 
   if (!ticket || !isOpen) return null;
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -124,10 +120,8 @@ export default function TicketUpdateModal({
 
       if (onTicketUpdated) onTicketUpdated();
       onClose();
-      
-   
-      router.refresh(); 
 
+      router.refresh();
     } catch (error) {
       console.error("Update failed:", error);
       alert("Failed to update ticket. Please try again.");
@@ -138,22 +132,21 @@ export default function TicketUpdateModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <Modal.Backdrop>
+      <Modal.Backdrop className="bg-black/40 dark:bg-black/70">
         <Modal.Container placement="auto">
-          <Modal.Dialog className="sm:max-w-2xl w-full">
-            {/* এখানে onClick ইভেন্টটি যুক্ত করা হয়েছে যেন ক্রসে ক্লিক করলে মোডাল অফ হয় */}
-            <Modal.CloseTrigger onClick={onClose} />
-            
-            <Modal.Header>
-              <Modal.Heading className="text-xl font-black text-foreground">
+          <Modal.Dialog className="sm:max-w-2xl w-full bg-white! dark:bg-zinc-950! border border-zinc-200 dark:border-zinc-800">
+            <Modal.CloseTrigger onClick={onClose} className="text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200" />
+
+            <Modal.Header className="border-b border-zinc-100 dark:border-zinc-800">
+              <Modal.Heading className="text-xl font-black text-zinc-900 dark:text-zinc-50">
                 Update Ticket Details
               </Modal.Heading>
             </Modal.Header>
-            
-            <Modal.Body className="p-6">
-              <Surface variant="default" className="bg-background border-none p-0">
+
+            <Modal.Body className="p-6 bg-white dark:bg-zinc-950">
+              <Surface variant="default" className="bg-white dark:bg-zinc-950 border-none p-0">
                 <form onSubmit={onSubmit} className="flex flex-col gap-4">
-                  
+
                   <TextField className="w-full" variant="secondary">
                     <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
                       Ticket Title *
@@ -164,6 +157,7 @@ export default function TicketUpdateModal({
                       onChange={handleInputChange}
                       required
                       placeholder="e.g. London to Paris"
+                      className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
                     />
                   </TextField>
 
@@ -172,14 +166,26 @@ export default function TicketUpdateModal({
                       <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
                         From *
                       </Label>
-                      <Input name="from" value={formData.from} onChange={handleInputChange} required />
+                      <Input
+                        name="from"
+                        value={formData.from}
+                        onChange={handleInputChange}
+                        required
+                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
+                      />
                     </TextField>
 
                     <TextField variant="secondary">
                       <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
                         To *
                       </Label>
-                      <Input name="to" value={formData.to} onChange={handleInputChange} required />
+                      <Input
+                        name="to"
+                        value={formData.to}
+                        onChange={handleInputChange}
+                        required
+                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
+                      />
                     </TextField>
 
                     <TextField variant="secondary">
@@ -193,6 +199,7 @@ export default function TicketUpdateModal({
                         value={formData.price}
                         onChange={handleInputChange}
                         required
+                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
                       />
                     </TextField>
 
@@ -207,6 +214,7 @@ export default function TicketUpdateModal({
                         value={formData.quantity}
                         onChange={handleInputChange}
                         required
+                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
                       />
                     </TextField>
 
@@ -218,10 +226,14 @@ export default function TicketUpdateModal({
                         name="type"
                         value={formData.type}
                         onChange={handleInputChange}
-                        className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 h-10 text-sm text-foreground outline-none focus:border-[#0B3977] transition-all"
+                        className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 h-10 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-[#0B3977] dark:focus:border-blue-500 transition-all"
                       >
                         {["Bus", "Train", "Plane", "Launch"].map((t) => (
-                          <option key={t} value={t}>
+                          <option
+                            key={t}
+                            value={t}
+                            className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
+                          >
                             {t}
                           </option>
                         ))}
@@ -238,11 +250,11 @@ export default function TicketUpdateModal({
                         value={formData.date}
                         onChange={handleInputChange}
                         required
+                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 [color-scheme:light] dark:[color-scheme:dark]"
                       />
                     </TextField>
                   </div>
 
-                  {/* Perks Section */}
                   <div className="flex flex-col gap-2">
                     <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                       Perks / Amenities
@@ -253,7 +265,7 @@ export default function TicketUpdateModal({
                         return (
                           <label
                             key={p}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${isChecked ? "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900 text-[#0B3977] dark:text-blue-400" : "bg-zinc-50 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-foreground"}`}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${isChecked ? "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900 text-[#0B3977] dark:text-blue-400" : "bg-zinc-50 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"}`}
                           >
                             <input
                               type="checkbox"
@@ -269,12 +281,11 @@ export default function TicketUpdateModal({
                     </div>
                   </div>
 
-                  {/* Image Section */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
                       Ticket Image (Leave empty to keep current)
                     </label>
-                    <label className="w-full h-32 border-2 border-dashed border-zinc-300 dark:border-zinc-800 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-900/30 transition-all overflow-hidden relative group">
+                    <label className="w-full h-32 border-2 border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all overflow-hidden relative group">
                       <input
                         name="imageFile"
                         type="file"
@@ -290,8 +301,8 @@ export default function TicketUpdateModal({
                         />
                       ) : (
                         <>
-                          <UploadCloud className="w-8 h-8 text-zinc-400 group-hover:text-[#0B3977] transition-colors" />
-                          <span className="text-xs font-bold text-zinc-500">
+                          <UploadCloud className="w-8 h-8 text-zinc-400 dark:text-zinc-500 group-hover:text-[#0B3977] dark:group-hover:text-blue-400 transition-colors" />
+                          <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
                             Click to replace photo
                           </span>
                         </>
@@ -299,19 +310,20 @@ export default function TicketUpdateModal({
                     </label>
                   </div>
 
-                  <Modal.Footer className="px-0 pb-0 mt-4">
+                  <Modal.Footer className="px-0 pb-0 mt-4 border-t border-zinc-100 dark:border-zinc-800 pt-4">
                     <Button
                       type="button"
                       variant="secondary"
                       onClick={onClose}
                       disabled={loading}
+                      className="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                     >
                       Cancel
                     </Button>
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="bg-[#0B3977] text-white hover:bg-blue-700 font-bold flex items-center gap-2 rounded-xl"
+                      className="bg-[#0B3977] dark:bg-blue-700 text-white hover:bg-blue-700 dark:hover:bg-blue-600 font-bold flex items-center gap-2 rounded-xl"
                     >
                       {loading ? (
                         <Loader2 size={16} className="animate-spin" />
