@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getTokenServer } from "../getTokenServer";
 import { authClient } from "../auth-client";
 
-const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
 // add new ticket(done)
 export async function addTicketAction(ticketData) {

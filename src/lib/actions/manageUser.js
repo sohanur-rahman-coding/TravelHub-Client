@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { authClient } from "../auth-client";
 import { getTokenServer } from "../getTokenServer";
 
-const BASE_URL = process.env.SERVER_URL || "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
 // approved or reject ,, admin (done)
 export const updateTicketStatus = async (ticketId, status) => {

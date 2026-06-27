@@ -5,7 +5,7 @@ import { authClient } from "../auth-client";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SERVER_URL ||
-  process.env.SERVER_URL ||
+  
   "http://localhost:5000";
 
 export const getUserSession = async () => {
