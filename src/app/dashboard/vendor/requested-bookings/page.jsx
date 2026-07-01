@@ -51,7 +51,7 @@ export default function RequestedBookings() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-20 text-center animate-pulse text-xl font-bold text-gray-900 dark:text-gray-100">
+      <div className="max-w-6xl mx-auto px-4 py-20 text-center animate-pulse text-xl font-bold text-black dark:text-white">
         Loading requested bookings...
       </div>
     );
