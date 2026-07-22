@@ -1,9 +1,8 @@
-
 import { getUserSession } from "@/lib/api/Session";
 import { Lock } from "lucide-react";
 import Link from "next/link";
-import "animate.css";
 import ProfileClientUI from "@/app/dashboard/user/page";
+import { motion } from "framer-motion";
 
 export const dynamic = "force-dynamic";
 
@@ -12,12 +11,25 @@ export default async function UserProfilePage() {
 
     if (!user) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 transition-colors duration-300 animate__animated animate__fadeIn">
-                <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-10 sm:p-12 max-w-md w-full text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] animate__animated animate__zoomIn animate__faster">
+            <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                className="flex flex-col items-center justify-center min-h-[70vh] px-4 transition-colors duration-300"
+            >
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-10 sm:p-12 max-w-md w-full text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]"
+                >
                     
-                    <div className="w-20 h-20 bg-blue-50 dark:bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner animate__animated animate__pulse animate__infinite animate__slower">
+                    <motion.div 
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                        className="w-20 h-20 bg-blue-50 dark:bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner"
+                    >
                         <Lock size={36} className="text-blue-600 dark:text-blue-400" />
-                    </div>
+                    </motion.div>
                     
                     <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
                         Access Restricted
@@ -33,14 +45,18 @@ export default async function UserProfilePage() {
                     >
                         Go to Login
                     </Link>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         );
     }
 
     return (
-        <div className="animate__animated animate__fadeIn animate__faster">
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+        >
             <ProfileClientUI initialUser={user} />
-        </div>
+        </motion.div>
     );
 }

@@ -20,9 +20,9 @@ import { authClient } from "@/lib/auth-client";
 import { getUserBookings } from "@/lib/api/tickets";
 import { toPng } from "html-to-image";
 import jsPDF from "jspdf";
-import "animate.css";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 
@@ -122,18 +122,27 @@ export default function MyBookedTickets() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center transition-colors duration-300 animate__animated animate__fadeIn">
-        <div className="p-5 !bg-white dark:!bg-slate-800 rounded-full shadow-xl animate-bounce">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center transition-colors duration-300">
+        <motion.div 
+          animate={{ y: [0, -12, 0] }}
+          transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
+          className="p-5 !bg-white dark:!bg-slate-800 rounded-full shadow-xl"
+        >
           <Ticket className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 transition-colors duration-300 animate__animated animate__zoomIn">
-        <div className="!bg-white dark:!bg-slate-900 backdrop-blur-2xl border border-gray-200 dark:border-slate-800 rounded-[2.5rem] p-10 max-w-md w-full text-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 transition-colors duration-300">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="!bg-white dark:!bg-slate-900 backdrop-blur-2xl border border-gray-200 dark:border-slate-800 rounded-[2.5rem] p-10 max-w-md w-full text-center shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+        >
           <div className="w-20 h-20 bg-blue-50 dark:bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <Ticket className="w-10 h-10 text-blue-600 dark:text-blue-400" />
           </div>
@@ -141,11 +150,11 @@ export default function MyBookedTickets() {
           <p className="!text-slate-500 dark:!text-gray-400 font-bold mb-8">Please log in to view your booked tickets.</p>
           <Link
             href="/signin"
-            className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-6 rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-blue-500/30"
+            className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-6 rounded-2xl transition-all active:scale-[0.98] shadow-lg shadow-blue-500/30 border-transparent"
           >
             Go to Login <ArrowRight size={18} />
           </Link>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -153,7 +162,12 @@ export default function MyBookedTickets() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative overflow-hidden font-sans transition-colors duration-500">
       
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 animate__animated animate__fadeInDown">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10"
+      >
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 mb-3 transition-colors">
             <Ticket size={14} className="text-blue-600 dark:text-blue-400" />
@@ -167,10 +181,15 @@ export default function MyBookedTickets() {
             <span className="text-xs font-bold !text-slate-400 dark:!text-slate-500 uppercase tracking-widest">Total Bookings</span>
             <span className="text-xl font-black !text-slate-900 dark:!text-white tabular-nums leading-none">{bookings.length}</span>
         </div>
-      </div>
+      </motion.div>
 
       {bookings.length === 0 ? (
-        <div className="!bg-white dark:!bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[2.5rem] p-16 text-center shadow-lg max-w-2xl mx-auto animate__animated animate__fadeInUp transition-colors">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="!bg-white dark:!bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[2.5rem] p-16 text-center shadow-lg max-w-2xl mx-auto transition-colors"
+        >
           <div className="w-24 h-24 !bg-slate-50 dark:!bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
             <ReceiptText size={40} className="!text-slate-300 dark:!text-slate-600" />
           </div>
@@ -178,11 +197,11 @@ export default function MyBookedTickets() {
           <p className="!text-slate-500 dark:!text-slate-400 font-bold mb-8 max-w-md mx-auto">You haven't booked any tickets yet. Explore destinations and book your next adventure.</p>
           <Link
             href="/allTickets"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-black px-8 py-4 rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 inline-flex items-center gap-2 text-sm tracking-wide"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-black px-8 py-4 rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 inline-flex items-center gap-2 text-sm tracking-wide border-transparent"
           >
             Explore Tickets <ArrowRight size={16} />
           </Link>
-        </div>
+        </motion.div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {bookings.map((booking, index) => {
@@ -198,7 +217,12 @@ export default function MyBookedTickets() {
             const PNR = booking._id.slice(-6).toUpperCase();
 
             return (
-              <div key={booking._id} className="animate__animated animate__fadeInUp" style={{ animationDelay: `${index * 0.08}s` }}>
+              <motion.div 
+                key={booking._id} 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
+              >
                 
                 {/* 🟢 Hidden PDF Ticket - Fully forced to Light Mode colors for perfect PDF generation */}
                 <div className="absolute top-[-9999px] left-[-9999px]">
@@ -408,7 +432,7 @@ export default function MyBookedTickets() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

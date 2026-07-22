@@ -6,6 +6,7 @@ import { Plane, Train, Bus, MapPin, Calendar, Ticket, ArrowRight, Edit, Trash2, 
 import TicketUpdateModal from './TicketUpdateModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 import { deleteTicket } from '@/lib/actions/tickets';
+import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
@@ -129,7 +130,12 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
   };
 
   return (
-    <div className="max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto transition-all duration-300">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto transition-all duration-300"
+    >
       
       <div className="relative w-full h-60 !bg-gray-100 dark:!bg-slate-800 overflow-hidden">
         <Image
@@ -198,31 +204,31 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
 
         <div className="mt-6 flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-3">
-<button
-  onClick={() => setIsModalOpen(true)}
-  disabled={isRejected}
-  className={`py-3 px-4 rounded-xl font-semibold text-sm border flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
-    isRejected
-      ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed"
-      : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/40 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-700 dark:hover:text-blue-300 hover:shadow-md"
-  }`}
->
-  <Edit className="w-4 h-4" />
-  Update
-</button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              disabled={isRejected}
+              className={`py-3 px-4 rounded-xl font-semibold text-sm border flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+                isRejected
+                  ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed"
+                  : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 shadow-sm hover:bg-blue-50 dark:hover:bg-blue-950/40 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-700 dark:hover:text-blue-300 hover:shadow-md"
+              }`}
+            >
+              <Edit className="w-4 h-4" />
+              Update
+            </button>
 
-<button
-  onClick={() => setIsDeleteModalOpen(true)}
-  disabled={isRejected}
-  className={`py-3 px-4 rounded-xl font-semibold text-sm border flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
-    isRejected
-      ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed"
-      : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 shadow-sm hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-700 hover:text-rose-700 dark:hover:text-rose-300 hover:shadow-md"
-  }`}
->
-  <Trash2 className="w-4 h-4" />
-  Delete
-</button>
+            <button
+              onClick={() => setIsDeleteModalOpen(true)}
+              disabled={isRejected}
+              className={`py-3 px-4 rounded-xl font-semibold text-sm border flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer ${
+                isRejected
+                  ? "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 opacity-60 cursor-not-allowed"
+                  : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 shadow-sm hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:border-rose-300 dark:hover:border-rose-700 hover:text-rose-700 dark:hover:text-rose-300 hover:shadow-md"
+              }`}
+            >
+              <Trash2 className="w-4 h-4" />
+              Delete
+            </button>
           </div>
         </div>
       </div>
@@ -243,7 +249,7 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
         title="Delete Ticket"
       />
 
-    </div>
+    </motion.div>
   );
 };
 

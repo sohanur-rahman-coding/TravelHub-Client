@@ -6,7 +6,9 @@ import { CheckCircle, Loader2, UploadCloud, Check, Plus } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { uploadImageToImgBB } from "@/lib/UploadImage"; 
 import { addTicketAction } from "@/lib/actions/tickets";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+
 const ALL_PERKS = ["AC", "Non-AC", "WiFi", "Breakfast", "Blanket", "Water Bottle", "Sleeper"];
 
 export default function AddTicketPage({ onTicketAdded }) {
@@ -42,7 +44,7 @@ export default function AddTicketPage({ onTicketAdded }) {
       
       let uploadedImageUrl = "";
 
-      // ১. ImgBB-তে ইমেজ আপলোড প্রসেস স্টার্ট
+      // ১. ImgBB-তে ইমেজ আপলোড প্রসেস স্টาร์ট
       if (imageFile && imageFile.size > 0) {
         uploadedImageUrl = await uploadImageToImgBB(imageFile);
       } else {
@@ -67,8 +69,6 @@ export default function AddTicketPage({ onTicketAdded }) {
         verificationStatus: "pending",
       };
 
-      // console.log("Submitting Ticket Data to DB:", ticketData);
-
       await addTicketAction(ticketData);
 
       setSuccess(true);
@@ -78,7 +78,6 @@ export default function AddTicketPage({ onTicketAdded }) {
 
       if (onTicketAdded) onTicketAdded();
     } catch (error) {
-      // console.error("Submission failed:", error);
       toast.error("Failed to upload image or submit ticket. Please try again.");
     } finally {
       setLoading(false);
@@ -86,16 +85,25 @@ export default function AddTicketPage({ onTicketAdded }) {
   };
 
   return (
-    <div className="max-w-2xl w-full mx-auto">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="max-w-2xl w-full mx-auto"
+    >
       <h2 className="text-2xl font-black text-foreground mb-6">Add New Ticket</h2>
       
       {success && (
-        <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 mb-5 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 mb-5 flex items-center gap-3"
+        >
           <CheckCircle size={18} className="text-emerald-600 shrink-0" />
           <p className="text-sm text-emerald-700 dark:text-emerald-400 font-semibold">
             Ticket submitted for admin review. You will be notified once approved.
           </p>
-        </div>
+        </motion.div>
       )}
 
       <Surface variant="default" className="bg-background border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xl shadow-zinc-100/50 dark:shadow-none">
@@ -187,7 +195,7 @@ export default function AddTicketPage({ onTicketAdded }) {
           </div>
 
           <div className="mt-4 border-t border-zinc-200 dark:border-zinc-800 pt-4 flex gap-3 justify-end">
-            <Button type="submit" disabled={loading} className="w-full bg-[#0B3977] text-white hover:bg-blue-700 py-3.5 px-6 font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition-all rounded-xl shadow-lg">
+            <Button type="submit" disabled={loading} className="w-full bg-[#0B3977] text-white hover:bg-blue-700 py-3.5 px-6 font-bold flex items-center justify-center gap-2 disabled:opacity-50 transition-all rounded-xl shadow-lg border-transparent cursor-pointer">
               {loading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
               {loading ? "Uploading Image..." : "Add Ticket for Review"}
             </Button>
@@ -195,6 +203,6 @@ export default function AddTicketPage({ onTicketAdded }) {
 
         </form>
       </Surface>
-    </div>
+    </motion.div>
   );
 }

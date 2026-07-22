@@ -5,6 +5,7 @@ import { CheckCircle, XCircle } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { getVendorBookings } from "@/lib/api/tickets";
 import { updateBookingStatus } from "@/lib/actions/tickets";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 export default function RequestedBookings() {
@@ -58,7 +59,12 @@ export default function RequestedBookings() {
   }
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="p-6 max-w-6xl mx-auto"
+    >
       <h2 className="text-2xl font-black text-black dark:text-white mb-6">
         Requested Bookings
       </h2>
@@ -96,9 +102,12 @@ export default function RequestedBookings() {
                   </td>
                 </tr>
               ) : (
-                bookings.map((booking) => (
-                  <tr
+                bookings.map((booking, index) => (
+                  <motion.tr
                     key={booking._id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
                     className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     <td className="p-4 font-medium text-gray-900 dark:text-white">
@@ -167,13 +176,13 @@ export default function RequestedBookings() {
                         </span>
                       )}
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))
               )}
             </tbody>
           </table>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

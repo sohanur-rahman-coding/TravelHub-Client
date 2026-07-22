@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { CreditCard, CalendarDays, ReceiptText, Loader2, ArrowRight } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { getUserTransactions } from "@/lib/api/tickets";
 import Link from "next/link";
-import "animate.css";
+import { motion } from "framer-motion";
 
 export default function TransactionHistory() {
   const { data: session } = authClient.useSession();
@@ -47,18 +48,27 @@ export default function TransactionHistory() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] transition-colors duration-300 animate__animated animate__fadeIn">
-        <div className="p-5 bg-white dark:bg-gray-800 rounded-full shadow-xl animate-bounce">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] transition-colors duration-300">
+        <motion.div 
+          animate={{ y: [0, -12, 0] }}
+          transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
+          className="p-5 bg-white dark:bg-gray-800 rounded-full shadow-xl"
+        >
           <Loader2 className="w-8 h-8 text-blue-600 dark:text-blue-400 animate-spin" />
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 transition-colors duration-300 animate__animated animate__zoomIn">
-        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl border border-gray-100 dark:border-gray-700 rounded-[2.5rem] p-10 max-w-md w-full text-center shadow-2xl">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 transition-colors duration-300">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl border border-gray-100 dark:border-gray-700 rounded-[2.5rem] p-10 max-w-md w-full text-center shadow-2xl"
+        >
           <div className="w-20 h-20 bg-blue-50 dark:bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <ReceiptText className="w-10 h-10 text-blue-600 dark:text-blue-400" />
           </div>
@@ -66,11 +76,11 @@ export default function TransactionHistory() {
           <p className="text-gray-500 dark:text-gray-400 font-medium mb-8">Please log in to view your secure transaction history.</p>
           <Link
             href="/signin"
-            className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-6 rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-500/30"
+            className="inline-flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-6 rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-500/30 border-transparent"
           >
             Go to Login <ArrowRight size={18} />
           </Link>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -78,7 +88,12 @@ export default function TransactionHistory() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 w-full transition-colors duration-300 font-sans overflow-hidden">
       
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12 animate__animated animate__fadeInDown">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12"
+      >
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 mb-4">
             <ReceiptText size={14} className="text-blue-600 dark:text-blue-400" />
@@ -92,10 +107,15 @@ export default function TransactionHistory() {
             <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Total Records</span>
             <span className="text-xl font-black text-gray-900 dark:text-white tabular-nums leading-none">{transactions.length}</span>
         </div>
-      </div>
+      </motion.div>
 
       {transactions.length === 0 ? (
-        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-[2rem] p-16 text-center shadow-lg animate__animated animate__fadeInUp">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-[2.5rem] p-16 text-center shadow-lg"
+        >
           <div className="w-24 h-24 bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-6">
             <CreditCard size={40} className="text-gray-300 dark:text-gray-600" />
           </div>
@@ -105,9 +125,14 @@ export default function TransactionHistory() {
           <p className="text-gray-500 dark:text-gray-400 font-medium max-w-md mx-auto">
             You haven't made any successful payments yet. Once you book a ticket, your receipt will appear here.
           </p>
-        </div>
+        </motion.div>
       ) : (
-        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden animate__animated animate__fadeInUp">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl border border-gray-100 dark:border-gray-700 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] overflow-hidden"
+        >
           <div className="overflow-x-auto scrollbar-hide">
             <table className="w-full text-left border-collapse min-w-[750px]">
               <thead>
@@ -120,10 +145,12 @@ export default function TransactionHistory() {
               </thead>
               <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                 {transactions.map((tx, index) => (
-                  <tr
+                  <motion.tr
                     key={tx._id}
-                    className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors group animate__animated animate__fadeInUp"
-                    style={{ animationDelay: `${index * 0.08}s` }}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.08, ease: "easeOut" }}
+                    className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors group"
                   >
                     <td className="px-8 py-6 whitespace-nowrap">
                       <div className="flex items-center gap-3">
@@ -159,12 +186,12 @@ export default function TransactionHistory() {
                         ${tx.totalPrice}
                       </span>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

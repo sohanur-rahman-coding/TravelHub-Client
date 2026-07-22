@@ -3,7 +3,7 @@ import "./globals.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Home, Compass, ArrowLeft } from "lucide-react";
-import "animate.css";
+import { motion } from "framer-motion";
 
 export default function NotFoundPage() {
   const router = useRouter();
@@ -17,13 +17,22 @@ export default function NotFoundPage() {
 
       {/* 🟢 Main Content Card with Glassmorphism */}
       <div className="relative z-10 max-w-2xl w-full px-4">
-        <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-3xl border border-white/50 dark:border-gray-800 p-10 md:p-16 rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] text-center animate__animated animate__zoomIn">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-3xl border border-white/50 dark:border-gray-800 p-10 md:p-16 rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] text-center"
+        >
 
           {/* Icon */}
           <div className="flex justify-center mb-8">
-            <div className="p-5 bg-blue-50 dark:bg-blue-500/10 rounded-full border border-blue-100 dark:border-blue-500/20 shadow-inner animate__animated animate__pulse animate__infinite animate__slower">
+            <motion.div 
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+              className="p-5 bg-blue-50 dark:bg-blue-500/10 rounded-full border border-blue-100 dark:border-blue-500/20 shadow-inner"
+            >
               <Compass className="w-14 h-14 text-blue-600 dark:text-blue-400" strokeWidth={1.5} />
-            </div>
+            </motion.div>
           </div>
 
           {/* 404 Text Gradient */}
@@ -57,7 +66,7 @@ export default function NotFoundPage() {
             </Link>
           </div>
 
-        </div>
+        </motion.div>
       </div>
     </div>
   );

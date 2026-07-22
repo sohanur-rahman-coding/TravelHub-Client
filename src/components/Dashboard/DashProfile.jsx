@@ -2,7 +2,7 @@ import { getUserSession } from '@/lib/api/Session';
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import "animate.css";
+import * as motion from "framer-motion/client";
 
 const DashProfile = async () => {
     const user = await getUserSession();
@@ -18,26 +18,46 @@ const DashProfile = async () => {
     const currentRoleColor = roleColors[user.role?.toLowerCase()] || roleColors.user;
 
     return (
-        <div className="flex items-center justify-end w-full px-4 sm:px-6 py-2 bg-transparent animate__animated animate__fadeInRight animate__faster">
+        <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="flex items-center justify-end w-full px-4 sm:px-6 py-2 bg-transparent"
+        >
             <div className="flex items-center gap-4 sm:gap-5 text-right bg-white/60 dark:bg-gray-900/60 backdrop-blur-xl px-5 py-2.5 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] hover:shadow-lg transition-all duration-500">
                 
                 <div className="flex flex-col items-end">
                     <div className="flex items-center gap-3">
-                        <span className={`text-[10px] uppercase tracking-widest font-black px-3 py-1 rounded-full border shadow-sm animate__animated animate__fadeInDown animate__delay-1s ${currentRoleColor}`}>
+                        <motion.span 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: 0.2 }}
+                            className={`text-[10px] uppercase tracking-widest font-black px-3 py-1 rounded-full border shadow-sm ${currentRoleColor}`}
+                        >
                             {user.role || "User"}
-                        </span>
-                        <h2 className="text-sm sm:text-base font-black text-gray-900 dark:text-white tracking-tight leading-none animate__animated animate__fadeInLeft">
+                        </motion.span>
+                        <motion.h2 
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3, delay: 0.1 }}
+                            className="text-sm sm:text-base font-black text-gray-900 dark:text-white tracking-tight leading-none"
+                        >
                             {user.name}
-                        </h2>
+                        </motion.h2>
                     </div>
-                    <p className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1.5 font-bold tracking-wide animate__animated animate__fadeInUp">
+                    <motion.p 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: 0.3 }}
+                        className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 mt-1.5 font-bold tracking-wide"
+                    >
                         {user.email}
-                    </p>
+                    </motion.p>
                 </div>
 
                 <Link 
                     href="/dashboard" 
-                    className="relative w-12 h-12 rounded-full border-[3px] border-white dark:border-gray-800 overflow-hidden bg-gray-50 dark:bg-gray-800 flex items-center justify-center font-black text-xl text-gray-400 dark:text-gray-500 shrink-0 shadow-md hover:shadow-blue-500/30 transition-all duration-300 hover:scale-110 active:scale-95 group animate__animated animate__zoomIn animate__delay-1s"
+                    className="relative w-12 h-12 rounded-full border-[3px] border-white dark:border-gray-800 overflow-hidden bg-gray-50 dark:bg-gray-800 flex items-center justify-center font-black text-xl text-gray-400 dark:text-gray-500 shrink-0 shadow-md hover:shadow-blue-500/30 transition-all duration-300 hover:scale-110 active:scale-95 group"
                 >
                     {user.image || user.profilePicture ? (
                         <Image 
@@ -53,8 +73,9 @@ const DashProfile = async () => {
                 </Link>
                 
             </div>
-        </div>
+        </motion.div>
     );
 };
 
-export default DashProfile;
+import { memo } from 'react';
+export default memo(DashProfile);

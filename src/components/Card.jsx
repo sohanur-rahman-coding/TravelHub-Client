@@ -12,7 +12,7 @@ import {
   Ticket,
   ArrowRight,
 } from "lucide-react";
-import "animate.css";
+import { motion } from "framer-motion";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
@@ -84,8 +84,13 @@ const Card = ({ ticket }) => {
   };
 
   return (
-    // 🟢 bg-white এর বদলে !bg-white dark:!bg-slate-900 ব্যবহার করা হয়েছে
-    <div className="max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate__animated animate__fadeInUp animate__faster">
+    // 🟢 bg-white এর বদলে !bg-white dark:!bg-slate-900 ব্যবহার করা হয়েছে
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+    >
       
       <div className="relative w-full h-60 bg-gray-100! dark:!bg-slate-800 overflow-hidden">
         <Image
@@ -179,7 +184,7 @@ const Card = ({ ticket }) => {
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

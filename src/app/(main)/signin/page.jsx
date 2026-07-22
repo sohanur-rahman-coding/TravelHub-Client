@@ -16,7 +16,7 @@ import {
   Label,
   TextField,
 } from "@heroui/react";
-import "animate.css";
+import { motion } from "framer-motion";
 
 const Login = () => {
   const router = useRouter();
@@ -55,26 +55,45 @@ const Login = () => {
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50! dark:bg-gray-900! px-4 sm:px-6 lg:px-8 antialiased overflow-hidden transition-colors duration-500 py-12">
       
       {/* 🟢 Premium Glassmorphism Card */}
-      <div className="w-full max-w-[440px] bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl border border-gray-100 dark:border-gray-700 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-8 sm:p-10 md:p-12 transition-all duration-300 animate__animated animate__zoomIn animate__faster">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="w-full max-w-[440px] bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl border border-gray-100 dark:border-gray-700 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-8 sm:p-10 md:p-12 transition-all duration-300"
+      >
         
         {/* Header Section */}
-        <div className="text-center mb-8 select-none animate__animated animate__fadeInDown" style={{ animationDelay: '0.1s' }}>
-          <div className="inline-flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 px-3 py-1.5 rounded-full mb-5 shadow-sm animate__animated animate__pulse animate__infinite">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.4 }}
+          className="text-center mb-8 select-none"
+        >
+          <motion.div 
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="inline-flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 px-3 py-1.5 rounded-full mb-5 shadow-sm"
+          >
             <ShieldCheck size={14} />
             Secure Portal
-          </div>
+          </motion.div>
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white mt-2 mb-2 leading-tight">
             Welcome Back
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
             Enter your credentials to access your dashboard
           </p>
-        </div>
+        </motion.div>
 
         <Form className="flex flex-col gap-6" onSubmit={onSubmit}>
           
           {/* Email Field */}
-          <div className="w-full animate__animated animate__fadeInUp" style={{ animationDelay: '0.2s' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="w-full"
+          >
             <TextField
               className="w-full group"
               isRequired
@@ -102,10 +121,15 @@ const Login = () => {
               />
               <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
             </TextField>
-          </div>
+          </motion.div>
 
           {/* Password Field */}
-          <div className="w-full animate__animated animate__fadeInUp" style={{ animationDelay: '0.3s' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+            className="w-full"
+          >
             <TextField name="password" isRequired className="w-full group">
               <div className="flex justify-between items-center mb-2">
                 <Label className="text-[11px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">
@@ -142,18 +166,27 @@ const Login = () => {
                     className="text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all duration-300 mr-1 cursor-pointer"
                   >
                     {isVisible ? (
-                      <Eye className="w-4 h-4 animate__animated animate__fadeIn" />
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
+                        <Eye className="w-4 h-4" />
+                      </motion.div>
                     ) : (
-                      <EyeOff className="w-4 h-4 animate__animated animate__fadeIn" />
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
+                        <EyeOff className="w-4 h-4" />
+                      </motion.div>
                     )}
                   </Button>
                 </InputGroup.Suffix>
               </InputGroup>
             </TextField>
-          </div>
+          </motion.div>
 
           {/* Submit Button */}
-          <div className="animate__animated animate__fadeInUp w-full mt-2" style={{ animationDelay: '0.4s' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.4 }}
+            className="w-full mt-2"
+          >
             <Button
               type="submit"
               disabled={isSubmitting}
@@ -168,19 +201,29 @@ const Login = () => {
                 </>
               )}
             </Button>
-          </div>
+          </motion.div>
 
           {/* Divider */}
-          <div className="flex items-center my-1 select-none animate__animated animate__fadeIn" style={{ animationDelay: '0.5s' }}>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+            className="flex items-center my-1 select-none"
+          >
             <div className="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
             <span className="flex-shrink mx-4 text-gray-400 dark:text-gray-500 font-black text-[10px] tracking-[0.2em]">
               OR
             </span>
             <div className="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
-          </div>
+          </motion.div>
 
           {/* Google Button */}
-          <div className="flex justify-center w-full animate__animated animate__fadeInUp" style={{ animationDelay: '0.6s' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
+            className="flex justify-center w-full"
+          >
             <Button
               variant="bordered"
               className="w-full h-14 border border-gray-200 dark:border-gray-700 rounded-2xl font-black text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500 transition-all text-sm group cursor-pointer shadow-sm flex items-center justify-center gap-3"
@@ -190,10 +233,15 @@ const Login = () => {
               Continue with Google
               <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
             </Button>
-          </div>
+          </motion.div>
 
           {/* Footer Link */}
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 font-bold mt-2 animate__animated animate__fadeInUp" style={{ animationDelay: '0.7s' }}>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.4 }}
+            className="text-center text-sm text-gray-500 dark:text-gray-400 font-bold mt-2"
+          >
             Don't have an account?{" "}
             <Link
               href="/signup"
@@ -201,9 +249,9 @@ const Login = () => {
             >
               Create one
             </Link>
-          </p>
+          </motion.p>
         </Form>
-      </div>
+      </motion.div>
     </div>
   );
 };

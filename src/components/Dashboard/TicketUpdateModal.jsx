@@ -6,6 +6,7 @@ import { Button, Input, Label, Modal, Surface, TextField } from "@heroui/react";
 import { Loader2, UploadCloud, Check, Save } from "lucide-react";
 import { uploadImageToImgBB } from "@/lib/UploadImage";
 import { updateTicket } from "@/lib/actions/tickets";
+import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
 const ALL_PERKS = [
@@ -132,214 +133,233 @@ export default function TicketUpdateModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <Modal.Backdrop className="bg-black/40 dark:bg-black/70">
-        <Modal.Container placement="auto">
-          <Modal.Dialog className="sm:max-w-2xl w-full bg-white! dark:bg-zinc-950! border border-zinc-200 dark:border-zinc-800">
-            <Modal.CloseTrigger onClick={onClose} className="text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200" />
+    <AnimatePresence>
+      {isOpen && (
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <Modal.Backdrop className="bg-black/40 dark:bg-black/70 fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full flex items-center justify-center"
+            >
+              <Modal.Container placement="auto" className="w-full max-w-2xl">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="w-full"
+                >
+                  <Modal.Dialog className="sm:max-w-2xl w-full bg-white! dark:bg-zinc-950! border border-zinc-200 dark:border-zinc-800 rounded-[2rem] overflow-hidden shadow-2xl">
+                    <Modal.CloseTrigger onClick={onClose} className="text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200 cursor-pointer" />
 
-            <Modal.Header className="border-b border-zinc-100 dark:border-zinc-800">
-              <Modal.Heading className="text-xl font-black text-zinc-900 dark:text-zinc-50">
-                Update Ticket Details
-              </Modal.Heading>
-            </Modal.Header>
+                    <Modal.Header className="border-b border-zinc-100 dark:border-zinc-800 p-6 pb-4">
+                      <Modal.Heading className="text-xl font-black text-zinc-900 dark:text-zinc-50">
+                        Update Ticket Details
+                      </Modal.Heading>
+                    </Modal.Header>
 
-            <Modal.Body className="p-6 bg-white dark:bg-zinc-950">
-              <Surface variant="default" className="bg-white dark:bg-zinc-950 border-none p-0">
-                <form onSubmit={onSubmit} className="flex flex-col gap-4">
+                    <Modal.Body className="p-6 bg-white dark:bg-zinc-950 max-h-[75vh] overflow-y-auto">
+                      <Surface variant="default" className="bg-white dark:bg-zinc-950 border-none p-0">
+                        <form onSubmit={onSubmit} className="flex flex-col gap-4">
 
-                  <TextField className="w-full" variant="secondary">
-                    <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
-                      Ticket Title *
-                    </Label>
-                    <Input
-                      name="title"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="e.g. London to Paris"
-                      className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-600"
-                    />
-                  </TextField>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <TextField variant="secondary">
-                      <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
-                        From *
-                      </Label>
-                      <Input
-                        name="from"
-                        value={formData.from}
-                        onChange={handleInputChange}
-                        required
-                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
-                      />
-                    </TextField>
-
-                    <TextField variant="secondary">
-                      <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
-                        To *
-                      </Label>
-                      <Input
-                        name="to"
-                        value={formData.to}
-                        onChange={handleInputChange}
-                        required
-                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
-                      />
-                    </TextField>
-
-                    <TextField variant="secondary">
-                      <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
-                        Price / Seat (USD) *
-                      </Label>
-                      <Input
-                        name="price"
-                        type="number"
-                        min="1"
-                        value={formData.price}
-                        onChange={handleInputChange}
-                        required
-                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
-                      />
-                    </TextField>
-
-                    <TextField variant="secondary">
-                      <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
-                        Total Seats *
-                      </Label>
-                      <Input
-                        name="quantity"
-                        type="number"
-                        min="1"
-                        value={formData.quantity}
-                        onChange={handleInputChange}
-                        required
-                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800"
-                      />
-                    </TextField>
-
-                    <div className="flex flex-col gap-1">
-                      <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
-                        Transport Type *
-                      </label>
-                      <select
-                        name="type"
-                        value={formData.type}
-                        onChange={handleInputChange}
-                        className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 h-10 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-[#0B3977] dark:focus:border-blue-500 transition-all"
-                      >
-                        {["Bus", "Train", "Plane", "Launch"].map((t) => (
-                          <option
-                            key={t}
-                            value={t}
-                            className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
-                          >
-                            {t}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <TextField variant="secondary">
-                      <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5">
-                        Departure Date & Time *
-                      </Label>
-                      <Input
-                        name="date"
-                        type="datetime-local"
-                        value={formData.date}
-                        onChange={handleInputChange}
-                        required
-                        className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 [color-scheme:light] dark:[color-scheme:dark]"
-                      />
-                    </TextField>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
-                      Perks / Amenities
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {ALL_PERKS.map((p) => {
-                        const isChecked = perks.includes(p);
-                        return (
-                          <label
-                            key={p}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${isChecked ? "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900 text-[#0B3977] dark:text-blue-400" : "bg-zinc-50 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"}`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              onChange={() => togglePerk(p)}
-                              className="sr-only"
+                          <TextField className="w-full" variant="secondary">
+                            <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                              Ticket Title *
+                            </Label>
+                            <Input
+                              name="title"
+                              value={formData.title}
+                              onChange={handleInputChange}
+                              required
+                              placeholder="e.g. London to Paris"
+                              className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 rounded-xl px-4 py-3"
                             />
-                            {isChecked && <Check size={10} strokeWidth={3} />}
-                            {p}
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
+                          </TextField>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
-                      Ticket Image (Leave empty to keep current)
-                    </label>
-                    <label className="w-full h-32 border-2 border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all overflow-hidden relative group">
-                      <input
-                        name="imageFile"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="sr-only"
-                      />
-                      {imagePreview ? (
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <>
-                          <UploadCloud className="w-8 h-8 text-zinc-400 dark:text-zinc-500 group-hover:text-[#0B3977] dark:group-hover:text-blue-400 transition-colors" />
-                          <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                            Click to replace photo
-                          </span>
-                        </>
-                      )}
-                    </label>
-                  </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <TextField variant="secondary">
+                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                                From *
+                              </Label>
+                              <Input
+                                name="from"
+                                value={formData.from}
+                                onChange={handleInputChange}
+                                required
+                                className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3"
+                              />
+                            </TextField>
 
-                  <Modal.Footer className="px-0 pb-0 mt-4 border-t border-zinc-100 dark:border-zinc-800 pt-4">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      onClick={onClose}
-                      disabled={loading}
-                      className="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={loading}
-                      className="bg-[#0B3977] dark:bg-blue-700 text-white hover:bg-blue-700 dark:hover:bg-blue-600 font-bold flex items-center gap-2 rounded-xl"
-                    >
-                      {loading ? (
-                        <Loader2 size={16} className="animate-spin" />
-                      ) : (
-                        <Save size={16} />
-                      )}
-                      {loading ? "Saving Changes..." : "Update Ticket"}
-                    </Button>
-                  </Modal.Footer>
-                </form>
-              </Surface>
-            </Modal.Body>
-          </Modal.Dialog>
-        </Modal.Container>
-      </Modal.Backdrop>
-    </Modal>
+                            <TextField variant="secondary">
+                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                                To *
+                              </Label>
+                              <Input
+                                name="to"
+                                value={formData.to}
+                                onChange={handleInputChange}
+                                required
+                                className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3"
+                              />
+                            </TextField>
+
+                            <TextField variant="secondary">
+                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                                Price / Seat (USD) *
+                              </Label>
+                              <Input
+                                name="price"
+                                type="number"
+                                min="1"
+                                value={formData.price}
+                                onChange={handleInputChange}
+                                required
+                                className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3"
+                              />
+                            </TextField>
+
+                            <TextField variant="secondary">
+                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                                Total Seats *
+                              </Label>
+                              <Input
+                                name="quantity"
+                                type="number"
+                                min="1"
+                                value={formData.quantity}
+                                onChange={handleInputChange}
+                                required
+                                className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3"
+                              />
+                            </TextField>
+
+                            <div className="flex flex-col gap-1">
+                              <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                                Transport Type *
+                              </label>
+                              <select
+                                name="type"
+                                value={formData.type}
+                                onChange={handleInputChange}
+                                className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 h-12 text-sm text-zinc-900 dark:text-zinc-100 outline-none focus:border-[#0B3977] dark:focus:border-blue-500 transition-all cursor-pointer"
+                              >
+                                {["Bus", "Train", "Plane", "Launch"].map((t) => (
+                                  <option
+                                    key={t}
+                                    value={t}
+                                    className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
+                                  >
+                                    {t}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            <TextField variant="secondary">
+                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                                Departure Date & Time *
+                              </Label>
+                              <Input
+                                name="date"
+                                type="datetime-local"
+                                value={formData.date}
+                                onChange={handleInputChange}
+                                required
+                                className="bg-zinc-50 dark:bg-zinc-900/50 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 [color-scheme:light] dark:[color-scheme:dark]"
+                              />
+                            </TextField>
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                              Perks / Amenities
+                            </label>
+                            <div className="flex flex-wrap gap-2">
+                              {ALL_PERKS.map((p) => {
+                                const isChecked = perks.includes(p);
+                                return (
+                                  <label
+                                    key={p}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all border ${isChecked ? "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900 text-[#0B3977] dark:text-blue-400" : "bg-zinc-50 dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"}`}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={() => togglePerk(p)}
+                                      className="sr-only"
+                                    />
+                                    {isChecked && <Check size={10} strokeWidth={3} />}
+                                    {p}
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                              Ticket Image (Leave empty to keep current)
+                            </label>
+                            <label className="w-full h-32 border-2 border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all overflow-hidden relative group">
+                              <input
+                                name="imageFile"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="sr-only"
+                              />
+                              {imagePreview ? (
+                                <img
+                                  src={imagePreview}
+                                  alt="Preview"
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <>
+                                  <UploadCloud className="w-8 h-8 text-zinc-400 dark:text-zinc-500 group-hover:text-[#0B3977] dark:group-hover:text-blue-400 transition-colors" />
+                                  <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
+                                    Click to replace photo
+                                  </span>
+                                </>
+                              )}
+                            </label>
+                          </div>
+
+                          <Modal.Footer className="px-0 pb-0 mt-4 border-t border-zinc-100 dark:border-zinc-800 pt-4 flex gap-3 justify-end">
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={onClose}
+                              disabled={loading}
+                              className="bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-xl cursor-pointer"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              type="submit"
+                              disabled={loading}
+                              className="bg-[#0B3977] dark:bg-blue-700 text-white hover:bg-blue-700 dark:hover:bg-blue-600 font-bold flex items-center gap-2 rounded-xl cursor-pointer"
+                            >
+                              {loading ? (
+                                <Loader2 size={16} className="animate-spin" />
+                              ) : (
+                                <Save size={16} />
+                              )}
+                              {loading ? "Saving Changes..." : "Update Ticket"}
+                            </Button>
+                          </Modal.Footer>
+                        </form>
+                      </Surface>
+                    </Modal.Body>
+                  </Modal.Dialog>
+                </motion.div>
+              </Modal.Container>
+            </motion.div>
+          </Modal.Backdrop>
+        </Modal>
+      )}
+    </AnimatePresence>
   );
 }

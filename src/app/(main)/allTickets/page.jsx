@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Card from "@/components/Card";
 import { getAllApprovedTickets } from "@/lib/api/tickets";
 import { Search, MapPin, Filter, ArrowUpDown, Loader2, Ticket, ChevronLeft, ChevronRight } from "lucide-react";
-import 'animate.css';
+import { motion } from "framer-motion";
 
 const AllTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -63,20 +63,42 @@ const AllTickets = () => {
     setPage(1);
   };
 
+  // Framer motion variants for reusability
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+  };
+
+  const fadeInDown = {
+    hidden: { opacity: 0, y: -30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+  };
+
   return (
     <div className="min-h-screen py-16 font-sans transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-12 animate__animated animate__fadeInDown">
+        <motion.div 
+          className="text-center mb-12"
+          initial="hidden"
+          animate="visible"
+          variants={fadeInDown}
+        >
           <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight mb-5">
             Find Your Next Destination
           </h1>
           <p className="text-gray-500 dark:text-gray-400 font-medium max-w-2xl mx-auto text-base md:text-lg">
             Search, filter, and sort through our wide selection of tickets to find the perfect journey for you.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-gray-100 dark:border-gray-800 p-6 mb-14 animate__animated animate__fadeInUp animate__delay-1s">
+        <motion.div 
+          className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-gray-100 dark:border-gray-800 p-6 mb-14"
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          transition={{ delay: 0.2 }}
+        >
           <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
             
             <div className="relative group">
@@ -153,16 +175,26 @@ const AllTickets = () => {
               </button>
             </div>
           </form>
-        </div>
+        </motion.div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 gap-4 animate__animated animate__fadeIn">
+          <motion.div 
+            className="flex flex-col items-center justify-center py-32 gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
             <div className="p-4 bg-white dark:bg-gray-900 rounded-full shadow-lg">
                <Loader2 size={40} className="text-blue-600 animate-spin" />
             </div>
-          </div>
+          </motion.div>
         ) : tickets.length === 0 ? (
-          <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-100 dark:border-gray-800 rounded-[2rem] p-16 text-center shadow-lg max-w-2xl mx-auto animate__animated animate__zoomIn">
+          <motion.div 
+            className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-100 dark:border-gray-800 rounded-[2rem] p-16 text-center shadow-lg max-w-2xl mx-auto"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          >
             <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
                <Ticket size={48} className="text-gray-300 dark:text-gray-600" />
             </div>
@@ -174,53 +206,70 @@ const AllTickets = () => {
             >
               Clear All Filters
             </button>
-          </div>
+          </motion.div>
         ) : (
-          <div className="animate__animated animate__fadeIn">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-16">
               {tickets.map((ticket, index) => (
-                <div key={ticket._id} className={`w-full animate__animated animate__fadeInUp`} style={{ animationDelay: `${index * 0.1}s` }}>
+                <motion.div 
+                  key={ticket._id} 
+                  className="w-full"
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeInUp}
+                  transition={{ delay: index * 0.1 }}
+                >
                   <Card ticket={ticket} />
-                </div>
+                </motion.div>
               ))}
             </div>
 
             {totalPages > 1 && (
-  <div className="flex justify-center items-center gap-3 animate__animated animate__fadeInUp animate__delay-1s">
-    <button
-      onClick={() => setPage(page - 1)}
-      disabled={page === 1}
-      className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 !bg-white dark:!bg-gray-900 !text-gray-600 dark:!text-gray-400 hover:!bg-gray-50 dark:hover:!bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-    >
-      <ChevronLeft size={20} />
-    </button>
-    
-    <div className="flex gap-2 !bg-white dark:!bg-gray-900 p-1.5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-      {[...Array(totalPages)].map((_, idx) => (
-        <button
-          key={idx + 1}
-          onClick={() => setPage(idx + 1)}
-          className={`w-11 h-11 rounded-lg font-bold text-sm transition-all ${
-            page === idx + 1
-              ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-              : "bg-transparent !text-gray-600 dark:!text-gray-400 hover:!bg-gray-100 dark:hover:!bg-gray-800"
-          }`}
-        >
-          {idx + 1}
-        </button>
-      ))}
-    </div>
+              <motion.div 
+                className="flex justify-center items-center gap-3"
+                initial="hidden"
+                animate="visible"
+                variants={fadeInUp}
+                transition={{ delay: 0.4 }}
+              >
+                <button
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 1}
+                  className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 !bg-white dark:!bg-gray-900 !text-gray-600 dark:!text-gray-400 hover:!bg-gray-50 dark:hover:!bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                
+                <div className="flex gap-2 !bg-white dark:!bg-gray-900 p-1.5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                  {[...Array(totalPages)].map((_, idx) => (
+                    <button
+                      key={idx + 1}
+                      onClick={() => setPage(idx + 1)}
+                      className={`w-11 h-11 rounded-lg font-bold text-sm transition-all ${
+                        page === idx + 1
+                          ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                          : "bg-transparent !text-gray-600 dark:!text-gray-400 hover:!bg-gray-100 dark:hover:!bg-gray-800"
+                      }`}
+                    >
+                      {idx + 1}
+                    </button>
+                  ))}
+                </div>
 
-    <button
-      onClick={() => setPage(page + 1)}
-      disabled={page === totalPages}
-      className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 !bg-white dark:!bg-gray-900 !text-gray-600 dark:!text-gray-400 hover:!bg-gray-50 dark:hover:!bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-    >
-      <ChevronRight size={20} />
-    </button>
-  </div>
-)}
-          </div>
+                <button
+                  onClick={() => setPage(page + 1)}
+                  disabled={page === totalPages}
+                  className="p-3 rounded-xl border border-gray-200 dark:border-gray-700 !bg-white dark:!bg-gray-900 !text-gray-600 dark:!text-gray-400 hover:!bg-gray-50 dark:hover:!bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </motion.div>
+            )}
+          </motion.div>
         )}
       </div>
     </div>

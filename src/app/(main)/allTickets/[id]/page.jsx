@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import BookingModal from "@/components/BookingModal";
-import "animate.css";
+import { motion } from "framer-motion";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
@@ -58,9 +58,13 @@ function CountdownBlocks({ targetDate }) {
 
   if (timeLeft.expired) {
     return (
-      <div className="!bg-red-50 dark:!bg-red-500/10 border !border-red-100 dark:!border-red-500/20 !text-red-600 dark:!text-red-400 font-bold p-4 rounded-2xl text-center w-full animate__animated animate__fadeIn">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="!bg-red-50 dark:!bg-red-500/10 border !border-red-100 dark:!border-red-500/20 !text-red-600 dark:!text-red-400 font-bold p-4 rounded-2xl text-center w-full"
+      >
         This journey has departed
-      </div>
+      </motion.div>
     );
   }
 
@@ -105,6 +109,7 @@ export default function TicketDetailPage({ params }) {
         const data = await res.json();
         setTicket(data);
       } catch (error) {
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -112,30 +117,55 @@ export default function TicketDetailPage({ params }) {
     if (id) fetchTicket();
   }, [id]);
 
+  // Framer motion variants
+  const fadeInLeft = {
+    hidden: { opacity: 0, x: -40 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
+
+  const fadeInRight = {
+    hidden: { opacity: 0, x: 40 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
+
+  const fadeInDown = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen !bg-gray-50 dark:!bg-gray-900 flex flex-col items-center justify-center transition-colors duration-300">
-        <div className="p-5 !bg-white dark:!bg-gray-800 rounded-full shadow-xl animate-bounce">
+        <motion.div 
+          animate={{ y: [0, -15, 0] }}
+          transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
+          className="p-5 !bg-white dark:!bg-gray-800 rounded-full shadow-xl"
+        >
           <Ticket className="w-10 h-10 !text-blue-600 dark:!text-blue-400" />
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   if (!ticket) {
     return (
-      <div className="min-h-screen !bg- dark:!bg-gray-900 flex flex-col items-center justify-center px-4 transition-colors duration-300">
-        <div className="!bg-white dark:!bg-gray-800 border !border-gray-100 dark:!border-gray-700 rounded-[2rem] p-16 text-center shadow-2xl max-w-lg w-full animate__animated animate__zoomIn">
+      <div className="min-h-screen dark:!bg-gray-900 flex flex-col items-center justify-center px-4 transition-colors duration-300">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className="!bg-white dark:!bg-gray-800 border !border-gray-100 dark:!border-gray-700 rounded-[2rem] p-16 text-center shadow-2xl max-w-lg w-full"
+        >
           <Ticket size={56} className="mx-auto !text-gray-300 dark:!text-gray-600 mb-6" />
           <h2 className="text-3xl font-black !text-gray-900 dark:!text-white mb-3">Ticket Not Found</h2>
           <p className="!text-gray-500 dark:!text-gray-400 mb-8">The ticket you are looking for might have been removed or is temporarily unavailable.</p>
           <button
             onClick={() => router.push("/")}
-            className="w-full px-6 py-4 !bg-blue-600 hover:!bg-blue-700 text-white rounded-xl font-bold transition-colors shadow-lg shadow-blue-600/20"
+            className="w-full px-6 py-4 !bg-blue-600 hover:!bg-blue-700 text-white rounded-xl font-bold transition-colors shadow-lg shadow-blue-600/20 cursor-pointer border-transparent"
           >
             Back to Home
           </button>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -168,19 +198,27 @@ export default function TicketDetailPage({ params }) {
     <div className="!bg-white dark:!bg-gray-900 min-h-screen pb-20 pt-10 transition-colors duration-300 font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <button
+        <motion.button
+          initial="hidden"
+          animate="visible"
+          variants={fadeInDown}
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-sm !text-gray-500 hover:!text-gray-900 dark:!text-gray-400 dark:hover:!text-white mb-8 transition-colors font-bold group w-fit animate__animated animate__fadeInDown cursor-pointer"
+          className="flex items-center gap-2 text-sm !text-gray-500 hover:!text-gray-900 dark:!text-gray-400 dark:hover:!text-white mb-8 transition-colors font-bold group w-fit cursor-pointer border-transparent"
         >
           <div className="p-2 !bg-white dark:!bg-gray-800 rounded-full shadow-sm border !border-gray-200 dark:!border-gray-700 group-hover:-translate-x-1 transition-transform">
             <ChevronLeft size={16} />
           </div>
           Back to Tickets
-        </button>
+        </motion.button>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8 flex flex-col gap-8 animate__animated animate__fadeInLeft">
-            
+          
+          <motion.div 
+            className="lg:col-span-8 flex flex-col gap-8"
+            initial="hidden"
+            animate="visible"
+            variants={fadeInLeft}
+          >
             <div className="rounded-[2.5rem] overflow-hidden h-[450px] w-full relative shadow-2xl dark:shadow-none border !border-gray-100 dark:!border-gray-800 group">
               <Image
                 src={ticket.image || FALLBACK_IMAGE}
@@ -298,19 +336,30 @@ export default function TicketDetailPage({ params }) {
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
 
           <div className="lg:col-span-4">
             <div className="flex flex-col gap-6 sticky top-[100px] pb-8">
               
-              <div className="!bg-white/90 dark:!bg-gray-800/90 backdrop-blur-xl border !border-gray-100 dark:!border-gray-700 rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex flex-col items-center animate__animated animate__fadeInRight">
+              <motion.div 
+                className="!bg-white/90 dark:!bg-gray-800/90 backdrop-blur-xl border !border-gray-100 dark:!border-gray-700 rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex flex-col items-center"
+                initial="hidden"
+                animate="visible"
+                variants={fadeInRight}
+              >
                 <span className="text-[11px] !text-gray-400 dark:!text-gray-500 font-black uppercase tracking-widest mb-5 block w-full text-center sm:text-left">
                   Departure Countdown
                 </span>
                 <CountdownBlocks targetDate={ticket.date} />
-              </div>
+              </motion.div>
 
-              <div className="!bg-white/90 dark:!bg-gray-800/90 backdrop-blur-xl border !border-gray-100 dark:!border-gray-700 rounded-[2rem] p-8 flex flex-col gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] animate__animated animate__fadeInRight animate__delay-1s">
+              <motion.div 
+                className="!bg-white/90 dark:!bg-gray-800/90 backdrop-blur-xl border !border-gray-100 dark:!border-gray-700 rounded-[2rem] p-8 flex flex-col gap-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]"
+                initial="hidden"
+                animate="visible"
+                variants={fadeInRight}
+                transition={{ delay: 0.2 }}
+              >
                 <h2 className="font-black text-2xl !text-gray-900 dark:!text-white">Secure Your Seat</h2>
 
                 {isExpired && (
@@ -331,7 +380,7 @@ export default function TicketDetailPage({ params }) {
                       Please{" "}
                       <button
                         onClick={() => router.push("/signin")}
-                        className="font-black underline decoration-2 underline-offset-2 cursor-pointer hover:!text-orange-900 dark:hover:!text-orange-200 transition-colors"
+                        className="font-black underline decoration-2 underline-offset-2 cursor-pointer hover:!text-orange-900 dark:hover:!text-orange-200 transition-colors border-transparent"
                       >
                         log in
                       </button>{" "}
@@ -341,10 +390,14 @@ export default function TicketDetailPage({ params }) {
                 )}
 
                 {booked ? (
-                  <div className="!bg-green-50 dark:!bg-green-500/10 border !border-green-200 dark:!border-green-500/20 rounded-2xl p-5 flex items-center gap-3">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="!bg-green-50 dark:!bg-green-500/10 border !border-green-200 dark:!border-green-500/20 rounded-2xl p-5 flex items-center gap-3"
+                  >
                     <CheckCircle size={24} className="!text-green-600 dark:!text-green-400 shrink-0" />
                     <p className="text-base !text-green-700 dark:!text-green-300 font-black">Booking confirmed!</p>
-                  </div>
+                  </motion.div>
                 ) : (
                   <button
                     onClick={() => setModalOpen(true)}
@@ -369,7 +422,7 @@ export default function TicketDetailPage({ params }) {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>

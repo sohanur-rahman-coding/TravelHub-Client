@@ -19,6 +19,7 @@ import {
 } from "recharts";
 import { authClient } from "@/lib/auth-client";
 import { getVendorStats } from "@/lib/api/tickets";
+import { motion } from "framer-motion";
 
 export default function RevenueOverview() {
   const { data: session } = authClient.useSession();
@@ -57,16 +58,26 @@ export default function RevenueOverview() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2
-          className="animate-spin text-blue-600 dark:text-blue-400"
-          size={40}
-        />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+        >
+          <Loader2
+            className="text-blue-600 dark:text-blue-400"
+            size={40}
+          />
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto font-sans">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="p-6 max-w-7xl mx-auto font-sans"
+    >
       <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6">
         Revenue Overview
       </h2>
@@ -91,9 +102,12 @@ export default function RevenueOverview() {
             icon: <DollarSign size={20} />,
             grad: "from-amber-500 to-amber-600",
           },
-        ].map(({ label, value, icon, grad }) => (
-          <div
+        ].map(({ label, value, icon, grad }, idx) => (
+          <motion.div
             key={label}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: idx * 0.1, ease: "easeOut" }}
             className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md dark:hover:shadow-gray-900/40 transition-shadow"
           >
             <div
@@ -109,12 +123,17 @@ export default function RevenueOverview() {
                 {value}
               </p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-2 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+          className="lg:col-span-2 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm"
+        >
           <h3 className="font-black text-gray-900 dark:text-white mb-5">
             Monthly Revenue (USD)
           </h3>
@@ -174,9 +193,14 @@ export default function RevenueOverview() {
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
 
-        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
+          className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm"
+        >
           <h3 className="font-black text-gray-900 dark:text-white mb-5">
             Ticket Status
           </h3>
@@ -222,10 +246,15 @@ export default function RevenueOverview() {
               />
             </PieChart>
           </ResponsiveContainer>
-        </div>
+        </motion.div>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.4, ease: "easeOut" }}
+        className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-6 shadow-sm"
+      >
         <h3 className="font-black text-gray-900 dark:text-white mb-5">
           Monthly Bookings
         </h3>
@@ -268,7 +297,7 @@ export default function RevenueOverview() {
             />
           </BarChart>
         </ResponsiveContainer>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
