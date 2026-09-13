@@ -2,8 +2,8 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Pagination, Navigation } from "swiper/modules";
-import { motion } from "framer-motion";
-import { Button } from "@heroui/react";
+import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight, Plane, Bus, Globe2 } from "lucide-react";
 import "swiper/css";
 import "swiper/css/effect-fade";
@@ -15,13 +15,15 @@ const slides = [
     title: "Fly Across Continents",
     subtitle: "Premium air travel connecting you to the world.",
     icon: <Plane className="w-6 h-6" />,
-    bg: "bg-[url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2000')]"
+    imgSrc: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2000",
+    priority: true,
   },
   {
     title: "Ground-Breaking Bus Travel",
     subtitle: "Reliable, comfortable, and luxurious land journeys.",
     icon: <Bus className="w-6 h-6" />,
-    bg: "bg-[url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=2000')]"
+    imgSrc: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=2000",
+    priority: false,
   }
 ];
 
@@ -38,16 +40,19 @@ export function PremiumTravelBanner() {
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index} className="relative">
-            {/* High-quality background */}
-            <div className={`absolute inset-0 ${slide.bg} bg-cover bg-center`} />
+            {/* Optimized Next.js Image for LCP */}
+            <Image
+              src={slide.imgSrc}
+              alt={slide.title}
+              fill
+              priority={slide.priority}
+              sizes="100vw"
+              className="object-cover object-center"
+              quality={75}
+            />
             <div className="absolute inset-0 bg-black/60" />
 
-            <div className="relative h-full flex flex-col justify-center px-10 md:px-20 max-w-5xl">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
+            <div className="relative h-full flex flex-col justify-center px-10 md:px-20 max-w-5xl banner-content-anim">
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full w-fit text-cyan-400 font-semibold mb-6 border border-white/20">
                   {slide.icon} <span>{slide.title.includes("Air") ? "GLOBAL AIR" : "PREMIUM GROUND"}</span>
                 </div>
@@ -60,15 +65,15 @@ export function PremiumTravelBanner() {
                   {slide.subtitle}
                 </p>
 
-                {/* Professional High-Contrast Button */}
+                {/* High-Contrast CTA Button */}
                 <div className="flex gap-4">
-                  <Button 
-                    className="bg-cyan-500 hover:bg-cyan-400 text-white font-bold px-10 py-7 rounded-full text-lg shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all transform hover:scale-105"
+                  <Link
+                    href="/allTickets"
+                    className="inline-flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-white font-bold px-10 py-4 rounded-full text-lg shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-colors"
                   >
                     View All Tickets <ArrowRight className="w-5 h-5" />
-                  </Button>
+                  </Link>
                 </div>
-              </motion.div>
             </div>
           </SwiperSlide>
         ))}

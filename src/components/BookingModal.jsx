@@ -1,11 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { X, Minus, Plus, Check, Ticket, Loader2, XCircle } from "lucide-react";
+import {
+  X,
+  Minus,
+  Plus,
+  MapPin,
+  Calendar,
+  Loader2,
+  Ticket,
+  ArrowRight,
+  CheckCircle2,
+  Tag,
+} from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import "animate.css";
 import toast from "react-hot-toast";
-
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
@@ -21,8 +30,10 @@ export default function BookingModal({
 
   if (!isOpen || !ticket) return null;
 
-  const formatDepartureDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+  const totalPrice = ticket.price * qty;
+
+  const formatDate = (dateString) =>
+    new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -30,31 +41,25 @@ export default function BookingModal({
       minute: "2-digit",
       hour12: true,
     });
-  };
 
   const handleConfirmBooking = async () => {
     if (qty > ticket.quantity) {
-      toast.warning("Booking quantity cannot be greater than available tickets.");
+      toast.warning("Booking quantity cannot exceed available seats.");
       return;
     }
-
     setIsBooking(true);
-
     try {
       const bookingData = {
         ticketId: ticket._id,
         ticketTitle: ticket.title,
         vendorEmail: ticket.vendorEmail,
-        userEmail: userEmail,
+        userEmail,
         quantity: qty,
-        totalPrice: ticket.price * qty,
+        totalPrice,
         status: "pending",
         bookingDate: new Date().toISOString(),
       };
-
       const { data: token } = await authClient.token();
-      console.log(token, "token");
-
       const res = await fetch(`${BASE_URL}/api/bookings`, {
         method: "POST",
         headers: {
@@ -63,16 +68,12 @@ export default function BookingModal({
         },
         body: JSON.stringify(bookingData),
       });
-
       const responseData = await res.json();
-
-      if (!res.ok)
-        throw new Error(responseData.message || "Failed to save booking");
-
-      toast.success("Booking Successful!");
+      if (!res.ok) throw new Error(responseData.message || "Failed to save booking");
+      toast.success("Booking confirmed!");
       onSuccess();
       onClose();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong while booking.");
     } finally {
       setIsBooking(false);
@@ -80,121 +81,185 @@ export default function BookingModal({
   };
 
   return (
+    /* ── Backdrop ── */
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 animate__animated animate__fadeIn animate__faster"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.55)", backdropFilter: "blur(12px)" }}
       onClick={onClose}
     >
+      {/* ── Dialog ── */}
       <div
-        className="bg-white! dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[2.5rem] w-full max-w-md shadow-2xl animate__animated animate__zoomIn animate__faster overflow-hidden flex flex-col transition-colors duration-300"
         onClick={(e) => e.stopPropagation()}
+        className="
+          relative w-full max-w-md overflow-hidden
+          rounded-[2rem]
+          border border-zinc-200/80 dark:border-zinc-800/70
+          bg-white/95 dark:bg-zinc-950
+          shadow-[0_32px_64px_rgba(0,0,0,0.18)] dark:shadow-[0_32px_64px_rgba(0,0,0,0.7)]
+          backdrop-blur-2xl
+          transition-colors duration-300
+          animate-modal-in
+        "
+        style={{
+          animation: "modalIn 0.28s cubic-bezier(0.34,1.56,0.64,1) both",
+        }}
       >
-        <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-white dark:bg-gray-900 z-10 transition-colors duration-300">
+
+        {/* ── Decorative blobs ── */}
+        <div className="pointer-events-none absolute -right-16 -top-16 size-40 rounded-full bg-zinc-200/40 blur-3xl dark:bg-indigo-950/30" />
+        <div className="pointer-events-none absolute -left-16 -bottom-16 size-40 rounded-full bg-zinc-100/60 blur-3xl dark:bg-blue-950/20" />
+
+        {/* ── Header ── */}
+        <div className="relative flex items-center justify-between px-7 pt-7 pb-5 border-b border-zinc-100 dark:border-zinc-800/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center animate__animated animate__rotateIn transition-colors duration-300">
-              <Ticket size={20} className="text-blue-600 dark:text-blue-400" />
+            <div className="flex size-10 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+              <Ticket size={18} className="text-zinc-900 dark:text-white" />
             </div>
-            <h2 className="text-xl font-black text-white transition-colors duration-300">Confirm Booking</h2>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500">
+                Seat Reservation
+              </p>
+              <h2 className="text-lg font-black tracking-tight text-zinc-900 dark:text-white leading-tight">
+                Confirm Booking
+              </h2>
+            </div>
           </div>
+
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition-all group cursor-pointer"
+            aria-label="Close modal"
+            className="flex size-9 items-center justify-center rounded-full border border-zinc-200/70 bg-transparent text-zinc-400 transition-all hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-white cursor-pointer"
           >
-            <X size={20} className="text-gray-500 dark:text-gray-400 group-hover:rotate-90 group-hover:text-red-500 transition-all duration-300" />
+            <X size={16} className="transition-transform duration-300 hover:rotate-90" />
           </button>
         </div>
 
-        <div className="p-7 flex flex-col gap-6 bg-gray-50/50 dark:bg-gray-900/50 transition-colors duration-300">
-          
-          <div className="bg-white dark:bg-gray-800/80 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm animate__animated animate__fadeInUp transition-colors duration-300" style={{ animationDelay: '0.1s' }}>
-            <p className="font-black text-gray-900 dark:text-white text-base mb-2 leading-tight transition-colors duration-300">
+        {/* ── Body ── */}
+        <div className="relative px-7 py-5 flex flex-col gap-5">
+
+          {/* Journey Card */}
+          <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800/80 bg-zinc-50/80 dark:bg-zinc-900/60 p-4">
+            <p className="text-base font-black tracking-tight text-zinc-900 dark:text-white mb-3 line-clamp-1">
               {ticket.title}
             </p>
-            <div className="flex flex-col gap-1.5">
-              <p className="text-sm text-gray-500 dark:text-gray-400 font-bold flex items-center gap-2 transition-colors duration-300">
-                <span className="text-gray-900 dark:text-gray-300">{ticket.from}</span>
-                <span className="text-blue-500">→</span>
-                <span className="text-gray-900 dark:text-gray-300">{ticket.to}</span>
-              </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest transition-colors duration-300">
-                {formatDepartureDate(ticket.date)}
-              </p>
+
+            {/* From → To */}
+            <div className="flex items-center gap-2 mb-2.5">
+              <div className="flex items-center gap-1.5 text-sm font-bold text-zinc-700 dark:text-zinc-300">
+                <MapPin size={13} className="text-blue-500 dark:text-blue-400 shrink-0" />
+                <span>{ticket.from}</span>
+              </div>
+              <ArrowRight size={14} className="text-zinc-400 shrink-0" />
+              <div className="flex items-center gap-1.5 text-sm font-bold text-zinc-700 dark:text-zinc-300">
+                <MapPin size={13} className="text-blue-500 dark:text-blue-400 shrink-0" />
+                <span>{ticket.to}</span>
+              </div>
+            </div>
+
+            {/* Date & type row */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-500 dark:text-zinc-500">
+                <Calendar size={12} className="text-zinc-400" />
+                {formatDate(ticket.date)}
+              </span>
+              {ticket.type && (
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-zinc-900/10 text-zinc-700 dark:bg-white/10 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">
+                  <Tag size={9} />
+                  {ticket.type}
+                </span>
+              )}
             </div>
           </div>
 
-          <div className="animate__animated animate__fadeInUp" style={{ animationDelay: '0.2s' }}>
-            <label className="block text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 transition-colors duration-300">
+          {/* Seat selector */}
+          <div>
+            <label className="mb-3 block text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
               Number of Seats
             </label>
-            <div className="flex items-center gap-5">
+
+            <div className="flex items-center gap-4">
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
-                className="w-14 h-14 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-500 dark:hover:border-blue-400 text-gray-700 dark:text-gray-300 transition-all group shadow-sm cursor-pointer"
+                className="flex size-12 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 shadow-sm transition-all hover:border-zinc-900 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-white dark:hover:bg-zinc-800 cursor-pointer"
               >
-                <Minus size={20} className="group-hover:scale-125 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-transform duration-300" />
+                <Minus size={16} />
               </button>
-              
-              <div className="flex-1 text-center bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 py-3 rounded-2xl shadow-inner transition-colors duration-300">
-                <span className="text-4xl font-black text-blue-600 dark:text-blue-400 tabular-nums transition-colors duration-300">
+
+              <div className="flex-1 rounded-xl border border-zinc-200 bg-zinc-50 py-3 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                <span className="text-3xl font-black tabular-nums text-zinc-900 dark:text-white">
                   {qty}
                 </span>
+                <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 mt-0.5">
+                  of {ticket.quantity} avail.
+                </p>
               </div>
-              
+
               <button
                 onClick={() => setQty((q) => Math.min(ticket.quantity, q + 1))}
-                className="w-14 h-14 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-500 dark:hover:border-blue-400 text-gray-700 dark:text-gray-300 transition-all group shadow-sm cursor-pointer"
+                className="flex size-12 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 shadow-sm transition-all hover:border-zinc-900 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-white dark:hover:bg-zinc-800 cursor-pointer"
               >
-                <Plus size={20} className="group-hover:scale-125 group-hover:rotate-90 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-all duration-300" />
+                <Plus size={16} />
               </button>
             </div>
-            <p className="text-xs text-gray-400 dark:text-gray-500 font-bold mt-3 text-center transition-colors duration-300">
-              Maximum available: <span className="text-gray-700 dark:text-gray-300">{ticket.quantity}</span> seats
-            </p>
           </div>
 
-          <div className="border-t border-gray-200 dark:border-gray-800 pt-5 space-y-3 animate__animated animate__fadeInUp transition-colors duration-300" style={{ animationDelay: '0.3s' }}>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-500 dark:text-gray-400 font-bold transition-colors duration-300">
+          {/* Price breakdown */}
+          <div className="rounded-2xl border border-zinc-100 dark:border-zinc-800/80 overflow-hidden">
+            <div className="flex justify-between items-center px-4 py-3 bg-zinc-50 dark:bg-zinc-900/60">
+              <span className="text-xs font-bold text-zinc-500 dark:text-zinc-500">
                 {qty} seat{qty > 1 ? "s" : ""} × ${ticket.price}
               </span>
-              <span className="font-black text-gray-900 dark:text-white transition-colors duration-300">
+              <span className="text-sm font-black text-zinc-900 dark:text-white">
                 ${ticket.price * qty}
               </span>
             </div>
-            <div className="flex justify-between items-end mt-2 bg-blue-50 dark:bg-blue-500/10 p-4 rounded-2xl border border-blue-100 dark:border-blue-500/20 transition-colors duration-300">
-              <span className="font-black text-blue-900 dark:text-blue-100 uppercase tracking-widest text-xs transition-colors duration-300">Total Amount</span>
-              <span className="text-3xl font-black text-blue-600 dark:text-blue-400 leading-none transition-colors duration-300">
-                ${ticket.price * qty}
+            <div className="flex items-center justify-between px-4 py-3.5 bg-zinc-900 dark:bg-white">
+              <span className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
+                Total Amount
+              </span>
+              <span className="text-2xl font-black text-white dark:text-zinc-900 leading-none">
+                ${totalPrice}
               </span>
             </div>
-          </div>
-
-          <div className="flex gap-4 mt-4 animate__animated animate__fadeInUp" style={{ animationDelay: '0.4s' }}>
-            <button
-              onClick={onClose}
-              className="w-1/3 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-black rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all cursor-pointer flex items-center justify-center gap-2 group shadow-sm"
-            >
-              <XCircle size={18} className="text-gray-400 group-hover:text-red-500 group-hover:scale-110 transition-all duration-300" />
-              Cancel
-            </button>
-            <button
-              onClick={handleConfirmBooking}
-              disabled={isBooking}
-              className="w-2/3 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 disabled:from-gray-400 disabled:to-gray-300 dark:disabled:from-gray-700 dark:disabled:to-gray-600 text-white font-black rounded-2xl transition-all flex justify-center items-center gap-2 disabled:opacity-50 cursor-pointer group shadow-lg shadow-blue-500/30 active:scale-[0.98] border-transparent"
-            >
-              {isBooking ? (
-                <>
-                  <Loader2 size={20} className="animate-spin" /> Processing...
-                </>
-              ) : (
-                <>
-                  <Check size={20} className="group-hover:scale-125 group-hover:-translate-y-1 transition-transform duration-300" /> 
-                  Confirm Booking
-                </>
-              )}
-            </button>
           </div>
         </div>
+
+        {/* ── Footer ── */}
+        <div className="px-7 pb-7 flex gap-3">
+          <button
+            onClick={onClose}
+            className="w-1/3 rounded-xl border border-zinc-200 bg-white py-3 text-xs font-black uppercase tracking-wider text-zinc-700 transition-all hover:bg-zinc-50 hover:border-zinc-300 dark:border-zinc-800 dark:bg-transparent dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={handleConfirmBooking}
+            disabled={isBooking}
+            className="w-2/3 flex items-center justify-center gap-2 rounded-xl bg-zinc-950 py-3 text-xs font-black uppercase tracking-wider text-white transition-all hover:bg-zinc-800 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-100 cursor-pointer border-transparent shadow-lg shadow-zinc-900/20 dark:shadow-white/10"
+          >
+            {isBooking ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                Processing…
+              </>
+            ) : (
+              <>
+                <CheckCircle2 size={16} />
+                Confirm Booking
+              </>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* ── CSS Animation ── */}
+      <style>{`
+        @keyframes modalIn {
+          from { opacity: 0; transform: scale(0.88) translateY(16px); }
+          to   { opacity: 1; transform: scale(1)    translateY(0);    }
+        }
+      `}</style>
     </div>
   );
 }

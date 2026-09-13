@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import Image from "next/image";
+import OptimizedImage from "@/components/OptimizedImage";
 import { useRouter } from "next/navigation";
 import {
   MapPin,
@@ -19,7 +19,6 @@ import { authClient } from "@/lib/auth-client";
 import BookingModal from "@/components/BookingModal";
 import { motion } from "framer-motion";
 
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
 function CountdownBlocks({ targetDate }) {
@@ -220,13 +219,12 @@ export default function TicketDetailPage({ params }) {
             variants={fadeInLeft}
           >
             <div className="rounded-[2.5rem] overflow-hidden h-[450px] w-full relative shadow-2xl dark:shadow-none border !border-gray-100 dark:!border-gray-800 group">
-              <Image
-                src={ticket.image || FALLBACK_IMAGE}
-                alt={ticket.title}
-                fill
-                unoptimized
+              <OptimizedImage
+                ticket={ticket}
                 className="object-cover transform transition-transform duration-700 group-hover:scale-105"
-                priority
+                priority={true}
+                unoptimized={true}
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 66vw, 800px"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
             </div>

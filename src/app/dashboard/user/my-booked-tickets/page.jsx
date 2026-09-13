@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import OptimizedImage from "@/components/OptimizedImage";
 import {
   Ticket,
   CreditCard,
@@ -24,7 +24,6 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 
 function BookingCountdown({ targetDate }) {
   const [timeLeft, setTimeLeft] = useState("");
@@ -300,12 +299,14 @@ export default function MyBookedTickets() {
                 {/* 🟢 Displayed Ticket Card */}
                 <div className="!bg-white dark:!bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-[2rem] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] flex flex-col relative transition-all hover:shadow-xl hover:-translate-y-1 h-full">
                   
-                  <div className="h-52 !bg-slate-100 dark:!bg-slate-800 relative shrink-0 overflow-hidden">
-                    <Image
-                      src={ticket.image || FALLBACK_IMAGE}
-                      alt={ticket.title}
-                      fill
-                      unoptimized
+                  <div
+                    className="relative overflow-hidden bg-slate-200 dark:bg-slate-800"
+                    style={{ height: "240px", minHeight: "240px", maxHeight: "240px" }}
+                  >
+                    <OptimizedImage
+                      ticket={ticket}
+                      unoptimized={true}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                       className={`object-cover transition-transform duration-700 hover:scale-105 ${isExpired || isRejected ? "grayscale opacity-70" : ""}`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -331,7 +332,7 @@ export default function MyBookedTickets() {
 
                   <div className="p-6 flex flex-col gap-4 flex-1 justify-between bg-transparent">
                     <div>
-                      <h3 className="font-black !text-slate-900 dark:!text-white text-xl leading-snug line-clamp-2 transition-colors">
+                      <h3 className="font-black !text-slate-900 dark:!text-white text-xl leading-snug line-clamp-2 mb-4 group-hover:!text-blue-600 dark:group-hover:!text-blue-400 transition-colors min-h-[56px]">
                         {ticket.title}
                       </h3>
                       <div className="flex items-center justify-between mt-4 !bg-slate-50 dark:!bg-slate-800/80 p-3 rounded-xl border border-gray-200/60 dark:border-slate-700/60 transition-colors">

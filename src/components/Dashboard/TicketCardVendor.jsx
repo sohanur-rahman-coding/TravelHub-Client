@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import OptimizedImage from "@/components/OptimizedImage";
 import { Plane, Train, Bus, MapPin, Calendar, Ticket, ArrowRight, Edit, Trash2, ShieldAlert, ShieldCheck, ClockFading } from 'lucide-react';
 import TicketUpdateModal from './TicketUpdateModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -9,21 +9,14 @@ import { deleteTicket } from '@/lib/actions/tickets';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
-
 const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
   const router = useRouter();
   
   const [timeLeft, setTimeLeft] = useState('');
-  const [imgSrc, setImgSrc] = useState(ticket?.image || FALLBACK_IMAGE);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    setImgSrc(ticket?.image || FALLBACK_IMAGE);
-  }, [ticket?.image, ticket?._id]);
 
   if (!ticket) {
     return (
@@ -134,19 +127,19 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto transition-all duration-300"
+      className="h-full max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto transition-all duration-300"
     >
       
-      <div className="relative w-full h-60 !bg-gray-100 dark:!bg-slate-800 overflow-hidden">
-        <Image
-          src={imgSrc} 
-          alt={title || "Ticket Image"}
-          fill
-          unoptimized={true}
-          sizes="(max-width: 768px) 100vw, 450px"
-          className="object-cover transition-opacity duration-300"
-          onError={() => setImgSrc(FALLBACK_IMAGE)}
-        />
+      <div
+          className="relative overflow-hidden bg-slate-200 dark:bg-slate-800"
+          style={{ height: "240px", minHeight: "240px", maxHeight: "240px" }}
+        >
+          <OptimizedImage
+            ticket={ticket}
+            unoptimized={true}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
         
         <div className="absolute top-4 left-4 flex items-center gap-1.5 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-slate-700 z-10 transition-colors">
           {getTransportIcon(type)}
@@ -165,7 +158,9 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
 
       <div className="p-6 flex-1 flex flex-col justify-between !bg-white dark:!bg-slate-900 transition-colors duration-300">
         <div>
-          <h3 className="text-xl font-black !text-slate-900 dark:!text-white tracking-tight mb-4 line-clamp-2 leading-snug">{title}</h3>
+          <h3 className="text-xl font-black !text-slate-900 dark:!text-white tracking-tight mb-5 line-clamp-2 leading-snug group-hover:!text-blue-600 dark:group-hover:!text-blue-400 transition-colors min-h-[56px]">
+            {title || "Untitled Ticket"}
+          </h3>
 
           <div className="flex items-center gap-3 !text-slate-800 dark:!text-gray-200 font-black text-sm mb-4 !bg-slate-50 dark:!bg-slate-800/80 p-3 rounded-xl border border-gray-200 dark:border-slate-700 transition-colors">
             <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />

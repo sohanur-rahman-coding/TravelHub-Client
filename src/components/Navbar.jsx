@@ -61,9 +61,9 @@ export function Navbar() {
                   <Image
                     src={logo}
                     alt={"logo"}
-                    className="object-cover"
                     height={50}
                     width={50}
+                    style={{ width: "auto", height: "auto" }}
                   />
                 </div>
                 <div className="flex flex-col">
@@ -133,6 +133,8 @@ export function Navbar() {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    aria-label="Open user menu"
+                    aria-expanded={isDropdownOpen}
                     className="flex items-center gap-2 p-1 pr-2 rounded-full border border-default-200 hover:bg-default-100 transition-colors"
                   >
                     <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs overflow-hidden">
@@ -199,6 +201,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             className="md:hidden p-2 text-foreground"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (

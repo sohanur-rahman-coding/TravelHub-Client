@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { CreditCard, CalendarDays, ReceiptText, Loader2, ArrowRight } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { getUserTransactions } from "@/lib/api/tickets";

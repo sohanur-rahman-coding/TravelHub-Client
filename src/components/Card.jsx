@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import OptimizedImage from "@/components/OptimizedImage";
 import Link from "next/link";
 import {
   Plane,
@@ -14,16 +14,9 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957";
 
-const Card = ({ ticket }) => {
+const Card = ({ ticket, priority = false }) => {
   const [timeLeft, setTimeLeft] = useState("");
-  const [imgSrc, setImgSrc] = useState(ticket?.image || FALLBACK_IMAGE);
-
-  useEffect(() => {
-    setImgSrc(ticket?.image || FALLBACK_IMAGE);
-  }, [ticket?.image, ticket?._id]);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -87,20 +80,22 @@ const Card = ({ ticket }) => {
     // 🟢 bg-white এর বদলে !bg-white dark:!bg-slate-900 ব্যবহার করা হয়েছে
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+      className="h-full max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
     >
       
-      <div className="relative w-full h-60 bg-gray-100! dark:!bg-slate-800 overflow-hidden">
-        <Image
-          src={imgSrc}
-          alt={title || "Ticket Image"}
-          fill
+      <div
+        className="relative overflow-hidden bg-slate-200 dark:bg-slate-800"
+        style={{ height: "240px", minHeight: "240px", maxHeight: "240px" }}
+      >
+        <OptimizedImage
+          ticket={ticket}
           unoptimized={true}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={priority}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
-          onError={() => setImgSrc(FALLBACK_IMAGE)}
         />
 
         <div className="absolute top-4 left-4 flex items-center gap-1.5 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-slate-700 z-10 transition-colors">
@@ -120,7 +115,7 @@ const Card = ({ ticket }) => {
 
       <div className="p-6 flex-1 flex flex-col justify-between !bg-white dark:!bg-slate-900 transition-colors duration-300 z-10">
         <div>
-          <h3 className="text-xl font-black !text-slate-900 dark:!text-white tracking-tight mb-5 line-clamp-2 leading-snug group-hover:!text-blue-600 dark:group-hover:!text-blue-400 transition-colors">
+          <h3 className="text-xl font-black !text-slate-900 dark:!text-white tracking-tight mb-5 line-clamp-2 leading-snug group-hover:!text-blue-600 dark:group-hover:!text-blue-400 transition-colors min-h-[56px]">
             {title || "Untitled Ticket"}
           </h3>
 

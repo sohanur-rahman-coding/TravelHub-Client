@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { MapPin } from "lucide-react";
 
 const routes = [
@@ -28,17 +29,21 @@ export function PopularRoutes() {
             key={i}
             className="relative overflow-hidden rounded-3xl h-[450px] shadow-lg"
           >
-            {/* Background Image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url('${route.img}')` }}
+            {/* Optimized Next.js Image */}
+            <Image
+              src={route.img}
+              alt={route.city}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover object-center"
+              quality={75}
             />
             
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
             
             {/* Static Content */}
-            <div className="absolute bottom-8 left-8 text-white">
+            <div className="absolute bottom-8 left-8 text-white z-10">
               <p className="flex items-center gap-2 text-cyan-400 font-bold mb-2 tracking-widest uppercase text-sm">
                 <MapPin className="w-4 h-4" /> {route.city}
               </p>
@@ -49,4 +54,4 @@ export function PopularRoutes() {
       </div>
     </section>
   );
-}       
+}      

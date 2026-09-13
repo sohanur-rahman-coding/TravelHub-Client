@@ -1,3 +1,40 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 @import "animate.css";
+
+/* ============================================================
+   PERFORMANCE: GPU-accelerated CSS animations only
+   (avoids Lighthouse "non-composited animations" warnings)
+   ============================================================ */
+
+/* Banner slide-up entrance — CSS only, no framer-motion needed */
+@keyframes bannerFadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.banner-content-anim {
+  animation: bannerFadeUp 0.8s ease-out both;
+  will-change: transform, opacity;
+}
+
+/* Smooth scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}
