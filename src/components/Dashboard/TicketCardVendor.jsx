@@ -1,5 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
+
+import { useState, useEffect, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import OptimizedImage from "@/components/OptimizedImage";
 import { Plane, Train, Bus, MapPin, Calendar, Ticket, ArrowRight, Edit, Trash2, ShieldAlert, ShieldCheck, ClockFading } from 'lucide-react';
@@ -9,10 +10,48 @@ import { deleteTicket } from '@/lib/actions/tickets';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+// Separate Countdown Component to prevent whole card re-renders & lagging
+const CountdownTimer = memo(({ date }) => {
+  const [timeLeft, setTimeLeft] = useState('');
+
+  useEffect(() => {
+    if (!date) return;
+
+    const calculateTimeLeft = () => {
+      const difference = +new Date(date) - +new Date();
+      
+      if (difference <= 0) {
+        setTimeLeft('Expired');
+        return;
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((difference / 1000 / 60) % 60);
+      const seconds = Math.floor((difference / 1000) % 60);
+
+      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s left`);
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, [date]);
+
+  if (!timeLeft) return null;
+
+  return (
+    <span className="!bg-slate-200 dark:!bg-slate-700 !text-slate-800 dark:!text-slate-200 px-2.5 py-1 text-[11px] font-black rounded-lg font-mono tracking-wider border-transparent transition-colors">
+      {timeLeft}
+    </span>
+  );
+});
+
+CountdownTimer.displayName = 'CountdownTimer';
+
 const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
   const router = useRouter();
-  
-  const [timeLeft, setTimeLeft] = useState('');
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -38,30 +77,6 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
   } = ticket;
 
   const isRejected = verificationStatus?.toLowerCase() === 'rejected';
-
-  useEffect(() => {
-    const calculateTimeLeft = () => {
-      if (!date) return;
-      const difference = +new Date(date) - +new Date();
-      
-      if (difference <= 0) {
-        setTimeLeft('Expired');
-        return;
-      }
-
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((difference / 1000 / 60) % 60);
-      const seconds = Math.floor((difference / 1000) % 60);
-
-      setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s left`);
-    };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
-
-    return () => clearInterval(timer);
-  }, [date]);
 
   const getTransportIcon = (transportType) => {
     switch (transportType?.toLowerCase()) {
@@ -127,23 +142,22 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="h-full max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto transition-all duration-300"
+      className="h-full max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto transition-all duration-300 group"
     >
-      
       <div
-          className="relative overflow-hidden bg-slate-200 dark:bg-slate-800"
-          style={{ height: "240px", minHeight: "240px", maxHeight: "240px" }}
-        >
-          <OptimizedImage
-            ticket={ticket}
-            unoptimized={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-          />
+        className="relative overflow-hidden bg-slate-200 dark:bg-slate-800"
+        style={{ height: "240px", minHeight: "240px", maxHeight: "240px" }}
+      >
+        <OptimizedImage
+          ticket={ticket}
+          unoptimized={true}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-0"
+        />
         
         <div className="absolute top-4 left-4 flex items-center gap-1.5 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-slate-700 z-10 transition-colors">
           {getTransportIcon(type)}
-          <span className="text-sm font-black !text-slate-900 dark:!text-gray-100 capitalize tracking-wide">{type}</span>
+          <span className="text-sm font-black !text-slate-900 dark:!text-gray-100 capitalize tracking-wide">{type || "Unknown"}</span>
         </div>
 
         <div className="absolute top-4 right-4 shadow-sm z-10">
@@ -151,7 +165,7 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
         </div>
 
         <div className="absolute bottom-4 right-4 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-5 py-2 rounded-full shadow-lg border border-gray-200 dark:border-slate-700 z-10 transition-colors">
-          <span className="text-xl font-black text-blue-600 dark:text-blue-400">${price}</span>
+          <span className="text-xl font-black text-blue-600 dark:text-blue-400">${price || "0"}</span>
           <span className="text-xs font-black text-slate-500 dark:text-gray-400 ml-1">/seat</span>
         </div>
       </div>
@@ -164,24 +178,22 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
 
           <div className="flex items-center gap-3 !text-slate-800 dark:!text-gray-200 font-black text-sm mb-4 !bg-slate-50 dark:!bg-slate-800/80 p-3 rounded-xl border border-gray-200 dark:border-slate-700 transition-colors">
             <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-            <span className="truncate">{from}</span>
+            <span className="truncate">{from || "TBD"}</span>
             <ArrowRight className="w-3.5 h-3.5 !text-slate-400 shrink-0 mx-0.5" />
-            <span className="truncate">{to}</span>
+            <span className="truncate">{to || "TBD"}</span>
           </div>
 
           <div className="flex items-center gap-2 !text-slate-600 dark:!text-slate-400 font-bold text-sm mb-3 transition-colors">
             <Calendar className="w-4 h-4 !text-slate-400 shrink-0" />
-            <span className="font-semibold">{formatDepartureDate(date)}</span>
+            <span className="font-semibold">{formatDepartureDate(date) || "Date not set"}</span>
           </div>
 
           <div className="flex items-center justify-between !text-slate-600 dark:!text-slate-400 font-bold text-sm mb-5 transition-colors">
             <div className="flex items-center gap-2">
               <Ticket className="w-4 h-4 !text-slate-400 shrink-0" />
-              <span><strong className="!text-slate-900 dark:!text-white">{quantity}</strong> seats</span>
+              <span><strong className="!text-slate-900 dark:!text-white">{quantity || 0}</strong> seats</span>
             </div>
-            {timeLeft && (
-              <span className="!bg-slate-200 dark:!bg-slate-700 !text-slate-800 dark:!text-slate-200 px-2.5 py-1 text-[11px] font-black rounded-lg font-mono tracking-wider border-transparent transition-colors">{timeLeft}</span>
-            )}
+            <CountdownTimer date={date} />
           </div>
 
           {perks && perks.length > 0 && (
@@ -243,7 +255,6 @@ const TicketCardVendor = ({ ticket, onTicketUpdated, onDelete }) => {
         itemName={title} 
         title="Delete Ticket"
       />
-
     </motion.div>
   );
 };

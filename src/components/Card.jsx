@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import OptimizedImage from "@/components/OptimizedImage";
 import Link from "next/link";
 import {
@@ -14,14 +14,19 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-
-const Card = ({ ticket, priority = false }) => {
+const TicketTimer = memo(({ date }) => {
   const [timeLeft, setTimeLeft] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!date || !isMounted) return;
+
     const calculateTimeLeft = () => {
-      if (!ticket?.date) return;
-      const difference = new Date(ticket.date).getTime() - Date.now();
+      const difference = new Date(date).getTime() - Date.now();
 
       if (difference <= 0) {
         setTimeLeft("Expired");
@@ -40,8 +45,25 @@ const Card = ({ ticket, priority = false }) => {
     const timer = setInterval(calculateTimeLeft, 1000);
 
     return () => clearInterval(timer);
-  }, [ticket?.date]);
+  }, [date, isMounted]);
 
+  if (!isMounted || !timeLeft) return null;
+
+  return (
+    <span
+      className={`px-2.5 py-1 text-[11px] font-black rounded-lg font-mono tracking-wider border transition-colors ${
+        timeLeft === "Expired"
+          ? "!bg-red-50 dark:!bg-red-500/10 !border-red-200 dark:!border-red-500/20 !text-red-600 dark:!text-red-400"
+          : "!bg-orange-50 dark:!bg-orange-500/10 !border-orange-200 dark:!border-orange-500/20 !text-orange-600 dark:!text-orange-400"
+      }`}
+    >
+      {timeLeft}
+    </span>
+  );
+});
+TicketTimer.displayName = "TicketTimer";
+
+const Card = ({ ticket, priority = false }) => {
   if (!ticket) {
     return (
       <div className="max-w-md w-full h-[520px] !bg-slate-100 dark:!bg-slate-800 animate-pulse rounded-[2rem]" />
@@ -77,39 +99,40 @@ const Card = ({ ticket, priority = false }) => {
   };
 
   return (
-    // 🟢 bg-white এর বদলে !bg-white dark:!bg-slate-900 ব্যবহার করা হয়েছে
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="h-full max-w-md w-full bg-white! dark:bg-slate-900! rounded-[2rem] border border-gray-200 dark:border-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] overflow-hidden flex flex-col justify-between font-sans mx-auto group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
     >
-      
       <div
         className="relative overflow-hidden bg-slate-200 dark:bg-slate-800"
         style={{ height: "240px", minHeight: "240px", maxHeight: "240px" }}
       >
+        <div className="absolute inset-0 animate-pulse bg-slate-300 dark:bg-slate-700 z-0"></div>
+
         <OptimizedImage
           ticket={ticket}
-          unoptimized={true}
           priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-10"
         />
 
-        <div className="absolute top-4 left-4 flex items-center gap-1.5 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-slate-700 z-10 transition-colors">
+        <div className="absolute top-4 left-4 flex items-center gap-1.5 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-4 py-1.5 rounded-full shadow-sm border border-gray-200 dark:border-slate-700 z-20 transition-colors">
           {getTransportIcon(type)}
           <span className="text-sm font-black !text-slate-900 dark:!text-gray-100 capitalize tracking-wide">
             {type || "Unknown"}
           </span>
         </div>
 
-        <div className="absolute bottom-4 right-4 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-5 py-2 rounded-full shadow-lg border border-gray-200 dark:border-slate-700 z-10 transition-colors">
+        <div className="absolute bottom-4 right-4 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-5 py-2 rounded-full shadow-lg border border-gray-200 dark:border-slate-700 z-20 transition-colors">
           <span className="text-xl font-black text-blue-600 dark:text-blue-400">
             ${price || "0"}
           </span>
-          <span className="text-xs font-black !text-slate-500 dark:!text-gray-400 ml-1">/seat</span>
+          <span className="text-xs font-black !text-slate-500 dark:!text-gray-400 ml-1">
+            /seat
+          </span>
         </div>
       </div>
 
@@ -132,23 +155,22 @@ const Card = ({ ticket, priority = false }) => {
 
           <div className="flex items-center gap-2 !text-slate-600 dark:!text-slate-400 font-bold text-sm mb-4 transition-colors">
             <Calendar className="w-4 h-4 !text-slate-400 dark:text-slate-500 shrink-0" />
-            <span className="font-semibold">{formatDepartureDate(date) || "Date not set"}</span>
+            <span className="font-semibold" suppressHydrationWarning>
+              {formatDepartureDate(date) || "Date not set"}
+            </span>
           </div>
 
           <div className="flex items-center justify-between !text-slate-600 dark:!text-slate-400 font-bold text-sm mb-6 transition-colors">
             <div className="flex items-center gap-2">
               <Ticket className="w-4 h-4 !text-slate-400 dark:text-slate-500 shrink-0" />
-              <span><strong className="text-slate-900! dark:text-white!">{quantity || 0}</strong> seats left</span>
-            </div>
-            {timeLeft && (
-              <span className={`px-2.5 py-1 text-[11px] font-black rounded-lg font-mono tracking-wider border transition-colors ${
-                timeLeft === "Expired" 
-                ? "!bg-red-50 dark:!bg-red-500/10 !border-red-200 dark:!border-red-500/20 !text-red-600 dark:!text-red-400" 
-                : "!bg-orange-50 dark:!bg-orange-500/10 !border-orange-200 dark:!border-orange-500/20 !text-orange-600 dark:!text-orange-400"
-              }`}>
-                {timeLeft}
+              <span>
+                <strong className="text-slate-900! dark:text-white!">
+                  {quantity || 0}
+                </strong>{" "}
+                seats left
               </span>
-            )}
+            </div>
+            <TicketTimer date={date} />
           </div>
 
           {perks && perks.length > 0 && (
@@ -183,4 +205,4 @@ const Card = ({ ticket, priority = false }) => {
   );
 };
 
-export default Card;
+export default memo(Card);
