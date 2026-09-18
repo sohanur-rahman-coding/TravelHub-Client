@@ -72,8 +72,8 @@ export default function DashboardSidebar({ user }) {
       },
       {
         icon: ChartColumn,
-        label: "Advertise Tickets",
-        link: "/dashboard/admin/advertise-tickets",
+        label: "Feature Tickets",
+        link: "/dashboard/admin/featured-tickets",
       },
     ],
   };

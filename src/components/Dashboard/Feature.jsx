@@ -2,7 +2,7 @@ import { getAdvertisementData } from "@/lib/api/tickets";
 import React from "react";
 import Card from "../Card";
 
-const Advertisement = async () => {
+const Feature = async () => {
   const response = await getAdvertisementData();
   
   
@@ -33,4 +33,4 @@ const Advertisement = async () => {
   );
 };
 
-export default Advertisement;
+export default Feature;

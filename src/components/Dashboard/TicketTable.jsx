@@ -1,105 +1,135 @@
 "use client";
 
 import { useState } from "react";
-import { Table, Button, Chip } from "@heroui/react";
+import { Button, Chip } from "@heroui/react";
 import { updateTicketStatus } from "@/lib/actions/manageUser";
+import toast from "react-hot-toast";
 
 export default function TicketTable({ ticketsData }) {
-  const [loadingId, setLoadingId] = useState(null);
+  const [loadingAction, setLoadingAction] = useState({ id: null, status: null });
 
-  
-  const ticketsArray = Array.isArray(ticketsData) ? ticketsData : (ticketsData?.tickets || []);
+  const [tickets, setTickets] = useState(() =>
+    Array.isArray(ticketsData) ? ticketsData : ticketsData?.tickets || []
+  );
 
   const handleStatus = async (id, status) => {
-    setLoadingId(id);
+    setLoadingAction({ id, status });
     try {
       await updateTicketStatus(id, status);
+      setTickets((prev) =>
+        prev.map((t) =>
+          t._id === id ? { ...t, verificationStatus: status } : t
+        )
+      );
+      toast.success(`Ticket ${status} successfully!`);
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
-      setLoadingId(null);
+      setLoadingAction({ id: null, status: null });
     }
   };
 
   return (
-    <Table className="mt-6">
-      <Table.ScrollContainer>
-        <Table.Content
-          aria-label="Manage Tickets Table"
-          className="min-w-[800px]"
-        >
-          <Table.Header>
-            <Table.Column isRowHeader>#</Table.Column>
-            <Table.Column>Title</Table.Column>
-            <Table.Column>Vendor</Table.Column>
-            <Table.Column>Route</Table.Column>
-            <Table.Column>Price</Table.Column>
-            <Table.Column>Status</Table.Column>
-            <Table.Column>Actions</Table.Column>
-          </Table.Header>
+    <div className="bg-white dark:bg-gray-800/80 border border-gray-200/80 dark:border-gray-700/60 rounded-2xl shadow-xl backdrop-blur-xl overflow-x-auto mt-6">
+      <table className="w-full min-w-[800px] text-sm text-left border-collapse">
+        <thead>
+          <tr className="border-b border-gray-200/80 dark:border-gray-700/60 text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider bg-gray-50/80 dark:bg-gray-900/50">
+            <th className="px-6 py-4 font-semibold">#</th>
+            <th className="px-6 py-4 font-semibold">Title</th>
+            <th className="px-6 py-4 font-semibold">Vendor</th>
+            <th className="px-6 py-4 font-semibold">Route</th>
+            <th className="px-6 py-4 font-semibold">Price</th>
+            <th className="px-6 py-4 font-semibold">Status</th>
+            <th className="px-6 py-4 font-semibold text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200/80 dark:divide-gray-700/60">
+          {tickets.length === 0 ? (
+            <tr>
+              <td colSpan={7} className="px-6 py-12 text-center text-gray-400 dark:text-gray-500 font-medium">
+                No tickets found
+              </td>
+            </tr>
+          ) : (
+            tickets.map((ticket, index) => {
+              const isLoading = loadingAction.id === ticket._id;
+              return (
+                <tr
+                  key={ticket._id}
+                  className="hover:bg-gray-50/80 dark:hover:bg-gray-700/30 transition-all duration-150"
+                >
+                  <td className="px-6 py-4.5 text-gray-400 dark:text-gray-500 font-medium">
+                    {String(index + 1).padStart(2, '0')}
+                  </td>
 
-          <Table.Body>
-           
-            {ticketsArray.map((ticket, index) => (
-              <Table.Row key={ticket._id}>
-                <Table.Cell>{index + 1}</Table.Cell>
+                  <td className="px-6 py-4.5 font-semibold text-foreground">
+                    {ticket.title}
+                  </td>
 
-                <Table.Cell className="font-semibold">
-                  {ticket.title}
-                </Table.Cell>
+                  <td className="px-6 py-4.5 text-gray-600 dark:text-gray-400">
+                    {ticket.vendorName}
+                  </td>
 
-                <Table.Cell>{ticket.vendorName}</Table.Cell>
+                  <td className="px-6 py-4.5 text-gray-600 dark:text-gray-400">
+                    <span className="font-medium text-gray-800 dark:text-gray-200">{ticket.from}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500 block">to {ticket.to}</span>
+                  </td>
 
-                <Table.Cell>
-                  {ticket.from} <br />
-                  <span className="text-xs text-gray-500">to {ticket.to}</span>
-                </Table.Cell>
+                  <td className="px-6 py-4.5 font-bold text-foreground">${ticket.price}</td>
 
-                <Table.Cell>${ticket.price}</Table.Cell>
-
-                <Table.Cell>
-                  <Chip
-                    size="sm"
-                    className={`capitalize text-white font-bold border-none ${
-                      ticket.verificationStatus === "approved"
-                        ? "bg-green-600"
-                        : ticket.verificationStatus === "rejected"
-                        ? "bg-red-600"
-                        : "bg-yellow-500"
-                    }`}
-                  >
-                    {ticket.verificationStatus}
-                  </Chip>
-                </Table.Cell>
-
-                <Table.Cell>
-                  <div className="flex gap-2">
-                    <Button
+                  <td className="px-6 py-4.5">
+                    <Chip
                       size="sm"
-                      className="font-bold text-white bg-green-600 disabled:bg-green-300 disabled:text-gray-100 disabled:cursor-not-allowed"
-                      onClick={() => handleStatus(ticket._id, "approved")}
-                      isDisabled={ticket.verificationStatus === "approved" || loadingId === ticket._id}
-                      isLoading={loadingId === ticket._id}
+                      className={`capitalize text-white font-bold border-none shadow-xs ${
+                        ticket.verificationStatus === "approved"
+                          ? "bg-emerald-600"
+                          : ticket.verificationStatus === "rejected"
+                          ? "bg-rose-600"
+                          : "bg-amber-500"
+                      }`}
                     >
-                      Approve
-                    </Button>
-                    
-                    <Button
-                      size="sm"
-                      className="font-bold text-white bg-red-600 disabled:bg-red-300 disabled:text-gray-100 disabled:cursor-not-allowed"
-                      onClick={() => handleStatus(ticket._id, "rejected")}
-                      isDisabled={ticket.verificationStatus === "rejected" || loadingId === ticket._id}
-                      isLoading={loadingId === ticket._id}
-                    >
-                      Reject
-                    </Button>
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table.Content>
-      </Table.ScrollContainer>
-    </Table>
+                      {ticket.verificationStatus}
+                    </Chip>
+                  </td>
+
+                  <td className="px-6 py-4.5">
+                    <div className="flex gap-2 justify-center">
+                      <Button
+                        size="sm"
+                        className="font-semibold text-white bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
+                        onClick={() => handleStatus(ticket._id, "approved")}
+                        isDisabled={
+                          ticket.verificationStatus === "approved" || isLoading
+                        }
+                        isLoading={
+                          isLoading && loadingAction.status === "approved"
+                        }
+                      >
+                        Approve
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        className="font-semibold text-white bg-rose-600 hover:bg-rose-500 disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
+                        onClick={() => handleStatus(ticket._id, "rejected")}
+                        isDisabled={
+                          ticket.verificationStatus === "rejected" || isLoading
+                        }
+                        isLoading={
+                          isLoading && loadingAction.status === "rejected"
+                        }
+                      >
+                        Reject
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 }

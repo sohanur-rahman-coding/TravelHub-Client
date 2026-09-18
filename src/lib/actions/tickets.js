@@ -95,8 +95,8 @@ export const deleteTicket = async (ticketId) => {
     throw error;
   }
 };
-// advertisement data for admin (done)
-export const toggleAdvertiseTicket = async (ticketId, currentState) => {
+// feature/advertise toggle for admin
+export const toggleFeaturedTicket = async (ticketId, currentState) => {
   try {
     const token = await getTokenServer();
     const res = await fetch(`${BASE_URL}/api/tickets/${ticketId}/advertise`, {
@@ -110,11 +110,17 @@ export const toggleAdvertiseTicket = async (ticketId, currentState) => {
 
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(errorData.message || "Failed to update advertisement");
+      throw new Error(errorData.message || "Failed to update featured status");
     }
 
-    revalidatePath("/dashboard/admin/advertise-tickets");
-    return { success: true };
+    // FIX: was pointing to the wrong path "/dashboard/admin/advertise-tickets".
+    // The actual page lives at /dashboard/admin/featured-tickets.
+    revalidatePath("/dashboard/admin/featured-tickets");
+
+    // FIX: return the server's message so the success toast is meaningful
+    // instead of always falling back to the hardcoded string.
+    const data = await res.json();
+    return { success: true, message: data.message || "Featured status updated!" };
   } catch (error) {
     return { success: false, message: error.message };
   }

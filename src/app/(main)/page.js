@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { PremiumTravelBanner } from "@/components/Banner";
-import Advertisement from "@/components/Dashboard/Advertisement";
+import Feature from "@/components/Dashboard/Feature";
 import LatestTickets from "@/components/LatestTickets";
 import { PopularRoutes } from "@/components/PopularRoutes";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
@@ -23,7 +23,7 @@ export default function Home() {
     <div>
       <PremiumTravelBanner />
       <Suspense fallback={<CardGridSkeleton />}>
-        <Advertisement />
+        <Feature />
       </Suspense>
       <Suspense fallback={<CardGridSkeleton />}>
         <LatestTickets />
