@@ -22,13 +22,14 @@ import { getVendorStats } from "@/lib/api/tickets";
 import { motion } from "framer-motion";
 
 export default function RevenueOverview() {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending: sessionLoading } = authClient.useSession();
   const user = session?.user;
 
   const [stats, setStats] = useState({
     totalTicketsAdded: 0,
     totalTicketsSold: 0,
     totalRevenue: 0,
+    availableStock: 0,
     revenueData: [],
     pieData: [],
   });
@@ -36,40 +37,52 @@ export default function RevenueOverview() {
 
   useEffect(() => {
     if (user?.email) {
-      fetchStats();
-    } else {
+      fetchStats(user.email);
+    } else if (!sessionLoading) {
       setLoading(false);
     }
-  }, [user]);
+  }, [user?.email, sessionLoading]);
 
-  const fetchStats = async () => {
+  const fetchStats = async (email) => {
     try {
-      const data = await getVendorStats(user.email);
+      setLoading(true);
+      const targetEmail = email || user?.email;
+      if (!targetEmail) return;
+
+      const data = await getVendorStats(targetEmail);
       if (data) {
-        setStats(data);
+        setStats({
+          totalTicketsAdded: data.totalTicketsAdded || 0,
+          totalTicketsSold: data.totalTicketsSold || 0,
+          totalRevenue: data.totalRevenue || 0,
+          availableStock: data.availableStock || 0,
+          revenueData: data.revenueData || [],
+          pieData: data.pieData && data.pieData.length > 0 ? data.pieData : [
+            { name: "Sold Tickets", value: data.totalTicketsSold || 0, fill: "#10b981" },
+            { name: "Available Tickets", value: data.availableStock || 0, fill: "#3b82f6" },
+          ],
+        });
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching revenue stats:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
+  if (loading || sessionLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-        >
-          <Loader2
-            className="text-blue-600 dark:text-blue-400"
-            size={40}
-          />
-        </motion.div>
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-3">
+        <Loader2 className="text-amber-500 animate-spin" size={40} />
+        <p className="text-xs font-bold text-slate-500 dark:text-slate-400">Loading revenue &amp; sales metrics...</p>
       </div>
     );
   }
+
+  const safeRevenue = Number(stats?.totalRevenue || 0);
+  const safeSold = Number(stats?.totalTicketsSold || 0);
+  const safeAdded = Number(stats?.totalTicketsAdded || 0);
+  const safeStock = Number(stats?.availableStock || 0);
 
   return (
     <motion.div 
@@ -78,37 +91,57 @@ export default function RevenueOverview() {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="p-6 max-w-7xl mx-auto font-sans"
     >
-      <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6">
-        Revenue Overview
-      </h2>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white">
+            Revenue &amp; Analytics
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Real-time financial performance and seat occupancy metrics across your routes.
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+        <button
+          onClick={() => fetchStats(user?.email)}
+          className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all self-start cursor-pointer"
+        >
+          Refresh Analytics
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
           {
-            label: "Total Tickets Added",
-            value: stats.totalTicketsAdded,
+            label: "Total Routes Listed",
+            value: safeAdded,
             icon: <Package size={20} />,
             grad: "from-blue-500 to-blue-600",
           },
           {
             label: "Total Tickets Sold",
-            value: stats.totalTicketsSold,
+            value: safeSold,
             icon: <TrendingUp size={20} />,
             grad: "from-emerald-500 to-emerald-600",
           },
           {
-            label: "Total Revenue",
-            value: `$${stats.totalRevenue.toLocaleString()}`,
+            label: "Total Gross Revenue",
+            value: `$${safeRevenue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
             icon: <DollarSign size={20} />,
             grad: "from-amber-500 to-amber-600",
+          },
+          {
+            label: "Available Seat Inventory",
+            value: safeStock.toLocaleString(),
+            icon: <Package size={20} />,
+            grad: "from-purple-500 to-indigo-600",
           },
         ].map(({ label, value, icon, grad }, idx) => (
           <motion.div
             key={label}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: idx * 0.1, ease: "easeOut" }}
-            className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md dark:hover:shadow-gray-900/40 transition-shadow"
+            transition={{ duration: 0.3, delay: idx * 0.08, ease: "easeOut" }}
+            className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow"
           >
             <div
               className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-white shrink-0 shadow-md`}
@@ -119,7 +152,7 @@ export default function RevenueOverview() {
               <p className="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-1">
                 {label}
               </p>
-              <p className="text-2xl font-black text-gray-900 dark:text-white">
+              <p className="text-2xl font-black text-gray-900 dark:text-white tabular-nums">
                 {value}
               </p>
             </div>
@@ -155,19 +188,19 @@ export default function RevenueOverview() {
 
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke="#374151"
+                stroke="#e5e7eb"
                 vertical={false}
               />
 
               <XAxis
                 dataKey="month"
-                tick={{ fontSize: 12, fill: "#9ca3af" }}
+                tick={{ fontSize: 12, fill: "#6b7280" }}
                 axisLine={false}
                 tickLine={false}
               />
 
               <YAxis
-                tick={{ fontSize: 12, fill: "#9ca3af" }}
+                tick={{ fontSize: 12, fill: "#6b7280" }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v) => `$${v}`}
@@ -241,7 +274,7 @@ export default function RevenueOverview() {
                 wrapperStyle={{
                   fontSize: "12px",
                   fontWeight: "600",
-                  color: "#9ca3af",
+                  color: "#374151",
                 }}
               />
             </PieChart>
@@ -263,19 +296,19 @@ export default function RevenueOverview() {
           <BarChart data={stats.revenueData} barSize={32}>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="#374151"
+              stroke="#e5e7eb"
               vertical={false}
             />
 
             <XAxis
               dataKey="month"
-              tick={{ fontSize: 12, fill: "#9ca3af" }}
+              tick={{ fontSize: 12, fill: "#6b7280" }}
               axisLine={false}
               tickLine={false}
             />
 
             <YAxis
-              tick={{ fontSize: 12, fill: "#9ca3af" }}
+              tick={{ fontSize: 12, fill: "#6b7280" }}
               axisLine={false}
               tickLine={false}
             />

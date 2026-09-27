@@ -256,7 +256,7 @@ export default function TicketDetailPage({ params }) {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-8 border-y !border-gray-100 dark:!border-gray-700">
                 <div>
-                  <span className="text-[10px] !text-gray-400 dark:!text-gray-500 font-black uppercase tracking-widest mb-2 block">
+                  <span className="text-[10px] !text-gray-600 dark:!text-gray-400 font-black uppercase tracking-widest mb-2 block">
                     From
                   </span>
                   <div className="flex items-center gap-2 font-bold !text-gray-900 dark:!text-white text-base">
@@ -265,7 +265,7 @@ export default function TicketDetailPage({ params }) {
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] !text-gray-400 dark:!text-gray-500 font-black uppercase tracking-widest mb-2 block">
+                  <span className="text-[10px] !text-gray-600 dark:!text-gray-400 font-black uppercase tracking-widest mb-2 block">
                     To
                   </span>
                   <div className="flex items-center gap-2 font-bold !text-gray-900 dark:!text-white text-base">
@@ -274,7 +274,7 @@ export default function TicketDetailPage({ params }) {
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] !text-gray-400 dark:!text-gray-500 font-black uppercase tracking-widest mb-2 block">
+                  <span className="text-[10px] !text-gray-600 dark:!text-gray-400 font-black uppercase tracking-widest mb-2 block">
                     Seats Left
                   </span>
                   <div className="flex items-center gap-2 font-bold !text-gray-900 dark:!text-white text-base">
@@ -285,7 +285,7 @@ export default function TicketDetailPage({ params }) {
                   </div>
                 </div>
                 <div>
-                  <span className="text-[10px] !text-gray-400 dark:!text-gray-500 font-black uppercase tracking-widest mb-2 block">
+                  <span className="text-[10px] !text-gray-600 dark:!text-gray-400 font-black uppercase tracking-widest mb-2 block">
                     Transport
                   </span>
                   <div className="flex items-center gap-2 font-bold !text-gray-900 dark:!text-white text-base capitalize">
@@ -298,7 +298,7 @@ export default function TicketDetailPage({ params }) {
               </div>
 
               <div className="py-8">
-                <span className="text-[10px] !text-gray-400 dark:!text-gray-500 font-black uppercase tracking-widest mb-3 block">
+                <span className="text-[10px] !text-gray-600 dark:!text-gray-400 font-black uppercase tracking-widest mb-3 block">
                   Departure Time
                 </span>
                 <div className="flex items-center gap-3 !text-gray-900 dark:!text-white font-bold text-lg !bg-gray-50 dark:!bg-gray-900 w-fit px-5 py-3 rounded-2xl border !border-gray-100 dark:!border-gray-800">
@@ -308,7 +308,7 @@ export default function TicketDetailPage({ params }) {
               </div>
 
               <div className="pb-8">
-                <span className="text-[10px] !text-gray-400 dark:!text-gray-500 font-black uppercase tracking-widest mb-3 block">
+                <span className="text-[10px] !text-gray-600 dark:!text-gray-400 font-black uppercase tracking-widest mb-3 block">
                   About This Journey
                 </span>
                 <p className="text-base !text-gray-600 dark:!text-gray-300 leading-relaxed font-medium">
@@ -319,7 +319,7 @@ export default function TicketDetailPage({ params }) {
 
               {ticket.perks && ticket.perks.length > 0 && (
                 <div>
-                  <span className="text-[10px] !text-gray-400 dark:!text-gray-500 font-black uppercase tracking-widest mb-4 block">
+                  <span className="text-[10px] !text-gray-600 dark:!text-gray-400 font-black uppercase tracking-widest mb-4 block">
                     Included Perks
                   </span>
                   <div className="flex flex-wrap gap-3">

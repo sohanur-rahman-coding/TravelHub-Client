@@ -22,6 +22,8 @@ import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "react-hot-toast";
 
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+
 export function HomeReviews() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
@@ -61,7 +63,7 @@ export function HomeReviews() {
   const fetchReviews = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/reviews/public?page=${page}&limit=6`);
+      const res = await fetch(`${BASE_URL}/api/reviews/public?page=${page}&limit=6`);
       if (res.ok) {
         const data = await res.json();
         setReviews(data.reviews || []);
@@ -109,7 +111,7 @@ export function HomeReviews() {
         transportType: formData.transportType || "Bus"
       };
 
-      const res = await fetch("http://localhost:5000/api/reviews/public", {
+      const res = await fetch(`${BASE_URL}/api/reviews/public`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

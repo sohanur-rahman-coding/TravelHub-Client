@@ -279,13 +279,13 @@ export default function Footer() {
               {[
                 {
                   icon: <Mail className="w-4 h-4 shrink-0 text-cyan-500/60" />,
-                  text: "support@travelhub.com.bd",
-                  href: "mailto:support@travelhub.com.bd",
+                  text: "sohanbd413@gmail.com",
+                  href: "mailto:sohanbd413@gmail.com",
                 },
                 {
                   icon: <Phone className="w-4 h-4 shrink-0 text-cyan-500/60" />,
-                  text: "+880 1700-000000",
-                  href: "tel:+8801700000000",
+                  text: "+8801747744641",
+                  href: "tel:+8801747744641",
                 },
                 {
                   icon: <MapPin className="w-4 h-4 shrink-0 text-cyan-500/60" />,

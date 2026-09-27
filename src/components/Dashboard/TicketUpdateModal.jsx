@@ -165,7 +165,7 @@ export default function TicketUpdateModal({
                         <form onSubmit={onSubmit} className="flex flex-col gap-4">
 
                           <TextField className="w-full" variant="secondary">
-                            <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                            <Label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
                               Ticket Title *
                             </Label>
                             <Input
@@ -180,7 +180,7 @@ export default function TicketUpdateModal({
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <TextField variant="secondary">
-                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                              <Label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
                                 From *
                               </Label>
                               <Input
@@ -193,7 +193,7 @@ export default function TicketUpdateModal({
                             </TextField>
 
                             <TextField variant="secondary">
-                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                              <Label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
                                 To *
                               </Label>
                               <Input
@@ -206,7 +206,7 @@ export default function TicketUpdateModal({
                             </TextField>
 
                             <TextField variant="secondary">
-                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                              <Label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
                                 Price / Seat (USD) *
                               </Label>
                               <Input
@@ -221,7 +221,7 @@ export default function TicketUpdateModal({
                             </TextField>
 
                             <TextField variant="secondary">
-                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                              <Label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
                                 Total Seats *
                               </Label>
                               <Input
@@ -236,7 +236,7 @@ export default function TicketUpdateModal({
                             </TextField>
 
                             <div className="flex flex-col gap-1">
-                              <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                              <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
                                 Transport Type *
                               </label>
                               <select
@@ -258,7 +258,7 @@ export default function TicketUpdateModal({
                             </div>
 
                             <TextField variant="secondary">
-                              <Label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1.5 block">
+                              <Label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1.5 block">
                                 Departure Date & Time *
                               </Label>
                               <Input
@@ -273,7 +273,7 @@ export default function TicketUpdateModal({
                           </div>
 
                           <div className="flex flex-col gap-2">
-                            <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                            <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
                               Perks / Amenities
                             </label>
                             <div className="flex flex-wrap gap-2">
@@ -299,7 +299,7 @@ export default function TicketUpdateModal({
                           </div>
 
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                            <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
                               Ticket Image (Leave empty to keep current)
                             </label>
                             <label className="w-full h-32 border-2 border-dashed border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900/60 transition-all overflow-hidden relative group">

@@ -130,14 +130,28 @@ export async function getUserTransactions(email) {
 export async function getVendorStats(email) {
   try {
     if (!email) return null;
+    let headers = {
+      "Content-Type": "application/json",
+    };
+    try {
+      const { data: token } = await authClient.token();
+      if (token?.token || token) {
+        headers.authorization = `Bearer ${token?.token || token}`;
+      }
+    } catch (e) {}
 
-    const res = await fetch(`${BASE_URL}/api/vendor/${email}/stats`, {
+    const res = await fetch(`${BASE_URL}/api/vendor/${encodeURIComponent(email)}/stats`, {
       cache: "no-store",
+      headers,
     });
 
-    if (!res.ok) throw new Error("Failed to fetch vendor stats");
+    if (!res.ok) {
+      console.error("Failed to fetch vendor stats, status:", res.status);
+      return null;
+    }
     return await res.json();
   } catch (error) {
+    console.error("Error in getVendorStats:", error);
     return null;
   }
 }

@@ -54,9 +54,11 @@ export default function VendorDashboardPage({ initialUser }) {
   // Sync user state from session
   useEffect(() => {
     if (session?.user) {
-      setUser((prev) => prev || session.user);
+      setUser(session.user);
       setFormData({ name: session.user.name || "" });
-      setPreviewImage(session.user.image || session.user.profilePicture || null);
+      if (!previewImage) {
+        setPreviewImage(session.user.image || session.user.profilePicture || null);
+      }
     }
   }, [session]);
 
@@ -69,7 +71,9 @@ export default function VendorDashboardPage({ initialUser }) {
       try {
         setLoadingStats(true);
         const data = await getVendorStats(email);
-        setStats(data);
+        if (data) {
+          setStats(data);
+        }
       } catch (err) {
         console.error("Failed to load vendor stats:", err);
       } finally {
@@ -93,9 +97,15 @@ export default function VendorDashboardPage({ initialUser }) {
 
   // Save Operator Profile Handler
   const handleSaveProfile = async () => {
+    const targetEmail = user?.email || session?.user?.email;
+    if (!targetEmail) {
+      toast.error("User email not found");
+      return;
+    }
+
     setIsSaving(true);
     try {
-      let finalImageUrl = user?.image || user?.profilePicture;
+      let finalImageUrl = previewImage || user?.image || user?.profilePicture;
 
       if (selectedFile) {
         const imgFormData = new FormData();
@@ -103,35 +113,61 @@ export default function VendorDashboardPage({ initialUser }) {
         const imgbbKey = process.env.NEXT_PUBLIC_IMGBB_KEY;
 
         if (imgbbKey) {
-          const imgbbRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
-            method: "POST",
-            body: imgFormData,
-          });
-          const imgbbData = await imgbbRes.json();
-          if (imgbbData.success) {
-            finalImageUrl = imgbbData.data.url;
+          try {
+            const imgbbRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
+              method: "POST",
+              body: imgFormData,
+            });
+            const imgbbData = await imgbbRes.json();
+            if (imgbbData?.success && imgbbData.data?.url) {
+              finalImageUrl = imgbbData.data.url;
+            }
+          } catch (e) {
+            console.error("Image upload failed, keeping current image", e);
           }
         }
       }
 
-      const updateRes = await updateProfileAPI(user?.email, {
+      let updateRes = await updateProfileAPI(targetEmail, {
         name: formData.name,
         image: finalImageUrl,
       });
 
-      if (updateRes.success) {
-        await authClient.updateUser({
-          name: formData.name,
-          image: finalImageUrl,
-        });
+      // Fallback direct fetch if server action had token mismatch
+      if (!updateRes?.success) {
+        try {
+          const { data: token } = await authClient.token();
+          const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+          const directRes = await fetch(`${serverUrl}/api/user/${encodeURIComponent(targetEmail)}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token?.token ? { authorization: `Bearer ${token.token}` } : {})
+            },
+            body: JSON.stringify({ name: formData.name, image: finalImageUrl }),
+          });
+          if (directRes.ok) {
+            updateRes = { success: true };
+          }
+        } catch (e) {}
+      }
+
+      if (updateRes?.success) {
+        try {
+          await authClient.updateUser({
+            name: formData.name,
+            image: finalImageUrl,
+          });
+        } catch (e) {}
 
         setUser((prev) => ({ ...prev, name: formData.name, image: finalImageUrl }));
+        setPreviewImage(finalImageUrl);
         setIsEditing(false);
         setSelectedFile(null);
         toast.success("Agency profile updated successfully!");
         router.refresh();
       } else {
-        toast.error(updateRes.message || "Failed to update profile");
+        toast.error(updateRes?.message || "Failed to update profile");
       }
     } catch (error) {
       console.error(error);

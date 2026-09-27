@@ -51,7 +51,8 @@ export default function TicketReviews({ ticketId, user }) {
   });
   const [loading, setLoading] = useState(true);
   const [eligibility, setEligibility] = useState({
-    isEligible: false,
+    isEligible: true,
+    isVerifiedBuyer: false,
     hasReviewed: false,
     existingReview: null,
   });
@@ -60,9 +61,20 @@ export default function TicketReviews({ ticketId, user }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRating, setSelectedRating] = useState(5);
   const [comment, setComment] = useState("");
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  // Pre-fill user data when user session changes
+  useEffect(() => {
+    if (user) {
+      if (user.name) setGuestName(user.name);
+      if (user.email) setGuestEmail(user.email);
+    }
+  }, [user]);
+
   const fetchReviews = useCallback(async () => {
+    if (!ticketId) return;
     try {
       const res = await fetch(`${BASE_URL}/api/reviews/ticket/${ticketId}`);
       if (res.ok) {
@@ -77,13 +89,21 @@ export default function TicketReviews({ ticketId, user }) {
   }, [ticketId]);
 
   const checkEligibility = useCallback(async () => {
-    if (!user) return;
+    if (!ticketId) return;
     try {
-      const { data: token } = await authClient.token();
-      const res = await fetch(`${BASE_URL}/api/reviews/eligibility/${ticketId}`, {
-        headers: {
-          authorization: `Bearer ${token?.token}`,
-        },
+      let headers = {};
+      if (user) {
+        try {
+          const { data: token } = await authClient.token();
+          if (token?.token || token) {
+            headers.authorization = `Bearer ${token?.token || token}`;
+          }
+        } catch (e) {}
+      }
+
+      const emailParam = user?.email ? `?email=${encodeURIComponent(user.email)}` : "";
+      const res = await fetch(`${BASE_URL}/api/reviews/eligibility/${ticketId}${emailParam}`, {
+        headers,
       });
       if (res.ok) {
         const json = await res.json();
@@ -110,19 +130,33 @@ export default function TicketReviews({ ticketId, user }) {
       return;
     }
 
+    const reviewerName = user?.name || guestName.trim() || "Traveler";
+
     setSubmitting(true);
     try {
-      const { data: token } = await authClient.token();
+      let headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (user) {
+        try {
+          const { data: token } = await authClient.token();
+          if (token?.token || token) {
+            headers.authorization = `Bearer ${token?.token || token}`;
+          }
+        } catch (e) {}
+      }
+
       const res = await fetch(`${BASE_URL}/api/reviews`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token?.token}`,
-        },
+        headers,
         body: JSON.stringify({
           ticketId,
           rating: selectedRating,
           comment: comment.trim(),
+          userName: reviewerName,
+          userEmail: user?.email || guestEmail.trim() || undefined,
+          userImage: user?.image || undefined,
         }),
       });
 
@@ -131,8 +165,9 @@ export default function TicketReviews({ ticketId, user }) {
         throw new Error(resData.message || "Failed to submit review");
       }
 
-      toast.success(resData.message || "Review submitted successfully!");
+      toast.success(resData.message || "Review submitted successfully! 🎉");
       setIsModalOpen(false);
+      setComment("");
       fetchReviews();
       checkEligibility();
     } catch (err) {
@@ -143,21 +178,25 @@ export default function TicketReviews({ ticketId, user }) {
   };
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    return new Date(dateStr).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    if (!dateStr) return "Recent";
+    try {
+      return new Date(dateStr).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch (e) {
+      return "Recent";
+    }
   };
 
   return (
-    <div className="mt-14 w-full">
+    <div id="ticket-reviews" className="mt-14 w-full scroll-mt-20">
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200 dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">
+            <span className="text-[11px] font-black uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400">
               Verified Feedback
             </span>
           </div>
@@ -168,20 +207,13 @@ export default function TicketReviews({ ticketId, user }) {
 
         {/* Action Button */}
         <div>
-          {eligibility.isEligible ? (
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-lg shadow-blue-500/25 hover:from-blue-700 hover:to-indigo-700 transition-all cursor-pointer"
-            >
-              <MessageSquarePlus size={18} />
-              {eligibility.hasReviewed ? "Update Your Review" : "Leave a Review"}
-            </button>
-          ) : user ? (
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gray-100 dark:bg-slate-800/80 text-gray-500 dark:text-slate-400 text-xs font-semibold border border-gray-200 dark:border-slate-700">
-              <ShieldCheck size={16} className="text-emerald-500 shrink-0" />
-              <span>Available to verified passengers after booking</span>
-            </div>
-          ) : null}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <MessageSquarePlus size={18} />
+            {eligibility.hasReviewed ? "Update Your Review" : "Leave a Review"}
+          </button>
         </div>
       </div>
 
@@ -244,9 +276,15 @@ export default function TicketReviews({ ticketId, user }) {
             <h4 className="text-base font-bold text-gray-900 dark:text-white">
               No passenger reviews yet
             </h4>
-            <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
-              Be the first passenger to book and share your travel experience for this route!
+            <p className="text-xs text-gray-500 dark:text-slate-400 max-w-sm mx-auto mt-1 mb-4">
+              Be the first passenger to share your travel experience for this route!
             </p>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold text-xs hover:bg-cyan-500/20 transition-colors cursor-pointer"
+            >
+              <MessageSquarePlus size={15} /> Write the first review
+            </button>
           </div>
         ) : (
           data.reviews.map((rev) => (
@@ -264,7 +302,7 @@ export default function TicketReviews({ ticketId, user }) {
                       className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-slate-700"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black flex items-center justify-center text-sm">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 text-white font-black flex items-center justify-center text-sm">
                       {rev.userName?.[0]?.toUpperCase() || "T"}
                     </div>
                   )}
@@ -273,7 +311,7 @@ export default function TicketReviews({ ticketId, user }) {
                       <h4 className="font-bold text-sm text-gray-900 dark:text-white">
                         {rev.userName || "Traveler"}
                       </h4>
-                      {rev.isVerifiedBuyer && (
+                      {rev.isVerifiedBuyer !== false && (
                         <span className="flex items-center gap-1 text-[10px] font-black uppercase bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 px-2 py-0.5 rounded-full">
                           <ShieldCheck size={12} />
                           Verified Passenger
@@ -300,13 +338,13 @@ export default function TicketReviews({ ticketId, user }) {
       {/* Write / Edit Review Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0"
             />
 
             <motion.div
@@ -332,14 +370,14 @@ export default function TicketReviews({ ticketId, user }) {
                 </div>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <X size={18} />
                 </button>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmitReview} className="p-6 space-y-5">
+              <form onSubmit={handleSubmitReview} className="p-6 space-y-4">
                 {/* Rating Select */}
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-2">
@@ -358,10 +396,41 @@ export default function TicketReviews({ ticketId, user }) {
                   </div>
                 </div>
 
+                {/* Name / Email input if not logged in */}
+                {!user && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-1.5">
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Alex Johnson"
+                        value={guestName}
+                        onChange={(e) => setGuestName(e.target.value)}
+                        className="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/80 rounded-xl p-3 text-sm outline-none focus:border-cyan-500 focus:bg-white dark:focus:bg-slate-900 transition-all dark:text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-1.5">
+                        Email (Optional)
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="alex@example.com"
+                        value={guestEmail}
+                        onChange={(e) => setGuestEmail(e.target.value)}
+                        className="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/80 rounded-xl p-3 text-sm outline-none focus:border-cyan-500 focus:bg-white dark:focus:bg-slate-900 transition-all dark:text-white"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {/* Comment Textarea */}
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-2">
-                    Your Feedback
+                    Your Feedback *
                   </label>
                   <textarea
                     rows={4}
@@ -369,7 +438,7 @@ export default function TicketReviews({ ticketId, user }) {
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="How was the journey, vehicle comfort, departure timeliness, and operator service?"
                     maxLength={1000}
-                    className="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/80 rounded-2xl p-4 text-sm outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all dark:text-white placeholder:text-gray-400"
+                    className="w-full bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700/80 rounded-2xl p-4 text-sm outline-none focus:border-cyan-500 focus:bg-white dark:focus:bg-slate-900 transition-all dark:text-white placeholder:text-gray-400"
                     required
                   />
                   <div className="text-right text-[11px] text-gray-400 mt-1">
@@ -379,8 +448,12 @@ export default function TicketReviews({ ticketId, user }) {
 
                 {/* Verified Badge Assurance */}
                 <div className="flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-xl text-emerald-700 dark:text-emerald-400 text-xs font-medium">
-                  <ShieldCheck size={16} className="shrink-0" />
-                  <span>You are reviewing as a confirmed booked traveler.</span>
+                  <ShieldCheck size={16} className="shrink-0 text-emerald-500" />
+                  <span>
+                    {eligibility.isVerifiedBuyer
+                      ? "Verified Booking: Your review will carry the Verified Passenger badge."
+                      : "Thank you for helping fellow travelers with your authentic feedback."}
+                  </span>
                 </div>
 
                 {/* Buttons */}
@@ -388,14 +461,14 @@ export default function TicketReviews({ ticketId, user }) {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-5 py-3 rounded-xl border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 text-sm font-bold hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+                    className="px-5 py-3 rounded-xl border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 text-sm font-bold hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitting || !comment.trim()}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-lg shadow-blue-500/25 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 transition-all cursor-pointer"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 disabled:opacity-50 transition-all cursor-pointer"
                   >
                     {submitting && <Loader2 size={16} className="animate-spin" />}
                     {eligibility.hasReviewed ? "Save Changes" : "Submit Review"}
