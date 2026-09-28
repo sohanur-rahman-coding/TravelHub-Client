@@ -1,34 +1,47 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Card from "@/components/Card";
 import { getAllApprovedTickets } from "@/lib/api/tickets";
 import { Search, MapPin, Filter, ArrowUpDown, Loader2, Ticket, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 
-const AllTickets = () => {
+function AllTicketsContent() {
+  const searchParams = useSearchParams();
+  const urlTo = searchParams.get("to") || "";
+  const urlFrom = searchParams.get("from") || "";
+  const urlType = searchParams.get("type") || "All";
+
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  const [searchFrom, setSearchFrom] = useState("");
-  const [searchTo, setSearchTo] = useState("");
-  const [filterType, setFilterType] = useState("All");
+  const [searchFrom, setSearchFrom] = useState(urlFrom);
+  const [searchTo, setSearchTo] = useState(urlTo);
+  const [filterType, setFilterType] = useState(urlType);
   const [sortPrice, setSortPrice] = useState("default");
   
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const LIMIT = 6;
 
+  // Sync state if URL search parameters change
+  useEffect(() => {
+    if (urlTo !== searchTo) setSearchTo(urlTo);
+    if (urlFrom !== searchFrom) setSearchFrom(urlFrom);
+    if (urlType !== filterType) setFilterType(urlType);
+  }, [urlTo, urlFrom, urlType]);
+
   useEffect(() => {
     fetchTickets();
-  }, [filterType, sortPrice, page]);
+  }, [filterType, sortPrice, page, searchTo, searchFrom]);
 
-  const fetchTickets = async () => {
+  const fetchTickets = async (overrideFrom = searchFrom, overrideTo = searchTo) => {
     setLoading(true);
     try {
       const data = await getAllApprovedTickets({
-        from: searchFrom,
-        to: searchTo,
+        from: overrideFrom,
+        to: overrideTo,
         type: filterType,
         sortPrice: sortPrice,
         page: page,
@@ -274,6 +287,17 @@ const AllTickets = () => {
       </div>
     </div>
   );
-};
+}
 
-export default AllTickets;
+export default function AllTicketsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen py-24 text-center flex flex-col items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-cyan-500 mb-3" />
+        <p className="text-sm font-bold text-gray-500">Loading destinations...</p>
+      </div>
+    }>
+      <AllTicketsContent />
+    </Suspense>
+  );
+}

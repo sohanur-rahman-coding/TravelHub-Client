@@ -11,6 +11,7 @@ import {
   Calendar,
   Ticket,
   ArrowRight,
+  Star,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -125,6 +126,16 @@ const Card = ({ ticket, priority = false }) => {
             {type || "Unknown"}
           </span>
         </div>
+
+        {ticket.averageRating > 0 && (
+          <div className="absolute top-4 right-4 flex items-center gap-1 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-3 py-1 rounded-full shadow-sm border border-gray-200 dark:border-slate-700 z-20 text-xs font-black text-amber-500 transition-colors">
+            <Star size={12} fill="currentColor" />
+            <span>{ticket.averageRating}</span>
+            {ticket.reviewCount > 0 && (
+              <span className="text-[10px] text-gray-400 font-medium">({ticket.reviewCount})</span>
+            )}
+          </div>
+        )}
 
         <div className="absolute bottom-4 right-4 !bg-white/95 dark:!bg-slate-900/95 backdrop-blur-md px-5 py-2 rounded-full shadow-lg border border-gray-200 dark:border-slate-700 z-20 transition-colors">
           <span className="text-xl font-black text-blue-600 dark:text-blue-400">

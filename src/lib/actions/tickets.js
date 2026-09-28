@@ -168,3 +168,26 @@ export async function updateBookingToPaid(bookingId) {
     throw error;
   }
 }
+
+// cancel pending booking hold immediately
+export async function cancelBookingHoldAction(bookingId) {
+  try {
+    const token = await getTokenServer();
+    const res = await fetch(`${BASE_URL}/api/bookings/${bookingId}/cancel`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || "Failed to cancel booking hold");
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Error in cancelBookingHoldAction:", error);
+    throw error;
+  }
+}

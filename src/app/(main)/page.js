@@ -4,6 +4,8 @@ import Feature from "@/components/Dashboard/Feature";
 import LatestTickets from "@/components/LatestTickets";
 import { PopularRoutes } from "@/components/PopularRoutes";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
+import { HomeReviews } from "@/components/HomeReviews";
+import { AboutUs } from "@/components/AboutUs";
 
 // Skeleton for loading states
 function CardGridSkeleton() {
@@ -29,7 +31,10 @@ export default function Home() {
         <LatestTickets />
       </Suspense>
       <WhyChooseUs />
+
+      <HomeReviews />
       <PopularRoutes />
+      <AboutUs />
     </div>
   );
 }

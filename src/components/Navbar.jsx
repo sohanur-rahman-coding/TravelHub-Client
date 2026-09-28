@@ -97,6 +97,12 @@ export function Navbar() {
             >
               All Tickets
             </Link>
+            <Link
+              href="/#about-us"
+              className="font-semibold text-sm transition-colors text-foreground/80 hover:text-cyan-500"
+            >
+              About Us
+            </Link>
             {user && (
               <Link
                 href="/dashboard"
@@ -113,9 +119,8 @@ export function Navbar() {
           <div className="hidden md:flex flex-1 justify-end items-center gap-4">
             {!isPending &&
               (!user ? (
-               
                 <div className="flex gap-4 items-center">
-                  <ThemeToggle /> 
+                  <ThemeToggle />
                   <Link
                     href="/signin"
                     className="text-sm font-medium text-foreground/80 hover:text-foreground"
@@ -177,7 +182,7 @@ export function Navbar() {
                       </div>
 
                       <Link
-                        href="/profile"
+                        href="/dashboard"
                         onClick={() => setIsDropdownOpen(false)}
                         className="px-4 py-2.5 text-sm font-medium hover:bg-default-100 flex items-center gap-2 mt-1"
                       >
@@ -229,6 +234,13 @@ export function Navbar() {
             className="block py-2 text-sm font-semibold hover:text-cyan-500 transition-colors"
           >
             All Tickets
+          </Link>
+          <Link
+            href="/#about-us"
+            onClick={() => setIsMenuOpen(false)}
+            className="block py-2 text-sm font-semibold hover:text-cyan-500 transition-colors"
+          >
+            About Us
           </Link>
           {user && (
             <Link

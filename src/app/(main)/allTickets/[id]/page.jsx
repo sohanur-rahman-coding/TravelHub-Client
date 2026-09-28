@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import BookingModal from "@/components/BookingModal";
+import TicketReviews from "@/components/TicketReviews";
 import { motion } from "framer-motion";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
@@ -360,18 +361,45 @@ export default function TicketDetailPage({ params }) {
               >
                 <h2 className="font-black text-2xl !text-gray-900 dark:!text-white">Secure Your Seat</h2>
 
+                {/* Journey Departed State */}
                 {isExpired && (
-                  <div className="!bg-red-50 dark:!bg-red-500/10 border !border-red-200 dark:!border-red-500/20 rounded-2xl p-4">
-                    <p className="text-sm !text-red-600 dark:!text-red-400 font-bold">This journey has already departed.</p>
+                  <div className="flex flex-col items-center gap-3 py-4">
+                    <div className="w-14 h-14 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center">
+                      <Calendar size={26} className="!text-red-500 dark:!text-red-400" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-base font-black !text-red-600 dark:!text-red-400">Journey Departed</p>
+                      <p className="text-xs !text-gray-500 dark:!text-gray-400 mt-1">This trip has already left. Browse other available tickets.</p>
+                    </div>
+                    <button
+                      onClick={() => router.push("/allTickets")}
+                      className="w-full mt-1 py-3 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-bold text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border-transparent"
+                    >
+                      Browse Other Tickets
+                    </button>
                   </div>
                 )}
 
+                {/* Sold Out State */}
                 {isSoldOut && !isExpired && (
-                  <div className="!bg-red-50 dark:!bg-red-500/10 border !border-red-200 dark:!border-red-500/20 rounded-2xl p-4">
-                    <p className="text-sm !text-red-600 dark:!text-red-400 font-bold">This journey is fully booked.</p>
+                  <div className="flex flex-col items-center gap-3 py-4">
+                    <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-500/10 flex items-center justify-center">
+                      <Ticket size={26} className="!text-amber-500 dark:!text-amber-400" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-base font-black !text-amber-600 dark:!text-amber-400">Fully Booked</p>
+                      <p className="text-xs !text-gray-500 dark:!text-gray-400 mt-1">All seats are taken. Check back or browse similar routes.</p>
+                    </div>
+                    <button
+                      onClick={() => router.push("/allTickets")}
+                      className="w-full mt-1 py-3 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-bold text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors border-transparent"
+                    >
+                      Find Similar Routes
+                    </button>
                   </div>
                 )}
 
+                {/* Login Required State */}
                 {!user && !isExpired && !isSoldOut && (
                   <div className="!bg-orange-50 dark:!bg-orange-500/10 border !border-orange-200 dark:!border-orange-500/20 rounded-2xl p-5">
                     <p className="text-sm !text-orange-800 dark:!text-orange-300 font-medium leading-relaxed">
@@ -387,6 +415,7 @@ export default function TicketDetailPage({ params }) {
                   </div>
                 )}
 
+                {/* Available — Booked Confirmation */}
                 {booked ? (
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
@@ -397,13 +426,15 @@ export default function TicketDetailPage({ params }) {
                     <p className="text-base !text-green-700 dark:!text-green-300 font-black">Booking confirmed!</p>
                   </motion.div>
                 ) : (
-                  <button
-                    onClick={() => setModalOpen(true)}
-                    disabled={!canBook}
-                    className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:from-gray-300 disabled:to-gray-200 dark:disabled:from-gray-700 dark:disabled:to-gray-600 disabled:!text-gray-500 dark:disabled:!text-gray-400 text-white rounded-2xl py-4 text-base font-black active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-500/30 disabled:shadow-none cursor-pointer border-transparent"
-                  >
-                    <CreditCard size={20} /> Book Now
-                  </button>
+                  /* Show Book Now only when available & user is logged in */
+                  canBook && (
+                    <button
+                      onClick={() => setModalOpen(true)}
+                      className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-2xl py-4 text-base font-black active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-orange-500/30 cursor-pointer border-transparent"
+                    >
+                      <CreditCard size={20} /> Book Now
+                    </button>
+                  )
                 )}
 
                 <div className="space-y-3.5 pt-4 border-t !border-gray-100 dark:!border-gray-700">
@@ -424,6 +455,9 @@ export default function TicketDetailPage({ params }) {
             </div>
           </div>
         </div>
+
+        {/* Passenger Reviews & Ratings Section */}
+        <TicketReviews ticketId={id} user={user} />
 
         <BookingModal
           isOpen={modalOpen}

@@ -1,6 +1,6 @@
 # 🚍 TravelHub - Online Ticket Booking Platform
 
-TravelHub is a comprehensive and modern Online Ticket Booking Platform built with the MERN stack. It seamlessly connects travelers with ticket vendors, allowing users to discover and book tickets for various transport types (Bus, Train, Launch, Plane) effortlessly. The platform ensures a secure, responsive, and user-friendly experience with dedicated dashboards for Users, Vendors, and Admins.
+TravelHub is a comprehensive, full-featured modern Online Ticket Booking Platform built with **Next.js 16 (App Router)**, **Tailwind CSS**, **Node.js/Express**, and **MongoDB Atlas**. It connects travelers with transport operators across multiple transit types (Bus, Train, Launch, Flight) with real-time seat locks, secure Stripe payments, interactive reviews, dynamic countdowns, and dedicated dashboards for Users, Vendors, and Admins.
 
 ## 🌐 Live URL & Repositories
 - **Live Website:** [TravelHub | Your Ultimate Ticket Booking Platform](https://travell-hub-client.vercel.app)
@@ -18,204 +18,93 @@ TravelHub is a comprehensive and modern Online Ticket Booking Platform built wit
 - Email: `sohanbd413@gmail.com`
 - Password: `Abc12345`
 
-*(Note: Replace with your actual demo credentials before submitting)*
-
 ---
 
 ## 🚀 Key Features
 
-### 🌟 General Features
-- **Dark/Light Mode Toggle:** Seamless theme switching for better user experience.
-- **Search, Filter & Sort:** Advanced search by location (From-To), filter by transport type, and sort by price (Low to High / High to Low).
-- **Pagination:** Efficient data loading on the "All Tickets" page.
-- **Responsive UI:** Fully responsive design across all devices (Mobile, Tablet, Desktop) with glassmorphism effects and modern styling.
-- **Secure Authentication:** Email/Password and Google Social Login powered by BetterAuth.
-- **JWT Protection:** Secure API endpoints using JSON Web Tokens.
+### 🌟 General & Platform Features
+- **Dark/Light Mode:** Seamless theme switching with smooth transitions and persistent state.
+- **Search, Filter & Sort:** Filter tickets by transport type (Bus, Train, Launch, Flight), departure/destination points, and sort by price or popularity with full pagination.
+- **Interactive Seat Map & Hold System:** Interactive visual seat selection with temporary locking (preventing double-bookings) and automatic cleanup after timeout or manual cancellation.
+- **AI / Live Chat Support Widget:** Floating interactive support widget with responsive guidance.
+- **Glassmorphism & Micro-animations:** Styled with Tailwind CSS, Framer Motion, and HeroUI for a modern visual aesthetic.
+- **Secure Authentication:** BetterAuth integration with Email/Password and Google OAuth.
+- **Edge Route Middleware:** Fast, Edge-compatible route guard protecting `/dashboard` and `/profile` routes.
 
-### 👤 User Features
-- **Ticket Booking:** Book available tickets (quantity validation enforced).
-- **Dynamic Countdown:** Real-time countdown timer based on departure date and time.
-- **Stripe Payment Gateway:** Pay for tickets securely once the vendor accepts the booking request.
-- **Dashboard:** Manage booked tickets (Pending/Accepted/Rejected/Paid statuses) and view transaction history.
+### 👤 User (Passenger) Features
+- **Seat Booking & Reservation:** Select specific seats, view live price breakdowns, and reserve seats in real time.
+- **Secure Stripe Checkout:** Pay for accepted bookings using Stripe Elements / Checkout with idempotency protection.
+- **Interactive Invoices & Receipts:** Downloadable/printable ticket receipts with QR codes and booking reference numbers.
+- **Reviews & Ratings:** Leave star ratings and written reviews on completed travel routes.
+- **User Dashboard:** Track booked tickets (`Pending`, `Accepted`, `Paid`, `Cancelled`), release held seats, and review transaction history.
 
-### 🏪 Vendor Features
-- **Ticket Management:** Add, update, or delete tickets with ImgBB image integration.
-- **Booking Requests:** Accept or reject user booking requests.
-- **Revenue Overview:** Visual data representation (Charts/Graphs) for total tickets added, sold, and overall revenue.
-- **Verification System:** Tickets require Admin approval before appearing publicly.
+### 🏪 Vendor (Operator) Features
+- **Ticket Management:** Add, update, and manage transport tickets with multi-perk selection, departure schedules, and ImgBB image uploads.
+- **Booking Requests Panel:** Real-time dashboard to accept or reject passenger booking requests.
+- **Revenue & Performance Analytics:** Visual chart breakdown (Recharts) of tickets added, tickets sold, and total earnings.
+- **Verification Workflow:** Automatic submission to Admin moderation queue before public listing.
 
-### 🛡️ Admin Features
-- **Manage Users:** Change user roles (Make Admin, Make Vendor).
-- **Fraud Detection:** Ability to mark a vendor as "Fraud", which instantly hides all their tickets and disables their ticket-adding capability.
-- **Manage Tickets:** Approve or reject tickets uploaded by vendors.
-- **Advertisement System:** Select up to 6 approved tickets to showcase in the Hero Advertisement section.
+### 🛡️ Admin (Superuser) Features
+- **User Role Management:** Promote or demote users between `user`, `vendor`, and `admin` roles with instant UI state synchronization.
+- **Ticket Moderation:** Approve, reject, or mark tickets as featured advertisements on the homepage hero section.
+- **Fraud Detection System:** Ability to mark fraudulent vendors, automatically revoking ticket-creation rights and hiding affected routes.
+- **Platform Analytics:** Real-time platform revenue and activity summary.
 
 ---
 
 ## 🛠️ Technologies Used
 
 **Frontend:**
-- React.js / Next.js (App Router)
-- Tailwind CSS (with modern UI libraries like HeroUI/Lucide React)
-- BetterAuth (Authentication)
-- Stripe.js (Payment processing)
-- Axios (Data fetching)
+- **Framework:** Next.js 16 (App Router, React 19)
+- **Styling:** Tailwind CSS, Framer Motion, HeroUI, Lucide React
+- **Authentication:** BetterAuth (JWT & Cookie Cache)
+- **Payments:** Stripe.js (`@stripe/stripe-js`, `@stripe/react-stripe-js`)
+- **Notifications:** React Hot Toast
+- **Charts:** Recharts
 
-**Backend:**
-- Node.js
-- Express.js
-- JSON Web Token (JWT) for authorization
-- Stripe API
-
-**Database & Storage:**
-- MongoDB (Mongoose)
-- ImgBB API (Image hosting)
+**Backend & Data:**
+- **Runtime:** Node.js & Express.js
+- **Database:** MongoDB Atlas (Native MongoDB Driver)
+- **Payment Processing:** Stripe Node SDK
+- **Image Hosting:** ImgBB API
 
 ---
 
 ## ⚙️ Installation & Setup (Local Development)
 
-To run this project locally, follow these steps:
-
-### 1. Clone the repository
+### 1. Clone the repositories
 ```bash
-git clone [https://github.com/sohanur-rahman-coding/TravelHub-Client.git](https://github.com/sohanur-rahman-coding/TravelHub-Client.git)
-git clone [https://github.com/sohanur-rahman-coding/TravelHub-server.git](https://github.com/sohanur-rahman-coding/TravelHub-server.git)
+git clone https://github.com/sohanur-rahman-coding/TravelHub-Client.git
+git clone https://github.com/sohanur-rahman-coding/TravelHub-server.git
 ```
 
----
-
-### 2. Setup Environment Variables
-Create a `.env` or `.env.local` file in both client and server directories.
-
-**Client-side `.env.local`:**
+### 2. Configure Environment Variables
+Create a `.env.local` file inside the `TravellHub-client` directory:
 ```env
 NEXT_PUBLIC_SERVER_URL=http://localhost:5000
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_public_key
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_api_key
-```
-
-**Server-side `.env`:**
-```env
-PORT=5000
-DB_USER=your_mongodb_username
-DB_PASS=your_mongodb_password
-JWT_SECRET=your_jwt_secret_token
-STRIPE_SECRET_KEY=your_stripe_secret_key
+BETTER_AUTH_SECRET=your_better_auth_secret
+BETTER_AUTH_URL=http://localhost:3000
+MONGODB_URI=your_mongodb_connection_string
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
 ```
 
 ### 3. Install Dependencies & Run
-Run the following commands in both the client and server directories:
 ```bash
+cd TravellHub-client
 npm install
 npm run dev
 ```
+The client app will be accessible at `http://localhost:3000`.
 
 ---
 
 ## 📦 Key NPM Packages Used
-- `lucide-react` / `@gravity-ui/icons` (Icons)
-- `react-hot-toast` (Notifications)
-- `stripe` / `@stripe/react-stripe-js` (Payments)
-- `jsonwebtoken` (Auth)
-- `animate.css` (Animations)
-- `recharts` / `chart.js` (Revenue Charts)
-
----
-*Designed & Developed for Assignment Category A10_CAT-005*
-
-## 🚀 Key Features
-
-### 🌟 General Features
-- **Dark/Light Mode Toggle:** Seamless theme switching for better user experience.
-- **Search, Filter & Sort:** Advanced search by location (From-To), filter by transport type, and sort by price (Low to High / High to Low).
-- **Pagination:** Efficient data loading on the "All Tickets" page.
-- **Responsive UI:** Fully responsive design across all devices (Mobile, Tablet, Desktop) with glassmorphism effects and modern styling.
-- **Secure Authentication:** Email/Password and Google Social Login powered by BetterAuth.
-- **JWT Protection:** Secure API endpoints using JSON Web Tokens.
-
-### 👤 User Features
-- **Ticket Booking:** Book available tickets (quantity validation enforced).
-- **Dynamic Countdown:** Real-time countdown timer based on departure date and time.
-- **Stripe Payment Gateway:** Pay for tickets securely once the vendor accepts the booking request.
-- **Dashboard:** Manage booked tickets (Pending/Accepted/Rejected/Paid statuses) and view transaction history.
-
-### 🏪 Vendor Features
-- **Ticket Management:** Add, update, or delete tickets with ImgBB image integration.
-- **Booking Requests:** Accept or reject user booking requests.
-- **Revenue Overview:** Visual data representation (Charts/Graphs) for total tickets added, sold, and overall revenue.
-- **Verification System:** Tickets require Admin approval before appearing publicly.
-
-### 🛡️ Admin Features
-- **Manage Users:** Change user roles (Make Admin, Make Vendor).
-- **Fraud Detection:** Ability to mark a vendor as "Fraud", which instantly hides all their tickets and disables their ticket-adding capability.
-- **Manage Tickets:** Approve or reject tickets uploaded by vendors.
-- **Advertisement System:** Select up to 6 approved tickets to showcase in the Hero Advertisement section.
-
----
-
-## 🛠️ Technologies Used
-
-**Frontend:**
-- React.js / Next.js (App Router)
-- Tailwind CSS (with modern UI libraries like HeroUI/Lucide React)
-- BetterAuth (Authentication)
-- Stripe.js (Payment processing)
-- Axios (Data fetching)
-
-**Backend:**
-- Node.js
-- Express.js
-- JSON Web Token (JWT) for authorization
-- Stripe API
-
-**Database & Storage:**
-- MongoDB (Mongoose)
-- ImgBB API (Image hosting)
-
----
-
-## ⚙️ Installation & Setup (Local Development)
-To run this project locally, follow these steps:
-
-### 1. Clone the repository
-```bash
-git clone [https://github.com/sohanur-rahman-coding/TravelHub-Client.git](https://github.com/sohanur-rahman-coding/TravelHub-Client.git)
-git clone [https://github.com/sohanur-rahman-coding/TravelHub-server.git](https://github.com/sohanur-rahman-coding/TravelHub-server.git)
-```
-
-### 2. Setup Environment Variables
-Create a `.env` or `.env.local` file in both client and server directories.
-
-**Client-side `.env.local`:**
-```env
-NEXT_PUBLIC_SERVER_URL=http://localhost:5000
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_public_key
-NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_api_key
-```
-
-**Server-side `.env`:**
-```env
-PORT=5000
-DB_USER=your_mongodb_username
-DB_PASS=your_mongodb_password
-JWT_SECRET=your_jwt_secret_token
-STRIPE_SECRET_KEY=your_stripe_secret_key
-```
-
-### 3. Install Dependencies & Run
-Run the following commands in both the client and server directories:
-```bash
-npm install
-npm run dev
-```
-
----
-
-## 📦 Key NPM Packages Used
-- `lucide-react` / `@gravity-ui/icons` (Icons)
-- `react-hot-toast` (Notifications)
-- `stripe` / `@stripe/react-stripe-js` (Payments)
-- `jsonwebtoken` (Auth)
-- `animate.css` (Animations)
-- `recharts` / `chart.js` (Revenue Charts)
+- `@stripe/react-stripe-js` & `@stripe/stripe-js` (Stripe Payment Integration)
+- `better-auth` (Authentication & Session Management)
+- `framer-motion` (Fluid UI Animations)
+- `lucide-react` (Iconography)
+- `react-hot-toast` (Toast Notifications)
+- `recharts` (Analytics & Charts)

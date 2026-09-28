@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import ChatWidget from "@/components/ChatWidget";
 
 export const metadata = {
   title: "TravelHub | Your Ultimate Ticket Booking Platform",
@@ -15,6 +16,7 @@ export default function MainLayout({ children }) {
       <main className="max-w-7xl mx-auto px-2 flex-grow w-full">
         {children}
       </main>
+      <ChatWidget />
       <Footer />
     </div>
   );

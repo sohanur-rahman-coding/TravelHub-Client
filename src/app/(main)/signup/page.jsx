@@ -115,13 +115,10 @@ const RegisterPage = () => {
               </Label>
               <Input
                 placeholder="Your Name"
-                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
                 variant="flat"
                 radius="xl"
                 size="lg"
-                classNames={{
-                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
-                }}
               />
               <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
             </TextField>
@@ -147,13 +144,10 @@ const RegisterPage = () => {
               </Label>
               <Input
                 placeholder="https://example.com/dp.jpg"
-                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
                 variant="flat"
                 radius="xl"
                 size="lg"
-                classNames={{
-                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
-                }}
               />
               <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
             </TextField>
@@ -182,13 +176,10 @@ const RegisterPage = () => {
               </Label>
               <Input
                 placeholder="name@example.com"
-                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
                 variant="flat"
                 radius="xl"
                 size="lg"
-                classNames={{
-                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
-                }}
               />
               <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
             </TextField>
@@ -219,13 +210,10 @@ const RegisterPage = () => {
                   type={isVisible ? "text" : "password"}
                   name="password"
                   placeholder="••••••••"
-                  className="font-bold text-gray-900 dark:text-white tracking-widest placeholder:tracking-normal placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                  className="font-bold text-gray-900 dark:text-white tracking-widest placeholder:tracking-normal placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
                   variant="flat"
                   radius="xl"
                   size="lg"
-                  classNames={{
-                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
-                  }}
                 />
                 <InputGroup.Suffix>
                   <Button
@@ -262,11 +250,7 @@ const RegisterPage = () => {
               isRequired 
               name="role" 
               placeholder="Select your role"
-              classNames={{
-                trigger: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all shadow-inner h-12 sm:h-14 rounded-xl",
-                value: "font-bold text-gray-900 dark:text-white",
-                popoverContent: "bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-2xl"
-              }}
+              className="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all shadow-inner rounded-xl font-bold text-gray-900 dark:text-white"
             >
               <Label className="text-[11px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">
                 Signup As

@@ -111,13 +111,10 @@ const Login = () => {
               </Label>
               <Input
                 placeholder="name@example.com"
-                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                className="font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all"
                 variant="flat"
                 radius="xl"
                 size="lg"
-                classNames={{
-                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
-                }}
               />
               <FieldError className="text-xs font-bold text-red-500 mt-1.5" />
             </TextField>
@@ -147,13 +144,10 @@ const Login = () => {
                   type={isVisible ? "text" : "password"}
                   name="password"
                   placeholder="••••••••"
-                  className="font-bold text-gray-900 dark:text-white tracking-widest placeholder:tracking-normal placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner"
+                  className="font-bold text-gray-900 dark:text-white tracking-widest placeholder:tracking-normal placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-inner bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all"
                   variant="flat"
                   radius="xl"
                   size="lg"
-                  classNames={{
-                    inputWrapper: "bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus-within:!bg-white dark:focus-within:!bg-gray-900 focus-within:!border-blue-500 dark:focus-within:!border-blue-400 transition-all",
-                  }}
                 />
                 <InputGroup.Suffix>
                   {/* 🟢 Premium Toggle Button */}

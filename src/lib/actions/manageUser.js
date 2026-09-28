@@ -84,18 +84,23 @@ export const markVendorAsFraud = async (userId) => {
 
 export async function updateProfileAPI(email, updateData) {
   try {
+    const token = await getTokenServer();
     const res = await fetch(
       `${BASE_URL}/api/user/${encodeURIComponent(email)}`,
       {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${token?.token || token}`,
         },
         body: JSON.stringify(updateData),
       },
     );
 
-    if (!res.ok) throw new Error("Failed to update profile");
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || "Failed to update profile");
+    }
     return await res.json();
   } catch (error) {
     return { success: false, message: error.message };
